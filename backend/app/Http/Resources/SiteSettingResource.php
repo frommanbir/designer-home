@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class SiteSettingResource extends JsonResource
 {
@@ -13,11 +14,11 @@ class SiteSettingResource extends JsonResource
             'branding' => [
                 'logo' => [
                     'path' => $this->logo_path,
-                    'url' => $this->logo_url,
+                    'url' => $this->imageUrl($this->logo_path),
                 ],
                 'favicon' => [
                     'path' => $this->favicon_path,
-                    'url' => $this->favicon_url,
+                    'url' => $this->imageUrl($this->favicon_path),
                 ],
                 'website_title' => $this->website_title,
                 'website_slogan' => $this->website_slogan,
@@ -41,7 +42,7 @@ class SiteSettingResource extends JsonResource
                     'url' => $this->facebook_url,
                     'icon' => [
                         'path' => $this->facebook_icon_path,
-                        'url' => $this->facebook_icon_url,
+                        'url' => $this->imageUrl($this->facebook_icon_path),
                     ],
                 ],
 
@@ -50,7 +51,7 @@ class SiteSettingResource extends JsonResource
                     'url' => $this->twitter_url,
                     'icon' => [
                         'path' => $this->twitter_icon_path,
-                        'url' => $this->twitter_icon_url,
+                        'url' => $this->imageUrl($this->twitter_icon_path),
                     ],
                 ],
 
@@ -59,10 +60,15 @@ class SiteSettingResource extends JsonResource
                     'url' => $this->instagram_url,
                     'icon' => [
                         'path' => $this->instagram_icon_path,
-                        'url' => $this->instagram_icon_url,
+                        'url' => $this->imageUrl($this->instagram_icon_path),
                     ],
                 ],
             ],
         ];
+    }
+
+    private function imageUrl(?string $path): ?string
+    {
+        return $path ? asset(Storage::disk('public')->url($path)) : null;
     }
 }

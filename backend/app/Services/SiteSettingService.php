@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Http\Requests\UpdateSiteSettingRequest;
+use App\Http\Requests\SiteSettingRequest;
 use App\Models\SiteSetting;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
@@ -11,12 +11,12 @@ class SiteSettingService
 {
     public function getSettings(): SiteSetting
     {
-        return SiteSetting::instance();
+        return SiteSetting::query()->first() ?? SiteSetting::query()->create([]);
     }
 
-    public function updateSettings(UpdateSiteSettingRequest $request): SiteSetting
+    public function updateSettings(SiteSettingRequest $request): SiteSetting
     {
-        $settings = SiteSetting::instance();
+        $settings = $this->getSettings();
 
         $validated = $request->validated();
 
