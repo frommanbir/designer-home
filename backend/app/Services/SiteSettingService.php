@@ -1,32 +1,49 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Services;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\SiteSettingResource;
-use App\Services\SiteSettingService;
-use Illuminate\Http\JsonResponse;
+use App\Http\Requests\UpdateSiteSettingRequest;
+use App\Models\SiteSetting;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 
-class SiteSettingController extends Controller
+class SiteSettingService
 {
-    public function __construct(
-        private readonly SiteSettingService $siteSettingService
-    ) {
+    public function getSettings(): SiteSetting
+    {
+        return SiteSetting::instance();
     }
 
-    /**
-     * Public API endpoint for Next.js frontend.
-     *
-     * GET /api/site-settings
-     */
-    public function index(): JsonResponse
+    public function updateSettings(UpdateSiteSettingRequest $request): SiteSetting
     {
-        $settings = $this->siteSettingService->getSettings();
+        $settings = SiteSetting::instance();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Site settings fetched successfully.',
-            'data' => new SiteSettingResource($settings),
-        ]);
+        $validated = $request->validated();
+
+        $fileFields = [
+            'logo' => 'logo_path',
+            'favicon' => 'favicon_path',
+            'facebook_icon' => 'facebook_icon_path',
+            'twitter_icon' => 'twitter_icon_path',
+            'instagram_icon' => 'instagram_icon_path',
+        ];
+
+        $data = Arr::except($validated, array_keys($fileFields));
+
+        foreach ($fileFields as $requestField => $databaseColumn) {
+            if ($request->hasFile($requestField)) {
+                if ($settings->$databaseColumn) {
+                    Storage::disk('public')->delete($settings->$databaseColumn);
+                }
+
+                $data[$databaseColumn] = $request
+                    ->file($requestField)
+                    ->store('site-settings', 'public');
+            }
+        }
+
+        $settings->update($data);
+
+        return $settings->fresh();
     }
 }
