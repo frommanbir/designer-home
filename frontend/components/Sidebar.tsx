@@ -9,12 +9,14 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  Info
 } from "lucide-react";
 
 const sidebarItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Settings", href: "/admin/settings", icon: Settings },
+  { name: "About Page", href: "/admin/about", icon: Info },
 ];
 
 interface SidebarProps {
