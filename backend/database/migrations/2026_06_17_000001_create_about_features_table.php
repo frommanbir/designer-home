@@ -1,4 +1,4 @@
-<?php
+git push origin feature/about-page-api<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
