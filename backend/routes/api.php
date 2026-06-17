@@ -13,6 +13,7 @@ Route::get('/user', function (Request $request) {
 Route::prefix('auth')->group(function () {
     Route::post('/login',    [AuthController::class, 'login'])
     ->middleware('throttle:login'); // Apply rate limiting to login route
+    Route::post('/register', [AuthController::class, 'register']);
 });
 
 // Protected routes (require Bearer token)
