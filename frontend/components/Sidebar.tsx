@@ -26,11 +26,22 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside
-      className={`${
-        sidebarOpen ? "w-64" : "w-20"
-      } transition-all duration-300 ease-in-out border-r border-neutral-200/50 bg-[var(--background)] text-[var(--foreground)] flex flex-col fixed inset-y-0 z-50`}
-    >
+    <>
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40 transition-opacity"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-[var(--background)] text-[var(--foreground)] border-r border-neutral-200/50 transition-all duration-300 ease-in-out ${
+          sidebarOpen 
+            ? "translate-x-0 w-64" 
+            : "-translate-x-full lg:translate-x-0 lg:w-20"
+        }`}
+      >
       <div className="h-16 flex items-center justify-between px-6 border-b border-neutral-200 dark:border-neutral-800">
         <div className={`flex items-center gap-3 ${!sidebarOpen && "justify-center w-full"}`}>
           <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center text-white font-bold">
@@ -67,15 +78,15 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
             <Link
               key={item.name}
               href={item.href}
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors group relative ${
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all group relative ${
                 isActive
-                  ? "bg-neutral-100 text-black"
+                  ? "bg-blue-600 text-white shadow-md"
                   : "text-neutral-600 hover:bg-neutral-100 hover:text-black"
               }`}
             >
               <item.icon
                 size={20}
-                className={isActive ? "text-black" : ""}
+                className={isActive ? "text-white" : "text-neutral-500"}
               />
               {sidebarOpen && <span>{item.name}</span>}
               {!sidebarOpen && (
@@ -100,5 +111,6 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
         </button>
       </div>
     </aside>
+    </>
   );
 }

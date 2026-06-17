@@ -150,10 +150,10 @@ export default function SiteSettingsPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500 pb-12">
+    <div className="space-y-8 animate-in fade-in duration-500">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-neutral-900">Site Settings</h1>
-        <p className="text-neutral-500 mt-1">Manage your website's global information, branding, and contact details.</p>
+        <h1 className="text-2xl font-bold text-neutral-900">Site Settings</h1>
+        <p className="text-neutral-500 text-sm mt-1">Manage your website's global information, branding, and contact details.</p>
       </div>
 
       {message && (
@@ -178,7 +178,7 @@ export default function SiteSettingsPage() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
                   isActive
-                    ? "bg-black text-white shadow-md"
+                    ? "bg-blue-600 text-white shadow-md"
                     : "text-neutral-600 hover:bg-neutral-100"
                 }`}
               >
@@ -280,7 +280,7 @@ export default function SiteSettingsPage() {
                         className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none placeholder:text-neutral-400"
                         placeholder="Write a brief description about your company, mission, and vision..."
                       />
-                      <p className="text-xs text-neutral-500 mt-2">This content will be displayed on the 'About Us' public page.</p>
+                      <p className="text-xs text-neutral-500 mt-2">This content will be displayed on the &apos;About Us&apos; public page.</p>
                     </div>
                   </div>
                 )}
@@ -474,7 +474,7 @@ export default function SiteSettingsPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-6 py-3 bg-black text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-neutral-800 transition-colors disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
+                  className="px-6 py-3 bg-blue-700 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-blue-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
                 >
                   {saving ? (
                     <><FaSpinner size={18} className="animate-spin" /> Saving Settings...</>
