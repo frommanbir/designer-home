@@ -70,7 +70,7 @@ class ServiceService
             'gallery_images',
         ]);
 
-        $data['slug'] = $this->uniqueSlug($validated['slug'] ?? $validated['title'], $service);
+        $data['slug'] = $this->slugFrom($validated['slug'] ?? $validated['title']);
 
         if (! $service) {
             $data['sort_order'] = $data['sort_order'] ?? 0;
@@ -109,24 +109,11 @@ class ServiceService
         return $data;
     }
 
-    private function uniqueSlug(string $value, ?Service $service = null): string
+    private function slugFrom(string $value): string
     {
         $slug = Str::slug($value);
-        $slug = $slug !== '' ? $slug : Str::random(8);
-        $baseSlug = $slug;
-        $counter = 1;
 
-        while (
-            Service::query()
-                ->where('slug', $slug)
-                ->when($service, fn ($query) => $query->where('id', '!=', $service->id))
-                ->exists()
-        ) {
-            $slug = "{$baseSlug}-{$counter}";
-            $counter++;
-        }
-
-        return $slug;
+        return $slug !== '' ? $slug : Str::random(8);
     }
 
     private function deleteServiceImages(Service $service): void

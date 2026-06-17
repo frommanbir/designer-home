@@ -17,16 +17,15 @@ class ServiceCategoryService
 
     public function createCategory(array $validated): ServiceCategory
     {
-        $validated['slug'] = $this->uniqueSlug($validated['slug'] ?? $validated['name']);
+        $validated['slug'] = $this->slugFrom($validated['slug'] ?? $validated['name']);
 
         return ServiceCategory::query()->create($validated);
     }
 
     public function updateCategory(ServiceCategory $serviceCategory, array $validated): ServiceCategory
     {
-        $validated['slug'] = $this->uniqueSlug(
+        $validated['slug'] = $this->slugFrom(
             $validated['slug'] ?? $validated['name'],
-            $serviceCategory
         );
 
         $serviceCategory->update($validated);
@@ -40,23 +39,10 @@ class ServiceCategoryService
         $serviceCategory->delete();
     }
 
-    private function uniqueSlug(string $value, ?ServiceCategory $serviceCategory = null): string
+    private function slugFrom(string $value): string
     {
         $slug = Str::slug($value);
-        $slug = $slug !== '' ? $slug : Str::random(8);
-        $baseSlug = $slug;
-        $counter = 1;
 
-        while (
-            ServiceCategory::query()
-                ->where('slug', $slug)
-                ->when($serviceCategory, fn ($query) => $query->where('id', '!=', $serviceCategory->id))
-                ->exists()
-        ) {
-            $slug = "{$baseSlug}-{$counter}";
-            $counter++;
-        }
-
-        return $slug;
+        return $slug !== '' ? $slug : Str::random(8);
     }
 }
