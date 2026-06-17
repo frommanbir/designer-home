@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { fetchApi } from "@/lib/api";
-import { FaSave, FaImage as ImageIcon, FaInfo, FaCheckCircle, FaStar, FaHandshake } from "react-icons/fa";
+import { FaSave, FaImage as ImageIcon, FaInfo, FaCheckCircle, FaStar, FaHandshake, FaListUl } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
+import AboutFeaturesManager from "@/components/admin/AboutFeaturesManager";
 
 export default function AboutPageSetup() {
   const [activeTab, setActiveTab] = useState("hero");
@@ -119,6 +120,7 @@ export default function AboutPageSetup() {
     { id: "welcome", label: "Welcome Section", icon: FaHandshake },
     { id: "main_about", label: "Main About", icon: FaInfo },
     { id: "why_choose", label: "Why Choose Us", icon: FaCheckCircle },
+    { id: "features", label: "Features", icon: FaListUl },
   ];
 
   if (loading) {
@@ -171,6 +173,9 @@ export default function AboutPageSetup() {
 
         {/* Form Content Area */}
         <div className="flex-1">
+          {activeTab === "features" ? (
+            <AboutFeaturesManager />
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
               <div className="p-6 md:p-8">
@@ -335,6 +340,7 @@ export default function AboutPageSetup() {
               </div>
             </div>
           </form>
+          )}
         </div>
       </div>
     </div>
