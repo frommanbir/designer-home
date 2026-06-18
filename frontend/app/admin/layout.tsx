@@ -34,21 +34,13 @@ export default function AdminLayout({
       >
         {/* Header */}
         <header className="h-16 border-b border-neutral-200/50 bg-[var(--background)]/80 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-4 lg:px-8">
-          <div className="flex items-center gap-4 flex-1 max-w-xl">
-            <button 
-              className="p-2 -ml-2 rounded-lg text-neutral-600 hover:bg-neutral-100 lg:hidden"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu size={24} />
-            </button>
-            <div className="relative w-full">
-              {/* <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={16} />
-               <input
-                 type="text"
-                 placeholder="Search anything..."
-                 className="w-full pl-10 pr-4 py-2 bg-neutral-100 border-none rounded-full text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-               /> */}
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center text-white font-bold shadow-sm">
+              D
             </div>
+            <span className="font-bold text-lg tracking-tight text-neutral-900 hidden sm:block">
+              Designer Home
+            </span>
           </div>
           
           <div className="flex items-center gap-4">
