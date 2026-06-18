@@ -13,6 +13,12 @@ class ContactInquiryRequest extends FormRequest
 
     public function rules(): array
     {
+        if ($this->isMethod('put')) {
+            return [
+                'status' => ['required', 'string', 'in:new,read,replied,closed'],
+            ];
+        }
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],

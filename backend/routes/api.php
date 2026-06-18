@@ -5,7 +5,6 @@ use App\Http\Controllers\Api\AboutPageController;
 use App\Http\Controllers\Api\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ContactInquiryController;
-use App\Http\Controllers\Api\ContactPageController;
 use App\Http\Controllers\Api\SiteSettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,9 +20,7 @@ Route::post('/admin/about-features', [AboutFeatureController::class, 'store']);
 Route::put('/admin/about-features/{aboutFeature}', [AboutFeatureController::class, 'update']);
 Route::delete('/admin/about-features/{aboutFeature}', [AboutFeatureController::class, 'destroy']);
 
-Route::get('/contact-page', [ContactPageController::class, 'index']);
 Route::post('/contact-inquiries', [ContactInquiryController::class, 'store']);
-Route::post('/admin/contact-page', [ContactPageController::class, 'update']);
 Route::get('/admin/contact-inquiries', [ContactInquiryController::class, 'index']);
 Route::get('/admin/contact-inquiries/{contactInquiry}', [ContactInquiryController::class, 'show']);
 Route::put('/admin/contact-inquiries/{contactInquiry}', [ContactInquiryController::class, 'update']);

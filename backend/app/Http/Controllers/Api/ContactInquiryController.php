@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactInquiryRequest;
-use App\Http\Requests\UpdateContactInquiryStatusRequest;
 use App\Http\Resources\ContactInquiryResource;
 use App\Models\ContactInquiry;
 use App\Services\ContactInquiryService;
@@ -50,7 +49,7 @@ class ContactInquiryController extends Controller
         ]);
     }
 
-    public function update(UpdateContactInquiryStatusRequest $request, ContactInquiry $contactInquiry): JsonResponse
+    public function update(ContactInquiryRequest $request, ContactInquiry $contactInquiry): JsonResponse
     {
         $contactInquiry = $this->contactInquiryService->updateStatus(
             $contactInquiry,
