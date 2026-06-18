@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\AboutPageController;
 use App\Http\Controllers\Api\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ContactInquiryController;
+use App\Http\Controllers\Api\ProjectCategoryController;
+use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SiteSettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +27,18 @@ Route::get('/admin/contact-inquiries', [ContactInquiryController::class, 'index'
 Route::get('/admin/contact-inquiries/{contactInquiry}', [ContactInquiryController::class, 'show']);
 Route::put('/admin/contact-inquiries/{contactInquiry}', [ContactInquiryController::class, 'update']);
 Route::delete('/admin/contact-inquiries/{contactInquiry}', [ContactInquiryController::class, 'destroy']);
+
+Route::get('/project-categories', [ProjectCategoryController::class, 'index']);
+Route::get('/projects', [ProjectController::class, 'index']);
+Route::get('/projects/{slug}', [ProjectController::class, 'show']);
+Route::get('/admin/project-categories', [ProjectCategoryController::class, 'index']);
+Route::post('/admin/project-categories', [ProjectCategoryController::class, 'store']);
+Route::put('/admin/project-categories/{projectCategory}', [ProjectCategoryController::class, 'update']);
+Route::delete('/admin/project-categories/{projectCategory}', [ProjectCategoryController::class, 'destroy']);
+Route::get('/admin/projects', [ProjectController::class, 'adminIndex']);
+Route::post('/admin/projects', [ProjectController::class, 'store']);
+Route::put('/admin/projects/{project}', [ProjectController::class, 'update']);
+Route::delete('/admin/projects/{project}', [ProjectController::class, 'destroy']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
