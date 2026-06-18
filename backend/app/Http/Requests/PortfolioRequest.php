@@ -45,6 +45,7 @@ class PortfolioRequest extends FormRequest
             'gallery_images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:20480'],
             'sort_order' => [$optionalOnUpdate, 'nullable', 'integer', 'min:0'],
             'is_active' => [$optionalOnUpdate, 'nullable', 'boolean'],
+            'is_featured' => [$optionalOnUpdate, 'nullable', 'boolean'],
         ];
     }
 }

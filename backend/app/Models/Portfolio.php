@@ -18,12 +18,14 @@ class Portfolio extends Model
         'gallery_images',
         'sort_order',
         'is_active',
+        'is_featured',
     ];
 
     protected $casts = [
         'gallery_images' => 'array',
         'sort_order' => 'integer',
         'is_active' => 'boolean',
+        'is_featured' => 'boolean',
     ];
 
     public function category(): BelongsTo

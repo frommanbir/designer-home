@@ -23,6 +23,7 @@ class PortfolioResource extends JsonResource
                 ->all(),
             'sort_order' => $this->sort_order,
             'is_active' => $this->is_active,
+            'is_featured' => $this->is_featured,
             'category' => $this->category ? new PortfolioCategoryResource($this->category) : null,
         ];
     }
