@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, UserCircle, Menu } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
+import { Toaster } from "sonner";
 
 export default function AdminLayout({
   children,
@@ -66,6 +67,7 @@ export default function AdminLayout({
         <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-full overflow-hidden">
           {children}
         </main>
+        <Toaster position="top-right" richColors closeButton />
       </div>
     </div>
   );

@@ -7,8 +7,8 @@ import {
   FaTrash,
   FaSpinner,
   FaImage as ImageIcon,
-  FaInfo,
 } from "react-icons/fa";
+import { toast } from "sonner";
 import {
   getAboutFeatures,
   createAboutFeature,
@@ -28,7 +28,6 @@ export default function AboutFeaturesManager() {
   const [features, setFeatures] = useState<AboutFeature[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -47,7 +46,7 @@ export default function AboutFeaturesManager() {
       const data = await getAboutFeatures();
       setFeatures([...data].sort((a, b) => a.sort_order - b.sort_order));
     } catch (error: any) {
-      setMessage({ type: "error", text: error.message || "Failed to load features." });
+      toast.error(error.message || "Failed to load features.");
     } finally {
       setLoading(false);
     }
@@ -97,12 +96,11 @@ export default function AboutFeaturesManager() {
     e.preventDefault();
 
     if (!form.title.trim()) {
-      setMessage({ type: "error", text: "Title is required." });
+      toast.error("Title is required.");
       return;
     }
 
     setSaving(true);
-    setMessage(null);
 
     const formData = new FormData();
     formData.append("title", form.title);
@@ -116,15 +114,15 @@ export default function AboutFeaturesManager() {
     try {
       if (editingId) {
         await updateAboutFeature(editingId, formData);
-        setMessage({ type: "success", text: "Feature updated successfully." });
+        toast.success("Feature updated successfully.");
       } else {
         await createAboutFeature(formData);
-        setMessage({ type: "success", text: "Feature created successfully." });
+        toast.success("Feature created successfully.");
       }
       setModalOpen(false);
       fetchFeatures();
     } catch (error: any) {
-      setMessage({ type: "error", text: error.message || "Failed to save feature." });
+      toast.error(error.message || "Failed to save feature.");
     } finally {
       setSaving(false);
     }
@@ -139,19 +137,20 @@ export default function AboutFeaturesManager() {
 
     try {
       await updateAboutFeature(feature.id, formData);
+      toast.success(`Feature ${feature.is_active ? "deactivated" : "activated"} successfully.`);
       fetchFeatures();
     } catch (error: any) {
-      setMessage({ type: "error", text: error.message || "Failed to update status." });
+      toast.error(error.message || "Failed to update status.");
     }
   }
 
   async function handleDelete(id: number) {
     try {
       await deleteAboutFeature(id);
-      setMessage({ type: "success", text: "Feature deleted successfully." });
+      toast.success("Feature deleted successfully.");
       setFeatures((prev) => prev.filter((f) => f.id !== id));
     } catch (error: any) {
-      setMessage({ type: "error", text: error.message || "Failed to delete feature." });
+      toast.error(error.message || "Failed to delete feature.");
     } finally {
       setDeletingId(null);
     }
@@ -174,19 +173,6 @@ export default function AboutFeaturesManager() {
           <FaPlus size={14} /> Add Feature
         </button>
       </div>
-
-      {message && (
-        <div
-          className={`p-4 rounded-xl flex items-center gap-3 border ${
-            message.type === "success"
-              ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-              : "bg-red-50 text-red-800 border-red-200"
-          }`}
-        >
-          <FaInfo size={18} />
-          <p className="font-medium text-sm">{message.text}</p>
-        </div>
-      )}
 
       {loading ? (
         <div className="flex h-48 items-center justify-center">

@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import { fetchApi } from "@/lib/api";
 import { FaSave, FaImage as ImageIcon, FaInfo, FaCheckCircle, FaStar, FaHandshake, FaListUl } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
+import { toast } from "sonner";
 import AboutFeaturesManager from "@/components/admin/AboutFeaturesManager";
 
 export default function AboutPageSetup() {
   const [activeTab, setActiveTab] = useState("hero");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   const [settings, setSettings] = useState({
     hero: { title: "" },
@@ -80,7 +80,6 @@ export default function AboutPageSetup() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setMessage(null);
 
     const formData = new FormData();
 
@@ -103,13 +102,13 @@ export default function AboutPageSetup() {
       });
 
       if (res.success) {
-        setMessage({ type: 'success', text: "About page updated successfully." });
+        toast.success("About page updated successfully.");
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        setMessage({ type: 'error', text: res.message || "Failed to update about page." });
+        toast.error(res.message || "Failed to update about page.");
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || "An unexpected error occurred." });
+      toast.error(error.message || "An unexpected error occurred.");
     } finally {
       setSaving(false);
     }
@@ -137,17 +136,6 @@ export default function AboutPageSetup() {
         <h1 className="text-2xl font-bold text-neutral-900">About Page Setup</h1>
         <p className="text-neutral-500 text-sm mt-1">Configure the content and imagery for the public About Us page.</p>
       </div>
-
-      {message && (
-        <div className={`p-4 rounded-xl flex items-center gap-3 ${
-          message.type === 'success' 
-            ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
-            : 'bg-red-50 text-red-800 border-red-200'
-        } border`}>
-          <FaInfo size={20} />
-          <p className="font-medium text-sm">{message.text}</p>
-        </div>
-      )}
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Vertical Tabs Sidebar */}

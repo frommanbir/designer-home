@@ -8,12 +8,12 @@ import {
 } from "react-icons/fa" ;
 import { FaSpinner } from "react-icons/fa";
 import { LuMail } from "react-icons/lu";
+import { toast } from "sonner";
 
 export default function SiteSettingsPage() {
   const [activeTab, setActiveTab] = useState("branding");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
   const [settings, setSettings] = useState({
     branding: { website_title: "", website_slogan: "", logo: "", favicon: "" },
@@ -94,7 +94,6 @@ export default function SiteSettingsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setMessage(null);
 
     const formData = new FormData();
     
@@ -122,13 +121,13 @@ export default function SiteSettingsPage() {
       });
 
       if (res.success) {
-        setMessage({ type: 'success', text: "Site settings updated successfully." });
+        toast.success("Site settings updated successfully.");
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        setMessage({ type: 'error', text: res.message || "Failed to update settings." });
+        toast.error(res.message || "Failed to update settings.");
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || "An unexpected error occurred." });
+      toast.error(error.message || "An unexpected error occurred.");
     } finally {
       setSaving(false);
     }
@@ -155,17 +154,6 @@ export default function SiteSettingsPage() {
         <h1 className="text-2xl font-bold text-neutral-900">Site Settings</h1>
         <p className="text-neutral-500 text-sm mt-1">Manage your website's global information, branding, and contact details.</p>
       </div>
-
-      {message && (
-        <div className={`p-4 rounded-xl flex items-center gap-3 ${
-          message.type === 'success' 
-            ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
-            : 'bg-red-50 text-red-800 border-red-200'
-        } border`}>
-          <FaInfo size={20} />
-          <p className="font-medium text-sm">{message.text}</p>
-        </div>
-      )}
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Vertical Tabs Sidebar */}
