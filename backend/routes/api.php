@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\AboutPageController;
 use App\Http\Controllers\Api\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ContactInquiryController;
+use App\Http\Controllers\Api\PortfolioCategoryController;
+use App\Http\Controllers\Api\PortfolioController;
 use App\Http\Controllers\Api\ProjectCategoryController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SiteSettingController;
@@ -39,6 +41,18 @@ Route::get('/admin/projects', [ProjectController::class, 'adminIndex']);
 Route::post('/admin/projects', [ProjectController::class, 'store']);
 Route::put('/admin/projects/{project}', [ProjectController::class, 'update']);
 Route::delete('/admin/projects/{project}', [ProjectController::class, 'destroy']);
+
+Route::get('/portfolio-categories', [PortfolioCategoryController::class, 'index']);
+Route::get('/portfolios', [PortfolioController::class, 'index']);
+Route::get('/portfolios/{slug}', [PortfolioController::class, 'show']);
+Route::get('/admin/portfolio-categories', [PortfolioCategoryController::class, 'index']);
+Route::post('/admin/portfolio-categories', [PortfolioCategoryController::class, 'store']);
+Route::put('/admin/portfolio-categories/{portfolioCategory}', [PortfolioCategoryController::class, 'update']);
+Route::delete('/admin/portfolio-categories/{portfolioCategory}', [PortfolioCategoryController::class, 'destroy']);
+Route::get('/admin/portfolios', [PortfolioController::class, 'adminIndex']);
+Route::post('/admin/portfolios', [PortfolioController::class, 'store']);
+Route::put('/admin/portfolios/{portfolio}', [PortfolioController::class, 'update']);
+Route::delete('/admin/portfolios/{portfolio}', [PortfolioController::class, 'destroy']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();
