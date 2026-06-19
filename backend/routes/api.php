@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Admin\SiteSettingController as AdminSiteSettingCont
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\ContactInquiryController;
+use App\Http\Controllers\Api\RatingController;
 use App\Http\Controllers\Api\SiteSettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/site-settings', [SiteSettingController::class, 'index']);
 
 Route::post('/admin/site-settings', [AdminSiteSettingController::class, 'update']);
+
+Route::get('/ratings', [RatingController::class, 'publicIndex']);
+Route::get('/admin/ratings', [RatingController::class, 'index']);
+Route::post('/admin/ratings', [RatingController::class, 'store']);
+Route::put('/admin/ratings/{rating}', [RatingController::class, 'update']);
+Route::delete('/admin/ratings/{rating}', [RatingController::class, 'destroy']);
 
 Route::get('/blogs', [BlogController::class, 'publicIndex']);
 Route::get('/blogs/{slug}', [BlogController::class, 'show']);
