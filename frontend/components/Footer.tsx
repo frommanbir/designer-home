@@ -1,6 +1,7 @@
 import React from "react";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
 import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -36,11 +37,11 @@ const Footer = () => {
             Quick Links
           </h3>
           <ul className="space-y-4 text-gray-400 font-medium">
-            <li><a href="/" className="hover:text-white transition-colors">Home</a></li>
-            <li><a href="/about" className="hover:text-white transition-colors">About Us</a></li>
-            <li><a href="/services" className="hover:text-white transition-colors">Services</a></li>
-            <li><a href="/portfolio" className="hover:text-white transition-colors">Portfolio</a></li>
-            <li><a href="/blog" className="hover:text-white transition-colors">Blog</a></li>
+            <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
+            <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
+            <li><Link href="/services" className="hover:text-white transition-colors">Services</Link></li>
+            <li><Link href="/portfolio" className="hover:text-white transition-colors">Portfolio</Link></li>
+            <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
           </ul>
         </div>
 

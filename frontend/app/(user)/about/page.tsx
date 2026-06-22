@@ -2,10 +2,42 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { getAboutPageData } from "@/lib/about-page";
+import Link from "next/link";
+
+const DEFAULT_FEATURES = [
+  {
+    title: "Quality Assurance",
+    description: "Quality is at the center of everything we do. We maintain careful attention to detail, select suitable materials, and provide professional supervision throughout every stage to ensure exceptional results and lasting value.",
+  },
+  {
+    title: "Cost Efficient Solutions",
+    description: "We believe great design should be both beautiful and practical. Through efficient planning, in-house production, and optimized execution, we provide cost-effective solutions without compromising on quality or craftsmanship.",
+  },
+  {
+    title: "Unlimited Custom Designs",
+    description: "Every client has a unique vision, and we are committed to bringing it to life. Our team offers unlimited design possibilities and customized concepts tailored to your style, space requirements, and functional needs.",
+  },
+  {
+    title: "Timely Delivery",
+    description: "Time matters in every project. With a structured workflow, professional coordination, and dedicated supervision, we ensure projects are completed and delivered within the agreed timeline while maintaining excellent quality standards.",
+  },
+  {
+    title: "Strong Team of Professionals",
+    description: "Our experienced team of designers, project managers, and production specialists work collaboratively to deliver creative ideas, technical expertise, and seamless execution at every stage of the project.",
+  },
+  {
+    title: "In-House Production Unit",
+    description: "Having our own production unit allows us to maintain better quality assurance, faster production cycles, and greater flexibility in customization. This integrated process helps us deliver consistent results and a smoother experience from concept to completion.",
+  },
+];
 
 const AboutPage = async () => {
   const data = await getAboutPageData();
   const { hero, welcome, main_about, why_choose_us } = data;
+
+  const features = why_choose_us.features && why_choose_us.features.length > 0 
+    ? why_choose_us.features 
+    : DEFAULT_FEATURES;
 
   return (
     <div className="bg-white font-sans overflow-x-hidden">
@@ -63,34 +95,30 @@ const AboutPage = async () => {
             </div>
             
             <div className="pt-4">
-              <button className="px-8 py-4 bg-[#222] text-white font-bold rounded-lg hover:bg-[#C59D5F] transition-all transform hover:-translate-y-1">
+              <Link href="/projects" className="px-8 py-4 bg-[#222] text-white font-bold rounded-lg hover:bg-[#C59D5F] transition-all transform hover:-translate-y-1 inline-block">
                 EXPLORE OUR PROJECTS
-              </button>
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="max-w-7xl mx-auto py-28 px-6">
-        <h2 className="text-4xl md:text-5xl font-black text-[#222] mb-16 text-center md:text-left tracking-tight uppercase">
-          {why_choose_us.title || "WHY "} 
-          <span className="text-[#C59D5F]">CHOOSE US</span>
+      <section className="max-w-7xl mx-auto py-32 px-6">
+        <h2 className="text-5xl font-black text-[#222] mb-20 tracking-tight uppercase">
+          {why_choose_us.title || "WHY CHOOSE US"}
         </h2>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {why_choose_us.features.map((item, idx) => (
+        <div className="grid md:grid-cols-2 gap-x-12 gap-y-16">
+          {features.map((item, idx) => (
             <div
-              key={item.id}
-              className="bg-[#FBFBFB] border border-gray-100 p-10 rounded-2xl hover:shadow-xl hover:bg-white transition-all duration-300 group"
+              key={idx}
+              className="bg-[#F5F5F5] p-12 rounded-lg space-y-6 transition-all duration-300 hover:shadow-md"
             >
-              <div className="text-4xl font-black text-[#C59D5F]/20 mb-6 group-hover:text-[#C59D5F]/40 transition-colors">
-                {String(idx + 1).padStart(2, '0')}
-              </div>
-              <h3 className="text-2xl font-bold text-[#222] mb-4 group-hover:text-[#C59D5F] transition-colors uppercase">
+              <h3 className="text-3xl font-bold text-[#222] tracking-tight">
                 {item.title}
               </h3>
-              <p className="text-[#666] leading-relaxed">
+              <p className="text-[#555] leading-relaxed text-lg font-light">
                 {item.description}
               </p>
             </div>
