@@ -25,3 +25,16 @@ export async function deleteContactInquiry(id: number) {
   });
   return res;
 }
+export async function submitContactInquiry(data: {
+  name: string;
+  phone?: string | null;
+  email: string;
+  subject?: string | null;
+  message: string;
+}): Promise<ContactInquiry> {
+  const res = await fetchApi("/contact-inquiries", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  return res.data as ContactInquiry;
+}

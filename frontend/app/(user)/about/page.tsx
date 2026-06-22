@@ -1,207 +1,104 @@
 import React from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { getAboutPageData } from "@/lib/about-page";
 
-const AboutPage = () => {
+const AboutPage = async () => {
+  const data = await getAboutPageData();
+  const { hero, welcome, main_about, why_choose_us } = data;
+
   return (
-    <div className="bg-white">
+    <div className="bg-white font-sans overflow-x-hidden">
+      <Navbar transparent={true} />
+      
       {/* Hero Section */}
-      <section className="relative h-[650px]">
+      <section className="relative h-[60vh] min-h-[400px] w-full">
+        <div className="absolute inset-0 bg-black/30 z-10"></div>
         <img
-          src="/images/about-banner.jpg"
-          alt="Designer Home"
+          src={hero.image_url || "/images/about-banner.jpg"}
+          alt="Designer Home Inspiration"
           className="w-full h-full object-cover"
         />
-
-        <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-transparent" />
-
-        {/* Navbar */}
-        <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-32 py-5">
-          <img
-            src="/images/logo.png"
-            alt="Logo"
-            className="h-20 w-auto"
-          />
-
-          <div className="flex items-center gap-8 text-white">
-            <a href="/">Home</a>
-            <a href="/about" className="font-semibold">
-              About
-            </a>
-            <a href="/services">Services</a>
-            <a href="/projects">Projects</a>
-            <a href="/portfolio">Portfolio</a>
-            <a href="/blog">Blog</a>
-
-            <button className="border border-white rounded-full px-6 py-2">
-              Contact
-            </button>
-          </div>
-        </div>
-
-        {/* Hero Title */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <h1 className="text-7xl font-bold text-white text-center">
-            ESTABLISHED IN 2016 A.D
-          </h1>
-        </div>
       </section>
 
       {/* Welcome Section */}
-      <section className="max-w-6xl mx-auto py-24 px-6 text-center">
-        <h2 className="text-6xl text-neutral-700">
-          Welcome To{" "}
-          <span className="font-bold">
-            Designer Home
+      <section className="max-w-4xl mx-auto py-20 px-6 text-center">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl text-[#333] mb-10 tracking-tight leading-tight">
+          <span className="font-light uppercase block text-2xl md:text-3xl mb-2 text-[#666]">
+            {welcome.subtitle || "Welcome TO"}
+          </span>
+          <span className="font-extrabold text-[#222]">
+            {welcome.title || "Designer Home"}
           </span>
         </h2>
 
-        <p className="mt-8 text-neutral-700 leading-8">
-          Established in 2016, we distill your ideas and tastes into designs
-          that perfectly suit your space. As pioneers in customized design,
-          we offer a wide array of services—from initial conceptualization
-          and 3D modeling to full execution and site supervision.
+        <p className="text-lg md:text-xl text-[#555] leading-relaxed max-w-3xl mx-auto font-normal">
+          {welcome.description}
         </p>
       </section>
 
-      {/* About Company */}
-      <section className="bg-gray-100 py-28">
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
-          <img
-            src="/images/about-company.jpg"
-            alt="Interior Design"
-            className="rounded-2xl w-full h-[520px] object-cover"
-          />
+      {/* Best Interior Design Company Section */}
+      <section className="bg-[#F9F9F9] py-24 px-6">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+          <div className="relative group">
+            <div className="absolute -inset-4 bg-[#C59D5F]/10 rounded-[2rem] transform group-hover:scale-105 transition-transform duration-500"></div>
+            <img
+              src={main_about.image_url || "/images/about-company.jpg"}
+              alt="Our Work"
+              className="relative rounded-[1.5rem] w-full h-[500px] object-cover shadow-2xl z-0"
+            />
+          </div>
 
-          <div>
-            <h2 className="text-6xl font-bold text-neutral-700 leading-tight">
-              Best Interior Design Company in Nepal
+          <div className="space-y-8">
+            <h2 className="text-4xl md:text-5xl font-black text-[#222] leading-[1.1] tracking-tight whitespace-pre-line">
+              {main_about.title || "Best Interior Design \nCompany in Nepal"}
             </h2>
 
-            <p className="mt-8 text-neutral-700 leading-8 text-justify">
-              Established in 2016 A.D., Designer Home Pvt. Ltd. is dedicated
-              to transforming ideas into inspiring spaces through innovative
-              interior design solutions.
-            </p>
-
-            <p className="mt-6 text-neutral-700 leading-8 text-justify">
-              Driven by creativity, experience, and a passion for excellence,
-              Designer Home has grown into a trusted name in Nepal’s interior
-              industry.
-            </p>
-
-            <p className="mt-6 text-neutral-700 leading-8 text-justify">
-              Designer Home is your one-stop solution—from design concept to
-              completion—shaping your dreams into reality.
-            </p>
+            <div className="space-y-6 text-[#444] text-lg leading-relaxed">
+              <p>{main_about.description_1}</p>
+              <p>{main_about.description_2}</p>
+              <p className="font-medium text-[#C59D5F] italic">
+                {main_about.description_3}
+              </p>
+            </div>
+            
+            <div className="pt-4">
+              <button className="px-8 py-4 bg-[#222] text-white font-bold rounded-lg hover:bg-[#C59D5F] transition-all transform hover:-translate-y-1">
+                EXPLORE OUR PROJECTS
+              </button>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Why Choose Us */}
+      {/* Why Choose Us Section */}
       <section className="max-w-7xl mx-auto py-28 px-6">
-        <h2 className="text-6xl font-bold text-neutral-700 mb-16">
-          WHY CHOOSE US
+        <h2 className="text-4xl md:text-5xl font-black text-[#222] mb-16 text-center md:text-left tracking-tight uppercase">
+          {why_choose_us.title || "WHY "} 
+          <span className="text-[#C59D5F]">CHOOSE US</span>
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {[
-            {
-              title: "Quality Assurance",
-              desc: "Quality is at the center of everything we do.",
-            },
-            {
-              title: "Cost Efficient Solutions",
-              desc: "Beautiful and practical design solutions.",
-            },
-            {
-              title: "Unlimited Custom Designs",
-              desc: "Tailored concepts for every client.",
-            },
-            {
-              title: "Timely Delivery",
-              desc: "Projects delivered within agreed timelines.",
-            },
-            {
-              title: "Strong Team of Professionals",
-              desc: "Experienced designers and project managers.",
-            },
-            {
-              title: "In-House Production Unit",
-              desc: "Better quality control and customization.",
-            },
-          ].map((item) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {why_choose_us.features.map((item, idx) => (
             <div
-              key={item.title}
-              className="bg-gray-100 p-8 rounded-lg"
+              key={item.id}
+              className="bg-[#FBFBFB] border border-gray-100 p-10 rounded-2xl hover:shadow-xl hover:bg-white transition-all duration-300 group"
             >
-              <h3 className="text-3xl mb-4">{item.title}</h3>
-              <p className="text-neutral-700 leading-7">
-                {item.desc}
+              <div className="text-4xl font-black text-[#C59D5F]/20 mb-6 group-hover:text-[#C59D5F]/40 transition-colors">
+                {String(idx + 1).padStart(2, '0')}
+              </div>
+              <h3 className="text-2xl font-bold text-[#222] mb-4 group-hover:text-[#C59D5F] transition-colors uppercase">
+                {item.title}
+              </h3>
+              <p className="text-[#666] leading-relaxed">
+                {item.description}
               </p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black/90 text-white py-20">
-        <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
-          <div>
-            <img
-              src="/images/logo-white.png"
-              alt="Logo"
-              className="h-20 mb-6"
-            />
-
-            <p className="text-white/80">
-              Lorem ipsum dolor sit amet consectetur.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-xl mb-4">
-              Quick Links
-            </h3>
-
-            <ul className="space-y-2">
-              <li>Home</li>
-              <li>About Us</li>
-              <li>Services</li>
-              <li>Portfolio</li>
-              <li>Blog</li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-xl mb-4">
-              Contact Details
-            </h3>
-
-            <p>Naxal, Kathmandu, Nepal 44600</p>
-            <p className="mt-2">
-              info@designerhomenepal.com
-            </p>
-            <p className="mt-2">
-              +977 9709080688, 9702910457
-            </p>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-xl mb-4">
-              Stay Connected
-            </h3>
-
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full border border-white bg-transparent p-3 rounded"
-            />
-
-            <button className="w-full bg-white text-neutral-700 py-3 rounded mt-4">
-              Submit
-            </button>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };
