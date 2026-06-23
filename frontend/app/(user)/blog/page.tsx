@@ -2,115 +2,119 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import { getBlogs } from "@/lib/blogs";
+import { Calendar, Clock, ArrowRight } from "lucide-react";
 
-const BlogPage = () => {
+export const dynamic = "force-dynamic";
+
+const BlogListPage = async () => {
+  const blogs = await getBlogs();
+
   return (
-    <div className="bg-white font-sans overflow-x-hidden">
-      <Navbar transparent={true} />
+    <div className="bg-white font-serif overflow-x-hidden min-h-screen">
+      <Navbar transparent={false} />
 
-      {/* Hero Section */}
-      <section className="relative h-[40vh] min-h-[300px] w-full flex items-center justify-center">
-        <div className="absolute inset-0 z-0 text-center">
-          <div className="absolute inset-0 bg-black/70 z-10"></div>
-          <img
-            src="/images/blog-banner.jpg" 
-            alt="Designer Home Blog"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="relative z-20 text-center px-6 mt-16 max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight uppercase shadow-sm">
-            Our <span className="text-[#C59D5F]">Journal</span>
+      {/* Hero Header */}
+      <section className="pt-40 pb-20 px-6 border-b border-neutral-100">
+        <div className="max-w-7xl mx-auto text-center">
+          <h4 className="text-[#C59D5F] font-bold tracking-[0.4em] uppercase text-[10px] mb-6">Insights & Aesthetics</h4>
+          <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase mb-8 text-neutral-900 leading-[0.85]">
+            The <span className="italic font-light">Journal</span>
           </h1>
-          <p className="text-xl text-gray-300 mt-6 font-light drop-shadow italic">
-            Insights, trends, and inspiration for modern interior design.
+          <p className="text-neutral-500 max-w-2xl mx-auto text-lg font-light leading-relaxed font-sans">
+            Curated narratives on spatial design, material mastery, and the art of professional living.
           </p>
         </div>
       </section>
 
-      {/* Featured Post */}
-      <section className="max-w-7xl mx-auto py-24 px-6">
-        <div className="relative group overflow-hidden rounded-[2rem] h-[500px] md:h-[600px] shadow-2xl flex items-end">
-           <img src="/images/blog-featured.jpg" alt="Featured Post" className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000" />
-           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-           <div className="relative z-10 p-8 md:p-20 max-w-3xl space-y-6">
-              <span className="bg-[#C59D5F] text-white px-6 py-2 rounded-full font-black text-xs tracking-widest uppercase">Featured Article</span>
-              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase leading-[0.9]">Designing for Small Spaces: <br/>Maximizing Every Inch</h2>
-              <p className="text-gray-300 text-lg font-light leading-relaxed">Discover how our expert designers use reflective surfaces, multifunctional furniture, and strategic lighting to make compact apartments feel grand.</p>
-              <Link href="/blog/small-spaces" className="inline-block text-[#C59D5F] font-black tracking-widest text-sm uppercase border-b-2 border-[#C59D5F] pb-2 hover:text-white hover:border-white transition-all">Read More Insights</Link>
-           </div>
+      {/* Featured/Latest Blog */}
+      {blogs.length > 0 && (
+        <section className="max-w-7xl mx-auto py-24 px-6">
+          <Link href={`/blog/${blogs[0].slug}`} className="group grid lg:grid-cols-2 gap-16 items-center">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-[2.5rem] bg-neutral-100">
+              <img 
+                src={blogs[0].image_url || "/images/placeholder.jpg"} 
+                alt={blogs[0].title}
+                className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
+              />
+              <div className="absolute top-8 left-8 px-5 py-2 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-[#C59D5F] shadow-sm">
+                Featured Insight
+              </div>
+            </div>
+            
+            <div className="space-y-8">
+              <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 font-sans">
+                <span className="flex items-center gap-1.5"><Calendar size={12} /> {new Date(blogs[0].published_date).toLocaleDateString()}</span>
+                <span className="flex items-center gap-1.5"><Clock size={12} /> 5 MIN READ</span>
+              </div>
+              
+              <h2 className="text-5xl font-black text-neutral-900 leading-tight group-hover:text-[#C59D5F] transition-colors">
+                {blogs[0].title}
+              </h2>
+              
+              <p className="text-neutral-500 text-xl font-light leading-relaxed font-sans">
+                {blogs[0].short_description}
+              </p>
+              
+              <div className="pt-4 inline-flex items-center gap-4 text-sm font-bold uppercase tracking-widest text-neutral-900 font-sans">
+                <span>Read Article</span>
+                <div className="w-12 h-[1px] bg-neutral-900 group-hover:w-20 transition-all"></div>
+              </div>
+            </div>
+          </Link>
+        </section>
+      )}
+
+      {/* Secondary Grid */}
+      <section className="bg-neutral-50 py-32 px-6">
+        <div className="max-w-7xl mx-auto space-y-24">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
+            {blogs.slice(1).map((blog) => (
+              <Link key={blog.id} href={`/blog/${blog.slug}`} className="group block space-y-8">
+                <div className="relative aspect-square overflow-hidden rounded-[2rem] bg-white shadow-sm border border-neutral-100">
+                  <img 
+                    src={blog.image_url || "/images/placeholder.jpg"} 
+                    alt={blog.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                </div>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest text-[#C59D5F] font-sans">
+                    <span>{new Date(blog.published_date).toLocaleDateString()}</span>
+                    <div className="w-1 h-1 bg-neutral-200 rounded-full"></div>
+                    <span>Design Insight</span>
+                  </div>
+                  
+                  <h3 className="text-2xl font-black text-neutral-900 leading-snug group-hover:text-[#C59D5F] transition-colors">
+                    {blog.title}
+                  </h3>
+                  
+                  <p className="text-neutral-500 text-sm font-light leading-relaxed font-sans line-clamp-3">
+                    {blog.short_description}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {blogs.length === 0 && (
+            <div className="py-40 text-center border-2 border-dashed border-neutral-200 rounded-[3rem]">
+              <h3 className="text-2xl font-light text-neutral-400 italic">Our editorial team is currently crafting new design stories.</h3>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Blog Categories & Feed */}
-      <section className="max-w-7xl mx-auto py-12 px-6">
-        <div className="flex flex-col lg:flex-row gap-20">
-           {/* Sidebar/Categories */}
-           <div className="lg:w-1/4 space-y-12">
-              <div>
-                <h3 className="text-xl font-black text-[#222] uppercase tracking-tight mb-8 border-l-4 border-[#C59D5F] pl-4">Categories</h3>
-                <ul className="space-y-4">
-                  {["Interior Trends", "Color Psychology", "Furniture Design", "Sustainable Living", "Case Studies", "DIY Tips"].map((cat) => (
-                    <li key={cat}>
-                       <a href="#" className="flex items-center justify-between text-gray-500 hover:text-[#C59D5F] font-bold text-sm tracking-wide transition-colors group">
-                          {cat.toUpperCase()}
-                          <span className="text-xs text-gray-300 group-hover:text-[#C59D5F] transition-colors">(12)</span>
-                       </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="bg-[#FBFBFB] p-8 rounded-2xl border border-gray-100">
-                <h3 className="text-xl font-black text-[#222] uppercase tracking-tight mb-6">Newsletter</h3>
-                <p className="text-gray-500 text-sm mb-6">Stay updated with our latest design trends and projects.</p>
-                <div className="space-y-4">
-                   <input type="email" placeholder="Your Email" className="w-full bg-white border border-gray-200 px-4 py-3 rounded-lg text-sm outline-none focus:border-[#C59D5F]" />
-                   <button className="w-full bg-[#222] text-white font-black text-xs tracking-[0.2em] uppercase py-4 rounded-lg hover:bg-[#C59D5F] transition-all">Subscribe Now</button>
-                </div>
-              </div>
-           </div>
-
-           {/* Grid Feed */}
-           <div className="lg:w-3/4 space-y-16">
-              <div className="grid md:grid-cols-2 gap-12">
-                 {[
-                   { title: "The Psychology of Color in Living Rooms", cat: "Color Psychology", date: "June 15, 2024", img: "/images/blog-1.jpg" },
-                   { title: "Eco-Friendly Materials for Modern Homes", cat: "Sustainable Living", date: "June 10, 2024", img: "/images/blog-2.jpg" },
-                   { title: "Revitalizing Traditional Nepali Architecture", cat: "Case Studies", date: "June 05, 2024", img: "/images/blog-3.jpg" },
-                   { title: "5 Lighting Trends to Watch in 2024", cat: "Interior Trends", date: "May 28, 2024", img: "/images/blog-4.jpg" },
-                 ].map((post, i) => (
-                   <article key={i} className="group space-y-6">
-                      <div className="h-72 overflow-hidden rounded-2xl relative">
-                         <img src={post.img} alt={post.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
-                         <div className="absolute top-6 left-6 bg-white/90 backdrop-blur px-4 py-1 rounded-sm text-[10px] font-black tracking-widest uppercase text-[#222]">{post.cat}</div>
-                      </div>
-                      <div className="space-y-3">
-                         <span className="text-gray-400 text-xs font-bold uppercase tracking-widest">{post.date}</span>
-                         <h3 className="text-2xl font-black text-[#222] group-hover:text-[#C59D5F] transition-colors leading-tight">{post.title}</h3>
-                         <p className="text-gray-500 font-light text-sm line-clamp-3 leading-relaxed">
-                            Explore how the choice of your wall colors can influence the overall mood and social dynamics of your primary gathering space...
-                         </p>
-                         <Link href="/blog/detail" className="inline-flex items-center text-xs font-black tracking-[0.2em] text-[#222] uppercase group-hover:text-[#C59D5F] transition-colors">
-                            Read More <span className="ml-2 text-lg">&rarr;</span>
-                         </Link>
-                      </div>
-                   </article>
-                 ))}
-              </div>
-
-              {/* Pagination */}
-              <div className="flex items-center justify-center gap-4 pt-10">
-                 {[1, 2, 3].map((num) => (
-                   <button key={num} className={`w-12 h-12 rounded-full border-2 font-black transition-all ${num === 1 ? 'border-[#C59D5F] bg-[#C59D5F] text-white shadow-lg' : 'border-gray-100 text-gray-400 hover:border-[#C59D5F] hover:text-[#C59D5F]'}`}>
-                      {num}
-                   </button>
-                 ))}
-                 <button className="w-12 h-12 rounded-full border-2 border-gray-100 flex items-center justify-center text-gray-400 hover:border-[#C59D5F] hover:text-[#C59D5F] transition-all">
-                    &rarr;
-                 </button>
-              </div>
-           </div>
+      {/* Newsletter simple */}
+      <section className="py-32 px-6 bg-white text-center">
+        <div className="max-w-2xl mx-auto space-y-8">
+          <h2 className="text-4xl font-black uppercase tracking-tighter text-neutral-900">Weekly <span className="text-[#C59D5F]">Aesthetic</span></h2>
+          <p className="text-neutral-500 font-light font-sans text-lg">Receive our curated design picks and professional insights directly in your inbox.</p>
+          <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto font-sans pt-4">
+            <input type="email" placeholder="Email Address" className="flex-1 px-6 py-4 bg-neutral-50 border border-neutral-200 rounded-xl focus:border-black outline-none transition-all placeholder:text-neutral-400" />
+            <button className="px-8 py-4 bg-black text-white font-bold uppercase tracking-widest text-xs rounded-xl hover:bg-[#C59D5F] transition-all">Subscribe</button>
+          </div>
         </div>
       </section>
 
@@ -119,4 +123,4 @@ const BlogPage = () => {
   );
 };
 
-export default BlogPage;
+export default BlogListPage;
