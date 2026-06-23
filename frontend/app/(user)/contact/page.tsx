@@ -131,6 +131,7 @@ const ContactPage = () => {
                     required
                     value={formData.name}
                     onChange={handleChange}
+                    maxLength={255}
                     placeholder="John Doe" 
                     className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors" 
                   />
@@ -143,6 +144,7 @@ const ContactPage = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
+                    maxLength={255}
                     placeholder="john@example.com" 
                     className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors" 
                   />
@@ -157,6 +159,7 @@ const ContactPage = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
+                    maxLength={50}
                     placeholder="+977 98XXXXXXX" 
                     className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors" 
                   />
@@ -168,6 +171,7 @@ const ContactPage = () => {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
+                    maxLength={255}
                     placeholder="Design Consultation" 
                     className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors" 
                   />

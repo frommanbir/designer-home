@@ -10,7 +10,8 @@ import {
   Info,
   MessageSquare,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Briefcase
 } from "lucide-react";
 
 const sidebarItems = [
@@ -18,6 +19,7 @@ const sidebarItems = [
   { name: "User Inquiries", href: "/admin/inquiries", icon: MessageSquare },
   { name: "Settings", href: "/admin/settings", icon: Settings },
   { name: "About Page", href: "/admin/about", icon: Info },
+  { name: "Portfolios", href: "/admin/portfolios", icon: Briefcase },
 ];
 
 interface SidebarProps {

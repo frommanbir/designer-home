@@ -91,10 +91,22 @@ export default function ContactInquiriesPage() {
             <CheckCircle2 size={12} /> Read
           </span>
         );
-      case "unread":
+      case "new":
         return (
           <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-            <Clock size={12} /> Unread
+            <Clock size={12} /> New
+          </span>
+        );
+      case "replied":
+        return (
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+            <Mail size={12} /> Replied
+          </span>
+        );
+      case "closed":
+        return (
+          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-neutral-100 text-neutral-600 border border-neutral-200">
+            <X size={12} /> Closed
           </span>
         );
       default:
@@ -185,7 +197,7 @@ export default function ContactInquiriesPage() {
                           onClick={() => {
                             setSelectedInquiry(item);
                             setIsModalOpen(true);
-                            if (item.status.toLowerCase() === "unread") {
+                            if (item.status.toLowerCase() === "new") {
                               handleUpdateStatus(item.id, "read");
                             }
                           }}
