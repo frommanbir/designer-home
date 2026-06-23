@@ -21,7 +21,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
   if (!blog) return notFound();
 
   return (
-    <div className="bg-white font-serif overflow-x-hidden min-h-screen">
+    <div className="bg-white overflow-x-hidden min-h-screen">
       <Navbar transparent={false} />
 
       {/* Header Info */}

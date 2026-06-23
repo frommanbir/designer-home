@@ -250,7 +250,7 @@ export default function BlogsAdminPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden max-h-[95vh] flex flex-col">
             <div className="px-8 py-6 border-b border-neutral-100 flex items-center justify-between bg-neutral-50/50">
-              <h2 className="text-xl font-bold font-serif">
+              <h2 className="text-xl font-bold">
                 {isEditing ? "Modify Masterpiece" : "Draft New Narrative"}
               </h2>
               <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-neutral-200 rounded-xl transition-all">
@@ -272,7 +272,7 @@ export default function BlogsAdminPage() {
                       const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
                       setCurrentBlog(prev => ({ ...prev, title, slug }));
                     }}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all font-serif text-lg"
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all text-lg"
                     placeholder="e.g. The Nuance of Natural Light"
                   />
                 </div>

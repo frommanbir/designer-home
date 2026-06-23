@@ -11,7 +11,7 @@ const BlogListPage = async () => {
   const blogs = await getBlogs();
 
   return (
-    <div className="bg-white font-serif overflow-x-hidden min-h-screen">
+    <div className="bg-white overflow-x-hidden min-h-screen">
       <Navbar transparent={false} />
 
       {/* Hero Header */}

@@ -8,8 +8,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-montserrat), var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), sans-serif;
+  --font-mono: monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,7 +22,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-montserrat), sans-serif;
+  font-family: var(--font-inter), sans-serif;
 }
 
 .admin-theme {
@@ -30,9 +30,9 @@ body {
   --foreground: #000000 !important;
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-poppins), sans-serif !important;
+  font-family: var(--font-inter), sans-serif !important;
 }
 
 .admin-theme * {
-  font-family: var(--font-poppins), sans-serif !important;
+  font-family: var(--font-inter), sans-serif !important;
 }
