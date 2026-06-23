@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\AboutFeatureController;
 use App\Http\Controllers\Api\AboutPageController;
 use App\Http\Controllers\Api\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ServiceCategoryController;
+use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\ContactInquiryController;
 use App\Http\Controllers\Api\RatingController;
@@ -38,6 +40,18 @@ Route::get('/admin/about-features', [AboutFeatureController::class, 'index']);
 Route::post('/admin/about-features', [AboutFeatureController::class, 'store']);
 Route::put('/admin/about-features/{aboutFeature}', [AboutFeatureController::class, 'update']);
 Route::delete('/admin/about-features/{aboutFeature}', [AboutFeatureController::class, 'destroy']);
+
+Route::get('/service-categories', [ServiceCategoryController::class, 'index']);
+Route::get('/services', [ServiceController::class, 'index']);
+Route::get('/services/{slug}', [ServiceController::class, 'show']);
+Route::get('/admin/service-categories', [ServiceCategoryController::class, 'index']);
+Route::post('/admin/service-categories', [ServiceCategoryController::class, 'store']);
+Route::put('/admin/service-categories/{serviceCategory}', [ServiceCategoryController::class, 'update']);
+Route::delete('/admin/service-categories/{serviceCategory}', [ServiceCategoryController::class, 'destroy']);
+Route::get('/admin/services', [ServiceController::class, 'adminIndex']);
+Route::post('/admin/services', [ServiceController::class, 'store']);
+Route::put('/admin/services/{service}', [ServiceController::class, 'update']);
+Route::delete('/admin/services/{service}', [ServiceController::class, 'destroy']);
 
 Route::post('/contact-inquiries', [ContactInquiryController::class, 'store']);
 Route::get('/admin/contact-inquiries', [ContactInquiryController::class, 'index']);
