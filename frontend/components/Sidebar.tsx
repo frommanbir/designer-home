@@ -20,6 +20,7 @@ const sidebarItems = [
   { name: "Settings", href: "/admin/settings", icon: Settings },
   { name: "About Page", href: "/admin/about", icon: Info },
   { name: "Portfolios", href: "/admin/portfolios", icon: Briefcase },
+  { name: "Projects", href: "/admin/projects", icon: Briefcase },
 ];
 
 interface SidebarProps {

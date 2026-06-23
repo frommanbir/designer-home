@@ -19,6 +19,16 @@ const Navbar = ({ transparent = true }: { transparent?: boolean }) => {
     return `${baseClasses} hover:text-[#C59D5F] ${transparent ? 'text-white/95' : 'text-gray-800'}`;
   };
 
+  const [categories, setCategories] = React.useState<any[]>([]);
+
+  React.useEffect(() => {
+    import("@/lib/project-categories").then(lib => {
+      lib.getProjectCategories().then(data => {
+        setCategories(data);
+      }).catch(() => {});
+    });
+  }, []);
+
   return (
     <nav className={`w-full z-50 transition-all duration-300 ${transparent ? 'absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent' : 'bg-white shadow-sm'}`}>
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-6 md:py-8">
@@ -47,11 +57,20 @@ const Navbar = ({ transparent = true }: { transparent?: boolean }) => {
             <button className={`flex items-center gap-1 transition-colors uppercase cursor-pointer outline-none ${pathname.startsWith('/projects') ? 'text-[#C59D5F]' : (transparent ? 'text-white/95 hover:text-[#C59D5F]' : 'text-gray-800 hover:text-[#C59D5F]')}`}>
               PROJECTS <ChevronDown size={14} />
             </button>
-            <div className="absolute top-full left-0 mt-4 w-48 bg-white shadow-xl rounded-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 text-gray-800">
-              <Link href="/projects/residential" className={`block px-4 py-3 text-xs font-semibold uppercase hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname === '/projects/residential' ? 'text-[#C59D5F]' : ''}`}>RESIDENTIAL</Link>
-              <Link href="/projects/commercial" className={`block px-4 py-3 text-xs font-semibold uppercase hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname === '/projects/commercial' ? 'text-[#C59D5F]' : ''}`}>COMMERCIAL</Link>
-              <Link href="/projects/hotel" className={`block px-4 py-3 text-xs font-semibold uppercase hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname === '/projects/hotel' ? 'text-[#C59D5F]' : ''}`}>HOTEL</Link>
-              <Link href="/projects/ongoing" className={`block px-4 py-3 text-xs font-semibold uppercase hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname === '/projects/ongoing' ? 'text-[#C59D5F]' : ''}`}>ONGOING</Link>
+            <div className="absolute top-full left-0 mt-4 w-56 bg-white shadow-xl rounded-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 text-gray-800 border border-neutral-100">
+              <Link href="/projects" className={`block px-4 py-3 text-xs font-bold uppercase border-b border-neutral-50 hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname === '/projects' ? 'text-[#C59D5F]' : ''}`}>Explore All</Link>
+              {categories.map((cat) => (
+                <Link 
+                  key={cat.id}
+                  href={`/projects?category=${cat.slug}`} 
+                  className={`block px-4 py-3 text-xs font-semibold uppercase hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname.includes(cat.slug) ? 'text-[#C59D5F]' : ''}`}
+                >
+                  {cat.name}
+                </Link>
+              ))}
+              {categories.length === 0 && (
+                 <div className="px-4 py-3 text-[10px] text-neutral-400 uppercase italic">Loading categories...</div>
+              )}
             </div>
           </div>
 
