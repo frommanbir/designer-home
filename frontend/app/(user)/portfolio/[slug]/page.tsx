@@ -3,7 +3,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { getPortfolioBySlug } from "@/lib/portfolios";
-import { ArrowLeft, Maximize2, Share2, Instagram } from "lucide-react";
+import { ArrowLeft, Maximize2, Share2 } from "lucide-react";
+import { FaInstagram } from "react-icons/fa";
 import { notFound } from "next/navigation";
 
 const PortfolioDetailPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
