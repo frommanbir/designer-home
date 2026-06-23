@@ -2,22 +2,27 @@ import { AboutFeature } from "./about-feature";
 
 export interface AboutPageData {
   hero: {
-    image_url: string;
+    title: string | null;
+    image: {
+      path: string | null;
+      url: string | null;
+    };
   };
   welcome: {
-    subtitle: string;
-    title: string;
-    description: string;
+    title: string | null;
+    description: string | null;
   };
   main_about: {
-    title: string;
-    description_1: string;
-    description_2: string;
-    description_3: string;
-    image_url: string;
+    title: string | null;
+    description: string | null;
+    image: {
+      path: string | null;
+      url: string | null;
+    };
   };
   why_choose_us: {
-    title: string;
+    title: string | null;
+    description: string | null;
     features: AboutFeature[];
   };
 }

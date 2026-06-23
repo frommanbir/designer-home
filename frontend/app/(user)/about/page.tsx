@@ -45,9 +45,15 @@ const AboutPage = async () => {
       
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[400px] w-full">
-        <div className="absolute inset-0 bg-black/30 z-10"></div>
+        <div className="absolute inset-0 bg-black/30 z-10 flex items-center justify-center">
+          {hero.title && (
+            <h1 className="text-white text-5xl md:text-7xl font-black uppercase tracking-widest text-center px-4">
+              {hero.title}
+            </h1>
+          )}
+        </div>
         <img
-          src={hero.image_url || "/images/about-banner.jpg"}
+          src={hero.image?.url || "/images/about-banner.jpg"}
           alt="Designer Home Inspiration"
           className="w-full h-full object-cover"
         />
@@ -56,15 +62,12 @@ const AboutPage = async () => {
       {/* Welcome Section */}
       <section className="max-w-4xl mx-auto py-20 px-6 text-center">
         <h2 className="text-4xl md:text-5xl lg:text-6xl text-[#333] mb-10 tracking-tight leading-tight">
-          <span className="font-light uppercase block text-2xl md:text-3xl mb-2 text-[#666]">
-            {welcome.subtitle || "Welcome TO"}
-          </span>
           <span className="font-extrabold text-[#222]">
             {welcome.title || "Designer Home"}
           </span>
         </h2>
 
-        <p className="text-lg md:text-xl text-[#555] leading-relaxed max-w-3xl mx-auto font-normal">
+        <p className="text-lg md:text-xl text-[#555] leading-relaxed max-w-3xl mx-auto font-normal whitespace-pre-line">
           {welcome.description}
         </p>
       </section>
@@ -75,7 +78,7 @@ const AboutPage = async () => {
           <div className="relative group">
             <div className="absolute -inset-4 bg-[#C59D5F]/10 rounded-[2rem] transform group-hover:scale-105 transition-transform duration-500"></div>
             <img
-              src={main_about.image_url || "/images/about-company.jpg"}
+              src={main_about.image?.url || "/images/about-company.jpg"}
               alt="Our Work"
               className="relative rounded-[1.5rem] w-full h-[500px] object-cover shadow-2xl z-0"
             />
@@ -86,12 +89,8 @@ const AboutPage = async () => {
               {main_about.title || "Best Interior Design \nCompany in Nepal"}
             </h2>
 
-            <div className="space-y-6 text-[#444] text-lg leading-relaxed">
-              <p>{main_about.description_1}</p>
-              <p>{main_about.description_2}</p>
-              <p className="font-medium text-[#C59D5F] italic">
-                {main_about.description_3}
-              </p>
+            <div className="space-y-6 text-[#444] text-lg leading-relaxed whitespace-pre-line">
+              <p>{main_about.description}</p>
             </div>
             
             <div className="pt-4">
@@ -105,9 +104,15 @@ const AboutPage = async () => {
 
       {/* Why Choose Us Section */}
       <section className="max-w-7xl mx-auto py-32 px-6">
-        <h2 className="text-5xl font-black text-[#222] mb-20 tracking-tight uppercase">
+        <h2 className="text-5xl font-black text-[#222] mb-6 tracking-tight uppercase">
           {why_choose_us.title || "WHY CHOOSE US"}
         </h2>
+        
+        {why_choose_us.description && (
+          <p className="text-xl text-[#666] mb-16 max-w-3xl leading-relaxed whitespace-pre-line">
+            {why_choose_us.description}
+          </p>
+        )}
 
         <div className="grid md:grid-cols-2 gap-x-12 gap-y-16">
           {features.map((item, idx) => (
