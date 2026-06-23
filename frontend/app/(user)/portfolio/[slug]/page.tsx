@@ -74,7 +74,7 @@ const PortfolioDetailPage = async ({ params }: { params: Promise<{ slug: string 
                 <Share2 size={20} className="group-hover:text-black" />
               </button>
               <button className="w-14 h-14 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#C59D5F] transition-all group">
-                <Instagram size={20} className="group-hover:text-black" />
+                <FaInstagram size={20} className="group-hover:text-black" />
               </button>
             </div>
           </div>
