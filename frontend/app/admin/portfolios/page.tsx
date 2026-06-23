@@ -14,7 +14,8 @@ import {
   XCircle,
   Loader2,
   ExternalLink,
-  Briefcase
+  Briefcase,
+  Tag
 } from "lucide-react";
 import { 
   getAdminPortfolios, 
@@ -26,6 +27,7 @@ import { getPortfolioCategories } from "@/lib/portfolio-categories";
 import { Portfolio } from "@/types/portfolio";
 import { PortfolioCategory } from "@/types/portfolio-category";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function PortfoliosPage() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
@@ -108,9 +110,21 @@ export default function PortfoliosPage() {
     
     try {
       const formData = new FormData();
-      Object.entries(currentPortfolio || {}).forEach(([key, value]) => {
+      
+      // Fields to include in the request
+      const allowedFields = [
+        "title", "slug", "short_description", "description", 
+        "sort_order", "is_active", "is_featured", "portfolio_category_id"
+      ];
+
+      allowedFields.forEach(field => {
+        const value = (currentPortfolio as any)[field];
         if (value !== null && value !== undefined) {
-          formData.append(key, value.toString());
+          if (typeof value === "boolean") {
+            formData.append(field, value ? "1" : "0");
+          } else {
+            formData.append(field, value.toString());
+          }
         }
       });
 
@@ -154,13 +168,22 @@ export default function PortfoliosPage() {
           <p className="text-sm text-neutral-500 mt-1">Manage your portfolio items, categories, and showcase items.</p>
         </div>
         
-        <button 
-          onClick={() => handleOpenModal()}
-          className="flex items-center gap-2 px-4 py-2.5 bg-black text-white rounded-xl hover:bg-neutral-800 transition-all font-semibold shadow-sm"
-        >
-          <Plus size={18} />
-          Add Portfolio
-        </button>
+        <div className="flex items-center gap-3">
+          <Link 
+            href="/admin/portfolios/categories"
+            className="flex items-center gap-2 px-4 py-2.5 bg-neutral-100 text-neutral-900 rounded-xl hover:bg-neutral-200 transition-all font-semibold border border-neutral-200"
+          >
+            <Tag size={18} />
+            Categories
+          </Link>
+          <button 
+            onClick={() => handleOpenModal()}
+            className="flex items-center gap-2 px-4 py-2.5 bg-black text-white rounded-xl hover:bg-neutral-800 transition-all font-semibold shadow-sm"
+          >
+            <Plus size={18} />
+            Add Portfolio
+          </button>
+        </div>
       </div>
 
       {/* Filters */}

@@ -51,8 +51,8 @@ export default function AboutPageSetup() {
         }));
 
         setPreviews({
-          hero_image: res.data.hero?.image || "",
-          main_image: res.data.main_about?.image || ""
+          hero_image: res.data.hero?.image?.url || "",
+          main_image: res.data.main_about?.image?.url || ""
         });
       }
     } catch (error: any) {
