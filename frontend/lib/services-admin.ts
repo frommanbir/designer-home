@@ -1,5 +1,5 @@
 import { fetchApi } from "@/lib/api";
-import { ServiceCategory } from "@/lib/service-categories";
+import type { ServiceCategory } from "@/lib/service-categories";
 
 export interface ServiceImage {
   url: string;

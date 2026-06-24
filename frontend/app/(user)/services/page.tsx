@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-import { getServices } from "@/lib/services";
+import { getService } from "@/lib/services";
 import { getServiceCategories } from "@/lib/service-categories";
 import { Service } from "@/types/service";
 

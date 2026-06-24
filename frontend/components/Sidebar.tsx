@@ -12,7 +12,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Briefcase,
-  FileText
+  FileText,
+  Wrench,
 } from "lucide-react";
 
 const sidebarItems = [
@@ -22,6 +23,7 @@ const sidebarItems = [
   { name: "About Page", href: "/admin/about", icon: Info },
   { name: "Portfolios", href: "/admin/portfolios", icon: Briefcase },
   { name: "Projects", href: "/admin/projects", icon: Briefcase },
+  { name: "Services", href: "/admin/services", icon: Wrench },
   { name: "Blogs", href: "/admin/blogs", icon: FileText },
 ];
 
@@ -37,7 +39,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
     <>
       {/* Mobile Overlay */}
       {sidebarOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black/50 z-40 transition-opacity"
           onClick={() => setSidebarOpen(false)}
         />
@@ -45,8 +47,8 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
 
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-[var(--background)] text-[var(--foreground)] border-r border-neutral-200/50 transition-all duration-300 ease-in-out ${
-          sidebarOpen 
-            ? "translate-x-0 w-64" 
+          sidebarOpen
+            ? "translate-x-0 w-64"
             : "-translate-x-full lg:translate-x-0 lg:w-20"
         }`}
       >
@@ -62,10 +64,15 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
             )}
           </button>
         </div>
-        
+
         <nav className="flex-1 overflow-y-auto p-4 space-y-2 text-sm font-medium mt-2">
           {sidebarItems.map((item) => {
-            const isActive = pathname === item.href;
+            // Active if exact match, or if pathname starts with href (for nested pages like /admin/services/*)
+            const isActive =
+              item.href === "/admin"
+                ? pathname === "/admin"
+                : pathname.startsWith(item.href);
+
             return (
               <Link
                 key={item.name}
