@@ -27,6 +27,9 @@ export default function LoginPage() {
       localStorage.setItem("auth_token", data.access_token);
       localStorage.setItem("user", JSON.stringify(data.user));
 
+      // Also store in a cookie so Next.js middleware can protect /admin routes
+      document.cookie = `auth_token=${data.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Strict`;
+
       router.push("/admin");
     } catch (err: any) {
       setError(err.message || "Invalid credentials");

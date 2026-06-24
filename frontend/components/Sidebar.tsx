@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Settings,
@@ -14,6 +14,7 @@ import {
   Briefcase,
   FileText
 } from "lucide-react";
+import { fetchApi } from "@/lib/api";
 
 const sidebarItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -32,6 +33,22 @@ interface SidebarProps {
 
 export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await fetchApi("/auth/logout", { method: "POST" });
+    } catch {
+      // Even if the server call fails, clear local state
+    } finally {
+      // Clear localStorage
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("user");
+      // Expire the auth cookie so middleware redirects correctly
+      document.cookie = "auth_token=; path=/; max-age=0; SameSite=Strict";
+      router.push("/login");
+    }
+  };
 
   return (
     <>
@@ -92,7 +109,10 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
         </nav>
 
         <div className="p-4 border-t border-neutral-200">
-          <button className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors group relative">
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors group relative"
+          >
             <LogOut size={20} />
             {sidebarOpen && <span>Logout</span>}
             {!sidebarOpen && (
