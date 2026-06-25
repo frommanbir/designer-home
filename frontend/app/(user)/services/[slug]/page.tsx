@@ -22,10 +22,9 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
 
   return (
     <div className="bg-white font-sans overflow-x-hidden min-h-screen">
-      <Navbar transparent={true} />
 
       {/* Hero Section */}
-      <section className="relative h-[70vh] min-h-[500px] w-full flex items-center justify-center">
+      <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 z-10"></div>
           <img
@@ -174,38 +173,6 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
           </div>
         </section>
       )}
-
-      {/* CTA Section */}
-      <section className="max-w-7xl mx-auto py-32 px-6">
-        <div className="bg-[#222] rounded-[3rem] p-12 md:p-24 overflow-hidden relative group">
-           <div className="absolute right-0 top-0 w-1/2 h-full opacity-20 pointer-events-none group-hover:opacity-40 transition-opacity">
-              <img 
-                src={service.hero_image?.url || "/images/placeholder.jpg"} 
-                alt="Background" 
-                className="w-full h-full object-cover" 
-              />
-           </div>
-           <div className="relative z-10 max-w-2xl">
-              <h4 className="text-[#C59D5F] font-bold tracking-widest uppercase text-sm mb-6">Experience Excellence</h4>
-              <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase mb-10 leading-[0.9]">
-                Transform Your Space <br/>With Us
-              </h2>
-              <p className="text-gray-400 text-lg mb-12 font-light">
-                Join hundreds of satisfied clients across Nepal who have entrusted their dream spaces to Designer Home.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-6">
-                 <Link href="/contact" className="px-10 py-5 bg-[#C59D5F] text-white font-black tracking-widest uppercase rounded-xl hover:bg-white hover:text-[#222] transition-all transform hover:-translate-y-1 text-center">
-                    Book a Consultation
-                 </Link>
-                 <Link href="/portfolio" className="px-10 py-5 bg-transparent border-2 border-white/20 text-white font-black tracking-widest uppercase rounded-xl hover:border-white hover:bg-white/5 transition-all text-center">
-                    View Portfolio
-                 </Link>
-              </div>
-           </div>
-        </div>
-      </section>
-
-      <Footer />
     </div>
   );
 };

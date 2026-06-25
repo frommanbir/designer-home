@@ -12,17 +12,17 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { 
-  getAdminProjectCategories, 
-  createProjectCategory, 
-  updateProjectCategory, 
-  deleteProjectCategory 
-} from "@/lib/project-categories";
-import { ProjectCategory } from "@/types/project-category";
+  getServiceCategories, 
+  createServiceCategory, 
+  updateServiceCategory, 
+  deleteServiceCategory 
+} from "@/lib/service-categories";
+import { ServiceCategory } from "@/types/service-category";
 import { toast } from "sonner";
 import Link from "next/link";
 
-export default function ProjectCategoriesPage() {
-  const [categories, setCategories] = useState<ProjectCategory[]>([]);
+export default function ServiceCategoriesPage() {
+  const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   
@@ -30,15 +30,10 @@ export default function ProjectCategoriesPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState<Partial<ProjectCategory>>({
+  const [currentCategory, setCurrentCategory] = useState<{ id?: number, name: string, slug: string }>({
     name: "",
-    slug: "",
-    hero_title: "",
-    subtitle: "",
-    description: ""
+    slug: ""
   });
-  const [heroImageFile, setHeroImageFile] = useState<File | null>(null);
-  const [heroImagePreview, setHeroImagePreview] = useState<string>("");
 
   useEffect(() => {
     fetchCategories();
@@ -47,7 +42,7 @@ export default function ProjectCategoriesPage() {
   async function fetchCategories() {
     try {
       setLoading(true);
-      const data = await getAdminProjectCategories();
+      const data = await getServiceCategories();
       setCategories(data);
     } catch (error: any) {
       toast.error(error.message || "Failed to fetch categories");
@@ -57,10 +52,10 @@ export default function ProjectCategoriesPage() {
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure? This will affect all projects in this category.")) return;
+    if (!confirm("Are you sure? This will affect all services in this category.")) return;
     
     try {
-      await deleteProjectCategory(id);
+      await deleteServiceCategory(id);
       setCategories(prev => prev.filter(c => c.id !== id));
       toast.success("Category deleted successfully");
     } catch (error: any) {
@@ -68,23 +63,14 @@ export default function ProjectCategoriesPage() {
     }
   };
 
-  const handleOpenModal = (category?: ProjectCategory) => {
+  const handleOpenModal = (category?: ServiceCategory) => {
     if (category) {
       setIsEditing(true);
       setCurrentCategory(category);
-      setHeroImagePreview(category.hero_image?.url || "");
     } else {
       setIsEditing(false);
-      setCurrentCategory({ 
-        name: "", 
-        slug: "",
-        hero_title: "",
-        subtitle: "",
-        description: ""
-      });
-      setHeroImagePreview("");
+      setCurrentCategory({ name: "", slug: "" });
     }
-    setHeroImageFile(null);
     setIsModalOpen(true);
   };
 
@@ -93,22 +79,11 @@ export default function ProjectCategoriesPage() {
     setSubmitting(true);
     
     try {
-      const formData = new FormData();
-      formData.append("name", currentCategory.name || "");
-      formData.append("slug", currentCategory.slug || "");
-      formData.append("hero_title", currentCategory.hero_title || "");
-      formData.append("subtitle", currentCategory.subtitle || "");
-      formData.append("description", currentCategory.description || "");
-      
-      if (heroImageFile) {
-        formData.append("hero_image", heroImageFile);
-      }
-
       if (isEditing && currentCategory.id) {
-        await updateProjectCategory(currentCategory.id, formData);
+        await updateServiceCategory(currentCategory.id, currentCategory);
         toast.success("Category updated successfully");
       } else {
-        await createProjectCategory(formData);
+        await createServiceCategory(currentCategory);
         toast.success("Category created successfully");
       }
       setIsModalOpen(false);
@@ -130,14 +105,14 @@ export default function ProjectCategoriesPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link 
-            href="/admin/projects" 
+            href="/admin/services" 
             className="p-2 hover:bg-neutral-100 rounded-xl transition-all text-neutral-500"
           >
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold">Project Categories</h1>
-            <p className="text-sm text-neutral-500 mt-1">Organize your specialized projects into categories.</p>
+            <h1 className="text-2xl font-bold">Service Categories</h1>
+            <p className="text-sm text-neutral-500 mt-1">Organize your specialized interior services into categories.</p>
           </div>
         </div>
         
@@ -175,7 +150,7 @@ export default function ProjectCategoriesPage() {
               <Tag size={28} />
             </div>
             <h3 className="font-bold">No categories found</h3>
-            <p className="text-sm text-neutral-500 mt-1">Start by adding a category for your projects.</p>
+            <p className="text-sm text-neutral-500 mt-1">Start by adding a category for your interior services.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -224,8 +199,8 @@ export default function ProjectCategoriesPage() {
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
-            <div className="px-8 py-6 border-b border-neutral-100 flex items-center justify-between flex-shrink-0">
+          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+            <div className="px-8 py-6 border-b border-neutral-100 flex items-center justify-between">
               <h2 className="text-xl font-bold">
                 {isEditing ? "Edit Category" : "New Category"}
               </h2>
@@ -237,20 +212,20 @@ export default function ProjectCategoriesPage() {
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="p-8 space-y-6 overflow-y-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+              <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Name *</label>
                   <input 
                     required
                     type="text"
-                    value={currentCategory.name || ""}
+                    value={currentCategory.name}
                     onChange={(e) => {
                       const name = e.target.value;
                       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
                       setCurrentCategory(prev => ({ ...prev, name, slug }));
                     }}
-                    placeholder="e.g. Residential Projects"
+                    placeholder="e.g. Living Room Design"
                     className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all"
                   />
                 </div>
@@ -260,76 +235,14 @@ export default function ProjectCategoriesPage() {
                   <input 
                     required
                     type="text"
-                    value={currentCategory.slug || ""}
+                    value={currentCategory.slug}
                     onChange={(e) => setCurrentCategory(prev => ({ ...prev, slug: e.target.value }))}
                     className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all font-mono text-xs"
                   />
                 </div>
               </div>
 
-              <div className="space-y-6 pt-4 border-t border-neutral-100">
-                <h3 className="font-bold text-neutral-400 uppercase text-[10px] tracking-widest">Page Configuration</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Hero Title</label>
-                    <input 
-                      type="text"
-                      value={currentCategory.hero_title || ""}
-                      onChange={(e) => setCurrentCategory(prev => ({ ...prev, hero_title: e.target.value }))}
-                      placeholder="e.g. Turning Houses Into Dream Homes"
-                      className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Hero Image</label>
-                    <div className="flex items-center gap-4">
-                      {heroImagePreview && (
-                        <div className="w-12 h-12 rounded-lg bg-neutral-100 overflow-hidden border border-neutral-200 flex-shrink-0">
-                          <img src={heroImagePreview} className="w-full h-full object-cover" />
-                        </div>
-                      )}
-                      <input 
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            setHeroImageFile(file);
-                            setHeroImagePreview(URL.createObjectURL(file));
-                          }
-                        }}
-                        className="text-xs file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-neutral-100 file:text-neutral-700 hover:file:bg-neutral-200 transition-all cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Section Subtitle</label>
-                  <input 
-                    type="text"
-                    value={currentCategory.subtitle || ""}
-                    onChange={(e) => setCurrentCategory(prev => ({ ...prev, subtitle: e.target.value }))}
-                    placeholder="e.g. Designing Homes That Reflect Your Lifestyle"
-                    className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Section Description</label>
-                  <textarea 
-                    rows={4}
-                    value={currentCategory.description || ""}
-                    onChange={(e) => setCurrentCategory(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Describe this category of projects..."
-                    className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all resize-none"
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-4 pt-4 flex-shrink-0">
+              <div className="flex gap-4 pt-4">
                 <button 
                   type="button"
                   onClick={() => setIsModalOpen(false)}

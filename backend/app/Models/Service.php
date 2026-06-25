@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use App\Traits\HasSlug;
+
 class Service extends Model
 {
+    use HasSlug;
     protected $fillable = [
         'service_category_id',
         'title',

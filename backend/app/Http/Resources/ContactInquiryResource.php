@@ -10,13 +10,15 @@ class ContactInquiryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'phone' => $this->phone,
-            'email' => $this->email,
+            'id'      => $this->id,
+            'name'    => $this->name,
+            'phone'   => $this->phone,
+            'email'   => $this->email,
             'subject' => $this->subject,
             'message' => $this->message,
-            'status' => $this->status,
+            'status'  => $this->status,
+            'created_at' => $this->created_at?->toISOString(),
+            'updated_at' => $this->updated_at?->toISOString(),
         ];
     }
 }

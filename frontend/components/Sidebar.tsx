@@ -12,19 +12,24 @@ import {
   ChevronLeft,
   ChevronRight,
   Briefcase,
-  FileText
+  FileText,
+  Star,
+  Wrench
 } from "lucide-react";
 import { fetchApi } from "@/lib/api";
 
 const sidebarItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "User Inquiries", href: "/admin/inquiries", icon: MessageSquare },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
-  { name: "About Page", href: "/admin/about", icon: Info },
+  { name: "Services", href: "/admin/services", icon: Wrench },
   { name: "Portfolios", href: "/admin/portfolios", icon: Briefcase },
   { name: "Projects", href: "/admin/projects", icon: Briefcase },
   { name: "Blogs", href: "/admin/blogs", icon: FileText },
+  { name: "Ratings", href: "/admin/ratings", icon: Star },
+  { name: "User Inquiries", href: "/admin/inquiries", icon: MessageSquare },
+  { name: "About Page", href: "/admin/about", icon: Info },
+  { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
+
 
 interface SidebarProps {
   sidebarOpen: boolean;

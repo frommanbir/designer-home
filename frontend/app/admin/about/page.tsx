@@ -118,8 +118,7 @@ export default function AboutPageSetup() {
     { id: "hero", label: "Hero Banner", icon: FaStar },
     { id: "welcome", label: "Welcome Section", icon: FaHandshake },
     { id: "main_about", label: "Main About", icon: FaInfo },
-    { id: "why_choose", label: "Why Choose Us", icon: FaCheckCircle },
-    { id: "features", label: "Features", icon: FaListUl },
+    { id: "why_choose", label: "Why Choose Us", icon: FaListUl },
   ];
 
   if (loading) {
@@ -160,174 +159,189 @@ export default function AboutPageSetup() {
         </div>
 
         {/* Form Content Area */}
-        <div className="flex-1">
-          {activeTab === "features" ? (
-            <AboutFeaturesManager />
-          ) : (
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
-              <div className="p-6 md:p-8">
-                
-                {activeTab === "hero" && (
-                  <div className="space-y-6 animate-in zoom-in-95 duration-300">
-                    <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">Hero Banner</h2>
-                    
-                    <div className="space-y-4">
-                      <label className="block text-sm font-semibold text-neutral-900">Hero Image</label>
-                      <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
-                        {previews.hero_image ? (
-                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={previews.hero_image} alt="Hero" className="h-32 object-cover rounded-xl mb-4 shadow-sm" />
-                        ) : (
-                          <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
-                            <ImageIcon size={24} />
-                          </div>
-                        )}
-                        <label className="cursor-pointer bg-white border border-neutral-200 px-4 py-2 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 shadow-sm transition-all">
-                          Choose Image
-                          <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'hero_image')} />
-                        </label>
-                        <p className="text-xs text-neutral-400 mt-3 text-center">Max size: 2MB. 1920x1080px recommended.</p>
+        <div className="flex-1 space-y-8">
+          {(activeTab !== "why_choose") ? (
+            <form onSubmit={handleSubmit} className="space-y-8">
+              <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
+                <div className="p-6 md:p-8">
+                  {activeTab === "hero" && (
+                    <div className="space-y-6 animate-in zoom-in-95 duration-300">
+                      <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">Hero Banner</h2>
+                      
+                      <div className="space-y-4">
+                        <label className="block text-sm font-semibold text-neutral-900">Hero Image</label>
+                        <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
+                          {previews.hero_image ? (
+                             // eslint-disable-next-line @next/next/no-img-element
+                            <img src={previews.hero_image} alt="Hero" className="h-32 object-cover rounded-xl mb-4 shadow-sm" />
+                          ) : (
+                            <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
+                              <ImageIcon size={24} />
+                            </div>
+                          )}
+                          <label className="cursor-pointer bg-white border border-neutral-200 px-4 py-2 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 shadow-sm transition-all">
+                            Choose Image
+                            <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'hero_image')} />
+                          </label>
+                          <p className="text-xs text-neutral-400 mt-3 text-center">Max size: 2MB. 1920x1080px recommended.</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-neutral-900">Hero Title</label>
+                        <input
+                          type="text"
+                          value={settings.hero.title}
+                          onChange={(e) => handleInputChange("hero", "title", e.target.value)}
+                          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
+                          placeholder="e.g. Revolutionizing the way you shop"
+                          maxLength={255}
+                        />
                       </div>
                     </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-neutral-900">Hero Title</label>
-                      <input
-                        type="text"
-                        value={settings.hero.title}
-                        onChange={(e) => handleInputChange("hero", "title", e.target.value)}
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
-                        placeholder="e.g. Revolutionizing the way you shop"
-                        maxLength={255}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "welcome" && (
-                  <div className="space-y-6 animate-in zoom-in-95 duration-300">
-                    <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">Welcome Section</h2>
-                    
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-neutral-900">Welcome Title</label>
-                      <input
-                        type="text"
-                        value={settings.welcome.title}
-                        onChange={(e) => handleInputChange("welcome", "title", e.target.value)}
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
-                        placeholder="e.g. Welcome to ShopEase"
-                        maxLength={255}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-neutral-900">Welcome Description</label>
-                      <textarea
-                        value={settings.welcome.description}
-                        onChange={(e) => handleInputChange("welcome", "description", e.target.value)}
-                        rows={6}
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none placeholder:text-neutral-400"
-                        placeholder="Write a welcoming message for your visitors..."
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "main_about" && (
-                  <div className="space-y-6 animate-in zoom-in-95 duration-300">
-                    <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">Main About Content</h2>
-                    
-                    <div className="space-y-4">
-                      <label className="block text-sm font-semibold text-neutral-900">Main Content Image</label>
-                      <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
-                        {previews.main_image ? (
-                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={previews.main_image} alt="Main About" className="h-32 object-cover rounded-xl mb-4 shadow-sm" />
-                        ) : (
-                          <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
-                            <ImageIcon size={24} />
-                          </div>
-                        )}
-                        <label className="cursor-pointer bg-white border border-neutral-200 px-4 py-2 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 shadow-sm transition-all">
-                          Choose Image
-                          <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'main_image')} />
-                        </label>
-                        <p className="text-xs text-neutral-400 mt-3 text-center">Max size: 2MB. Square or 4:3 aspect ratio recommended.</p>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-neutral-900">Main Title</label>
-                      <input
-                        type="text"
-                        value={settings.main_about.title}
-                        onChange={(e) => handleInputChange("main_about", "title", e.target.value)}
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
-                        placeholder="e.g. Our Story"
-                        maxLength={255}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-neutral-900">Main Description</label>
-                      <textarea
-                        value={settings.main_about.description}
-                        onChange={(e) => handleInputChange("main_about", "description", e.target.value)}
-                        rows={8}
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none placeholder:text-neutral-400"
-                        placeholder="Provide deep details about your company history and operations..."
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "why_choose" && (
-                  <div className="space-y-6 animate-in zoom-in-95 duration-300">
-                    <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">Why Choose Us</h2>
-                    
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-neutral-900">Section Title</label>
-                      <input
-                        type="text"
-                        value={settings.why_choose_us.title}
-                        onChange={(e) => handleInputChange("why_choose_us", "title", e.target.value)}
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
-                        placeholder="e.g. Why Choose Us?"
-                        maxLength={255}
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-semibold text-neutral-900">Section Description</label>
-                      <textarea
-                        value={settings.why_choose_us.description}
-                        onChange={(e) => handleInputChange("why_choose_us", "description", e.target.value)}
-                        rows={6}
-                        className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none placeholder:text-neutral-400"
-                        placeholder="List your unique selling points or advantages..."
-                      />
-                    </div>
-                  </div>
-                )}
-
-              </div>
-              
-              <div className="p-6 md:px-8 border-t border-neutral-100 bg-neutral-50 flex items-center justify-end">
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="px-6 py-3 bg-blue-700 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-blue-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
-                >
-                  {saving ? (
-                    <><FaSpinner size={18} className="animate-spin" /> Saving Changes...</>
-                  ) : (
-                    <><FaSave size={18} /> Save All Changes</>
                   )}
-                </button>
+
+                  {activeTab === "welcome" && (
+                    <div className="space-y-6 animate-in zoom-in-95 duration-300">
+                      <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">Welcome Section</h2>
+                      
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-neutral-900">Welcome Title</label>
+                        <input
+                          type="text"
+                          value={settings.welcome.title}
+                          onChange={(e) => handleInputChange("welcome", "title", e.target.value)}
+                          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
+                          placeholder="e.g. Welcome to ShopEase"
+                          maxLength={255}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-neutral-900">Welcome Description</label>
+                        <textarea
+                          value={settings.welcome.description}
+                          onChange={(e) => handleInputChange("welcome", "description", e.target.value)}
+                          rows={6}
+                          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none placeholder:text-neutral-400"
+                          placeholder="Write a welcoming message for your visitors..."
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === "main_about" && (
+                    <div className="space-y-6 animate-in zoom-in-95 duration-300">
+                      <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">Main About Content</h2>
+                      
+                      <div className="space-y-4">
+                        <label className="block text-sm font-semibold text-neutral-900">Main Content Image</label>
+                        <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
+                          {previews.main_image ? (
+                             // eslint-disable-next-line @next/next/no-img-element
+                            <img src={previews.main_image} alt="Main About" className="h-32 object-cover rounded-xl mb-4 shadow-sm" />
+                          ) : (
+                            <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
+                              <ImageIcon size={24} />
+                            </div>
+                          )}
+                          <label className="cursor-pointer bg-white border border-neutral-200 px-4 py-2 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 shadow-sm transition-all">
+                            Choose Image
+                            <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'main_image')} />
+                          </label>
+                          <p className="text-xs text-neutral-400 mt-3 text-center">Max size: 2MB. Square or 4:3 aspect ratio recommended.</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-neutral-900">Main Title</label>
+                        <input
+                          type="text"
+                          value={settings.main_about.title}
+                          onChange={(e) => handleInputChange("main_about", "title", e.target.value)}
+                          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
+                          placeholder="e.g. Our Story"
+                          maxLength={255}
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-neutral-900">Main Description</label>
+                        <textarea
+                          value={settings.main_about.description}
+                          onChange={(e) => handleInputChange("main_about", "description", e.target.value)}
+                          rows={8}
+                          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none placeholder:text-neutral-400"
+                          placeholder="Provide deep details about your company history and operations..."
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                <div className="p-6 md:px-8 border-t border-neutral-100 bg-neutral-50 flex items-center justify-end">
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="px-6 py-3 bg-blue-700 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-blue-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
+                  >
+                    {saving ? (
+                      <><FaSpinner size={18} className="animate-spin" /> Saving Changes...</>
+                    ) : (
+                      <><FaSave size={18} /> Save Changes</>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </form>
+          ) : (
+            <div className="space-y-8 animate-in zoom-in-95 duration-300">
+              {/* <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
+                <div className="p-6 md:p-8 space-y-6">
+                  <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">Why Choose Us Section Settings</h2>
+                  
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-neutral-900">Section Title</label>
+                    <input
+                      type="text"
+                      value={settings.why_choose_us.title}
+                      onChange={(e) => handleInputChange("why_choose_us", "title", e.target.value)}
+                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
+                      placeholder="e.g. Why Choose Us?"
+                      maxLength={255}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="block text-sm font-semibold text-neutral-900">Section Description</label>
+                    <textarea
+                      value={settings.why_choose_us.description}
+                      onChange={(e) => handleInputChange("why_choose_us", "description", e.target.value)}
+                      rows={4}
+                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none placeholder:text-neutral-400"
+                      placeholder="List your unique selling points or advantages..."
+                    />
+                  </div>
+                </div>
+                <div className="p-6 md:px-8 border-t border-neutral-100 bg-neutral-50 flex items-center justify-end">
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="px-6 py-3 bg-blue-700 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-blue-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
+                  >
+                    {saving ? (
+                      <><FaSpinner size={18} className="animate-spin" /> Saving...</>
+                    ) : (
+                      <><FaSave size={18} /> Save Section Settings</>
+                    )}
+                  </button>
+                </div>
+              </form> */}
+
+              <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden p-6 md:p-8">
+                <AboutFeaturesManager />
               </div>
             </div>
-          </form>
           )}
         </div>
       </div>

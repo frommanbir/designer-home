@@ -41,10 +41,11 @@ class ProjectRequest extends FormRequest
             'subtitle' => [$optionalOnUpdate, 'nullable', 'string', 'max:255'],
             'short_description' => [$optionalOnUpdate, 'nullable', 'string'],
             'description' => [$optionalOnUpdate, 'nullable', 'string'],
-            'thumbnail_image' => [$optionalOnUpdate, 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480'],
-            'hero_image' => [$optionalOnUpdate, 'nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:20480'],
+            'thumbnail_image' => [$optionalOnUpdate, 'nullable', 'file', 'mimes:jpg,jpeg,png,webp,svg', 'max:20480'],
+            'hero_image' => [$optionalOnUpdate, 'nullable', 'file', 'mimes:jpg,jpeg,png,webp,svg', 'max:20480'],
             'gallery_images' => [$optionalOnUpdate, 'nullable', 'array'],
-            'gallery_images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:20480'],
+            'gallery_images.*' => ['file', 'mimes:jpg,jpeg,png,webp,svg', 'max:20480'],
+
             'sort_order' => [$optionalOnUpdate, 'nullable', 'integer', 'min:0'],
             'is_active' => [$optionalOnUpdate, 'nullable', 'boolean'],
         ];

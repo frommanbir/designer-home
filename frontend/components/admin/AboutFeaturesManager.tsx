@@ -107,9 +107,6 @@ export default function AboutFeaturesManager() {
     formData.append("description", form.description);
     formData.append("sort_order", String(form.sort_order));
     formData.append("is_active", form.is_active ? "1" : "0");
-    if (iconFile) {
-      formData.append("icon", iconFile);
-    }
 
     try {
       if (editingId) {
@@ -191,48 +188,17 @@ export default function AboutFeaturesManager() {
           <table className="w-full text-left">
             <thead className="text-xs text-neutral-500 uppercase border-b border-neutral-100">
               <tr>
-                <th className="py-3 px-4">Icon</th>
                 <th className="py-3 px-4">Title</th>
-                <th className="py-3 px-4">Description</th>
-                <th className="py-3 px-4 text-center">Order</th>
-                <th className="py-3 px-4 text-center">Status</th>
+                <th className="py-3 px-4">Paragraph</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="text-sm text-neutral-600">
               {features.map((feature) => (
                 <tr key={feature.id} className="border-b border-neutral-50 last:border-0">
-                  <td className="py-3 px-4">
-                    {feature.icon?.url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={feature.icon.url}
-                        alt={feature.title}
-                        className="w-10 h-10 object-cover rounded-lg border border-neutral-200"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-400">
-                        <ImageIcon size={16} />
-                      </div>
-                    )}
-                  </td>
                   <td className="py-3 px-4 font-semibold text-neutral-900">{feature.title}</td>
-                  <td className="py-3 px-4 max-w-xs truncate text-neutral-500">
+                  <td className="py-3 px-4 max-w-md truncate text-neutral-500">
                     {feature.description || "—"}
-                  </td>
-                  <td className="py-3 px-4 text-center">{feature.sort_order}</td>
-                  <td className="py-3 px-4 text-center">
-                    <button
-                      type="button"
-                      onClick={() => handleToggleActive(feature)}
-                      className={`px-2.5 py-1 rounded-full text-xs font-semibold transition-colors ${
-                        feature.is_active
-                          ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
-                          : "bg-neutral-100 text-neutral-500 hover:bg-neutral-200"
-                      }`}
-                    >
-                      {feature.is_active ? "Active" : "Inactive"}
-                    </button>
                   </td>
                   <td className="py-3 px-4">
                     <div className="flex items-center justify-end gap-2">
@@ -290,28 +256,6 @@ export default function AboutFeaturesManager() {
                 </h3>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-neutral-900">Icon</label>
-                  <div className="flex items-center gap-4 p-4 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
-                    {iconPreview ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={iconPreview}
-                        alt="Icon preview"
-                        className="w-14 h-14 object-cover rounded-xl shadow-sm"
-                      />
-                    ) : (
-                      <div className="w-14 h-14 bg-neutral-100 rounded-xl flex items-center justify-center text-neutral-400">
-                        <ImageIcon size={20} />
-                      </div>
-                    )}
-                    <label className="cursor-pointer bg-white border border-neutral-200 px-4 py-2 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 shadow-sm transition-all">
-                      Choose Image
-                      <input type="file" className="hidden" accept="image/*" onChange={handleIconChange} />
-                    </label>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
                   <label className="block text-sm font-semibold text-neutral-900">Title</label>
                   <input
                     type="text"
@@ -325,41 +269,14 @@ export default function AboutFeaturesManager() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-semibold text-neutral-900">Description</label>
+                  <label className="block text-sm font-semibold text-neutral-900">Paragraph</label>
                   <textarea
                     value={form.description}
                     onChange={(e) => handleFormChange("description", e.target.value)}
-                    rows={4}
+                    rows={6}
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none placeholder:text-neutral-400"
-                    placeholder="Briefly describe this feature..."
+                    placeholder="Write the feature details here..."
                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-neutral-900">Sort Order</label>
-                    <input
-                      type="number"
-                      min={0}
-                      value={form.sort_order}
-                      onChange={(e) => handleFormChange("sort_order", Math.max(0, Number(e.target.value)))}
-                      className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-sm font-semibold text-neutral-900">Status</label>
-                    <button
-                      type="button"
-                      onClick={() => handleFormChange("is_active", !form.is_active)}
-                      className={`w-full px-4 py-3 rounded-xl text-sm font-medium border transition-colors ${
-                        form.is_active
-                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                          : "bg-neutral-100 text-neutral-500 border-neutral-200"
-                      }`}
-                    >
-                      {form.is_active ? "Active" : "Inactive"}
-                    </button>
-                  </div>
                 </div>
               </div>
 

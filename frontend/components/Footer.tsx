@@ -3,90 +3,96 @@ import { Phone, Mail, MapPin, Send } from "lucide-react";
 import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
 import Link from "next/link";
 
-const Footer = () => {
+const Footer = ({ settings }: { settings?: any }) => {
+  const siteName = settings?.branding?.website_name || "DESIGNER HOME";
+  const logoUrl = settings?.branding?.logo_url;
+  
+  const contact = settings?.contact_info || {};
+  const socials = settings?.social_links || {};
+
   return (
-    <footer className="bg-[#111] text-white pt-24 pb-12">
+    <footer className="bg-black/90 text-white pt-24 pb-12 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-4 gap-16">
-        <div className="space-y-6">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#C59D5F] flex items-center justify-center rounded-sm">
-              <span className="text-white font-bold text-2xl">D</span>
-            </div>
-            <span className="text-white font-bold text-xl tracking-wider">DESIGNER HOME</span>
+        <div className="space-y-8">
+          <div className="flex items-center gap-4">
+            {logoUrl ? (
+              <img src={logoUrl} alt={siteName} className="h-12 w-auto object-contain" />
+            ) : (
+              <div className="w-12 h-12 bg-[#C59D5F] flex items-center justify-center rounded-sm">
+                <span className="text-white font-bold text-3xl italic">H</span>
+              </div>
+            )}
+            <span className="text-white font-bold text-xl tracking-wider uppercase font-inter">{siteName}</span>
           </div>
-          <p className="text-gray-400 leading-relaxed text-sm">
-            Designer Home Pvt. Ltd. is dedicated to transforming ideas into 
-            inspiring spaces through innovative interior design solutions. 
-            One-stop solution for all your interior needs.
+          <p className="text-white/60 leading-relaxed text-sm max-w-xs font-inter">
+            {settings?.branding?.website_slogan || "Building beautiful and functional spaces that reflect your unique vision and lifestyle since 2016."}
           </p>
           <div className="flex gap-4">
-            <a href="#" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-[#C59D5F] transition-colors">
-              <FaFacebook size={18} />
-            </a>
-            <a href="#" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-[#C59D5F] transition-colors">
-              <FaInstagram size={18} />
-            </a>
-            <a href="#" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-[#C59D5F] transition-colors">
-              <FaLinkedin size={18} />
-            </a>
+             {[
+               { icon: FaFacebook, link: socials.facebook },
+               { icon: FaInstagram, link: socials.instagram },
+               { icon: FaLinkedin, link: socials.linkedin }
+             ].map((soc, i) => soc.link && (
+               <a key={i} href={soc.link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all">
+                 <soc.icon size={18} />
+               </a>
+             ))}
           </div>
         </div>
 
         <div>
-          <h3 className="font-bold text-lg mb-8 uppercase tracking-widest text-[#C59D5F]">
-            Quick Links
-          </h3>
-          <ul className="space-y-4 text-gray-400 font-medium">
-            <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
-            <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
-            <li><Link href="/services" className="hover:text-white transition-colors">Services</Link></li>
-            <li><Link href="/portfolio" className="hover:text-white transition-colors">Portfolio</Link></li>
-            <li><Link href="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+          <h3 className="font-bold text-xl mb-8 font-inter">Quick Links</h3>
+          <ul className="space-y-4 text-white/70 font-medium text-lg font-inter">
+            <li><Link href="/" className="hover:text-[#C59D5F] transition-colors">Home</Link></li>
+            <li><Link href="/about" className="hover:text-[#C59D5F] transition-colors">About Us</Link></li>
+            <li><Link href="/services" className="hover:text-[#C59D5F] transition-colors">Services</Link></li>
+            <li><Link href="/portfolio" className="hover:text-[#C59D5F] transition-colors">Portfolio</Link></li>
+            <li><Link href="/blog" className="hover:text-[#C59D5F] transition-colors">Blog</Link></li>
           </ul>
         </div>
 
         <div>
-          <h3 className="font-bold text-lg mb-8 uppercase tracking-widest text-[#C59D5F]">
-            Contact Details
-          </h3>
-          <ul className="space-y-6">
-            <li className="flex items-start gap-4">
-              <MapPin className="text-[#C59D5F] shrink-0" size={20} />
-              <span className="text-gray-400 text-sm">Naxal, Kathmandu, Nepal 44600</span>
-            </li>
-            <li className="flex items-center gap-4">
-              <Mail className="text-[#C59D5F] shrink-0" size={20} />
-              <span className="text-gray-400 text-sm">info@designerhomenepal.com</span>
-            </li>
-            <li className="flex items-center gap-4">
-              <Phone className="text-[#C59D5F] shrink-0" size={20} />
-              <span className="text-gray-400 text-sm">+977 9702910457</span>
-            </li>
-          </ul>
+          <h3 className="font-bold text-xl mb-8 font-inter">Contact Details</h3>
+          <div className="space-y-6 text-white/80 font-normal font-inter">
+            <p className="flex flex-col gap-2">
+               <span className="font-bold text-[#C59D5F] text-xs uppercase tracking-widest">Office</span>
+               {contact.address || "Naxal, Kathmandu, Nepal 44600"}
+            </p>
+            <p className="flex flex-col gap-2">
+               <span className="font-bold text-[#C59D5F] text-xs uppercase tracking-widest">Email</span>
+               {contact.email || "info@designerhomenepal.com"}
+            </p>
+            <p className="flex flex-col gap-2">
+               <span className="font-bold text-[#C59D5F] text-xs uppercase tracking-widest">Phome</span>
+               {contact.phone || "+977 9709080688, 9702910457"}
+            </p>
+          </div>
         </div>
 
         <div>
-          <h3 className="font-bold text-lg mb-8 uppercase tracking-widest text-[#C59D5F]">
-            Stay Connected
-          </h3>
-          <p className="text-gray-400 text-sm mb-6">
-            Subscribe to get latest updates and offers.
+          <h3 className="font-bold text-xl mb-8 font-inter">Stay Connected</h3>
+          <p className="text-white/60 text-sm mb-8 font-inter leading-relaxed">
+            Subscribe to our newsletter for the latest design trends and updates.
           </p>
-          <div className="relative">
+          <div className="space-y-4">
             <input
               type="email"
-              placeholder="Your Email"
-              className="w-full bg-white/5 border border-white/10 p-4 rounded-lg focus:outline-none focus:border-[#C59D5F] transition-colors text-sm"
+              placeholder="Enter your email"
+              className="w-full bg-transparent border border-white/20 p-4 rounded-sm focus:outline-none focus:border-white transition-colors text-white text-sm"
             />
-            <button className="absolute right-2 top-2 bottom-2 bg-[#C59D5F] text-white px-4 rounded-md hover:bg-[#b08b53] transition-colors">
-              <Send size={18} />
+            <button className="w-full bg-white text-neutral-800 font-bold py-4 rounded-sm hover:bg-[#C59D5F] hover:text-white transition-all uppercase tracking-widest text-sm">
+              Submit
             </button>
           </div>
         </div>
       </div>
       
-      <div className="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/5 text-center text-gray-500 text-sm">
-        <p>© {new Date().getFullYear()} Designer Home Pvt. Ltd. All rights reserved.</p>
+      <div className="max-w-7xl mx-auto px-6 mt-20 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-white/50 text-sm font-inter">
+        <p>© {new Date().getFullYear()} Designer Home. All rights reserved.</p>
+        <div className="flex gap-8 uppercase tracking-tighter text-xs font-bold">
+           <span>Privacy Policy</span>
+           <span>Terms of Service</span>
+        </div>
       </div>
     </footer>
   );

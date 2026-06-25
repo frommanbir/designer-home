@@ -73,27 +73,8 @@ class ProjectService
     private function prepareData(array $validated, array $files = [], ?Project $project = null): array
     {
         $data = Arr::except($validated, [
-            'thumbnail_image',
-            'hero_image',
             'gallery_images',
         ]);
-
-        $fileFields = [
-            'thumbnail_image' => 'thumbnail_image_path',
-            'hero_image' => 'hero_image_path',
-        ];
-
-        foreach ($fileFields as $requestField => $databaseColumn) {
-            if (isset($files[$requestField])) {
-                $newPath = $files[$requestField]->store('projects', 'public');
-
-                if ($project?->$databaseColumn) {
-                    Storage::disk('public')->delete($project->$databaseColumn);
-                }
-
-                $data[$databaseColumn] = $newPath;
-            }
-        }
 
         if (isset($files['gallery_images'])) {
             $this->deleteImages($project?->gallery_images ?? []);
@@ -109,11 +90,6 @@ class ProjectService
 
     private function deleteProjectImages(Project $project): void
     {
-        $this->deleteImages([
-            $project->thumbnail_image_path,
-            $project->hero_image_path,
-        ]);
-
         $this->deleteImages($project->gallery_images ?? []);
     }
 

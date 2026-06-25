@@ -29,7 +29,10 @@ class ProjectCategoryController extends Controller
 
     public function store(ProjectCategoryRequest $request): JsonResponse
     {
-        $category = $this->projectCategoryService->createCategory($request->validated());
+        $category = $this->projectCategoryService->createCategory(
+            $request->validated(),
+            $request->allFiles()
+        );
 
         return response()->json([
             'success' => true,
@@ -42,7 +45,8 @@ class ProjectCategoryController extends Controller
     {
         $category = $this->projectCategoryService->updateCategory(
             $projectCategory,
-            $request->validated()
+            $request->validated(),
+            $request->allFiles()
         );
 
         return response()->json([

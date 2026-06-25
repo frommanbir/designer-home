@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AboutFeatureController;
 use App\Http\Controllers\Api\AboutPageController;
+use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ServiceCategoryController;
@@ -63,6 +64,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout',     [AuthController::class, 'logout']);
         Route::post('/logout-all', [AuthController::class, 'logoutAll']);
     });
+
+    // ── Admin: Dashboard ──────────────────────────────────
+    Route::get('/admin/dashboard', [DashboardController::class, 'index']);
 
     // ── Admin: Site Settings ──────────────────────────────
     Route::post('/admin/site-settings', [AdminSiteSettingController::class, 'update']);

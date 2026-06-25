@@ -1,11 +1,14 @@
+import { serverFetch } from "./server-api";
 import { fetchApi } from "./api";
 import { ServiceCategory } from "@/types/service-category";
 
+/** Public storefront — SSR safe */
 export async function getServiceCategories(): Promise<ServiceCategory[]> {
-  const res = await fetchApi("/service-categories");
-  return res.data;
+  const res = await serverFetch("/service-categories");
+  return res.data ?? [];
 }
 
+/** Admin — client-side auth needed */
 export async function createServiceCategory(data: { name: string; slug?: string | null }): Promise<ServiceCategory> {
   const res = await fetchApi("/admin/service-categories", {
     method: "POST",
@@ -23,7 +26,5 @@ export async function updateServiceCategory(id: number, data: { name: string; sl
 }
 
 export async function deleteServiceCategory(id: number): Promise<void> {
-  await fetchApi(`/admin/service-categories/${id}`, {
-    method: "DELETE",
-  });
+  await fetchApi(`/admin/service-categories/${id}`, { method: "DELETE" });
 }

@@ -42,12 +42,8 @@ export default function ProjectsPage() {
 
   // Form states
   const [formFiles, setFormFiles] = useState<{
-    thumbnail_image: File | null;
-    hero_image: File | null;
     gallery_images: File[];
   }>({
-    thumbnail_image: null,
-    hero_image: null,
     gallery_images: []
   });
 
@@ -103,7 +99,7 @@ export default function ProjectsPage() {
         project_category_id: null
       });
     }
-    setFormFiles({ thumbnail_image: null, hero_image: null, gallery_images: [] });
+    setFormFiles({ gallery_images: [] });
     setIsModalOpen(true);
   };
 
@@ -129,13 +125,6 @@ export default function ProjectsPage() {
           }
         }
       });
-
-      if (formFiles.thumbnail_image) {
-        formData.append("thumbnail_image", formFiles.thumbnail_image);
-      }
-      if (formFiles.hero_image) {
-        formData.append("hero_image", formFiles.hero_image);
-      }
 
       formFiles.gallery_images.forEach((file) => {
         formData.append("gallery_images[]", file);
@@ -251,8 +240,8 @@ export default function ProjectsPage() {
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-lg bg-neutral-100 overflow-hidden border border-neutral-200 flex-shrink-0">
-                          {item.thumbnail_image_url ? (
-                            <img src={item.thumbnail_image_url} alt={item.title} className="w-full h-full object-cover" />
+                          {item.gallery_image_urls?.[0] ? (
+                            <img src={item.gallery_image_urls[0]} alt={item.title} className="w-full h-full object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-neutral-400">
                               <ImageIcon size={20} />
@@ -368,49 +357,43 @@ export default function ProjectsPage() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Short Description</label>
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Description</label>
                 <textarea 
-                  rows={2}
-                  value={currentProject?.short_description || ""}
-                  onChange={(e) => setCurrentProject(prev => ({ ...prev, short_description: e.target.value }))}
+                  rows={4}
+                  value={currentProject?.description || ""}
+                  onChange={(e) => setCurrentProject(prev => ({ ...prev, description: e.target.value }))}
                   className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all resize-none"
+                  placeholder="Describe this specific project..."
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Thumbnail Image</label>
-                  <div className="flex items-center gap-4">
-                    {(formFiles.thumbnail_image || currentProject?.thumbnail_image_url) && (
-                      <div className="w-16 h-16 rounded-lg overflow-hidden border border-neutral-200">
-                        <img src={formFiles.thumbnail_image ? URL.createObjectURL(formFiles.thumbnail_image) : currentProject?.thumbnail_image_url || ""} className="w-full h-full object-cover" />
+              <div className="space-y-2 border-t border-neutral-100 pt-6">
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest mb-4 block">Project Gallery Images (Multiple)</label>
+                <div className="grid grid-cols-4 gap-4 mb-4">
+                  {currentProject?.gallery_image_urls?.map((url, idx) => (
+                    <div key={idx} className="aspect-square rounded-xl overflow-hidden border border-neutral-100">
+                      <img src={url} className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                  {formFiles.gallery_images.map((file, idx) => (
+                    <div key={idx} className="aspect-square rounded-xl overflow-hidden border border-emerald-200 bg-emerald-50 relative group">
+                      <img src={URL.createObjectURL(file)} className="w-full h-full object-cover opacity-60" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Loader2 className="animate-spin text-emerald-600" size={16} />
                       </div>
-                    )}
-                    <input 
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setFormFiles(prev => ({ ...prev, thumbnail_image: e.target.files?.[0] || null }))}
-                      className="flex-1 text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-neutral-100 file:text-neutral-700"
-                    />
-                  </div>
+                    </div>
+                  ))}
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Hero Image</label>
-                  <div className="flex items-center gap-4">
-                    {(formFiles.hero_image || currentProject?.hero_image_url) && (
-                      <div className="w-16 h-16 rounded-lg overflow-hidden border border-neutral-200">
-                        <img src={formFiles.hero_image ? URL.createObjectURL(formFiles.hero_image) : currentProject?.hero_image_url || ""} className="w-full h-full object-cover" />
-                      </div>
-                    )}
-                    <input 
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setFormFiles(prev => ({ ...prev, hero_image: e.target.files?.[0] || null }))}
-                      className="flex-1 text-sm file:mr-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-neutral-100 file:text-neutral-700"
-                    />
-                  </div>
-                </div>
+                <input 
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files || []);
+                    setFormFiles(prev => ({ ...prev, gallery_images: files }));
+                  }}
+                  className="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-neutral-100 file:text-neutral-700 hover:file:bg-neutral-200 cursor-pointer"
+                />
               </div>
 
               <div className="flex items-center gap-8 py-2">
