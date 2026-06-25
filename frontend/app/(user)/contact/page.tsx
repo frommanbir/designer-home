@@ -38,14 +38,14 @@ const ContactPage = () => {
 
   return (
     <div className="bg-white font-sans overflow-x-hidden">
-      <Navbar transparent={true} />
 
       {/* Hero Section */}
-      <section className="relative h-[45vh] min-h-[350px] w-full flex items-center justify-center">
+      {/* <section className="relative h-[45vh] min-h-[350px] w-full flex items-center justify-center"> */}
+      <section className="relative h-screen min-h-[400px] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/60 z-10"></div>
           <img
-            src="/images/contact-banner.jpg"
+            src="/images/trunky.png"
             alt="Contact Designer Home"
             className="w-full h-full object-cover"
           />
@@ -216,8 +216,6 @@ const ContactPage = () => {
             Interactive Map Integration
          </div>
       </section>
-
-      <Footer />
     </div>
   );
 };
