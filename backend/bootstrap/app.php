@@ -15,7 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        // Handle CORS
+        $middleware->api(append: [
+            \Illuminate\Http\Middleware\HandleCors::class,
+        ]);
     })
     ->booted(function () {
         RateLimiter::for('login', function (Request $request) {
@@ -32,6 +35,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'message' => 'Validation failed',
             'errors'  => $e->errors(),
         ], 422);
+    });
+
+    $exceptions->render(function (\Illuminate\Database\Eloquent\ModelNotFoundException $e, Request $request) {
+        return response()->json(['message' => 'Record not found.'], 404);
     });
 
     $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {

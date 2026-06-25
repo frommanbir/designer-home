@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { getServiceCategories } from "@/lib/service-categories";
 import type { ServiceCategory } from "@/lib/service-categories";
 
-const Navbar = ({ transparent = true }: { transparent?: boolean }) => {
+const Navbar = ({ transparent = true, settings }: { transparent?: boolean; settings?: any }) => {
   const pathname = usePathname();
 
   const [projectCategories, setProjectCategories] = React.useState<any[]>([]);
@@ -30,6 +30,9 @@ const Navbar = ({ transparent = true }: { transparent?: boolean }) => {
     return `${baseClasses} hover:text-[#C59D5F] ${transparent ? "text-white/95" : "text-gray-800"}`;
   };
 
+  const logoUrl = settings?.branding?.logo_url;
+  const siteName = settings?.branding?.website_name || "DESIGNER HOME";
+
   return (
     <nav
       className={`w-full z-50 transition-all duration-300 ${
@@ -40,12 +43,14 @@ const Navbar = ({ transparent = true }: { transparent?: boolean }) => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-6 md:py-8">
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-[#C59D5F] flex items-center justify-center rounded-sm group-hover:scale-110 transition-transform">
-            <span className="text-white font-bold text-2xl">D</span>
-          </div>
-          <span className={`font-bold text-xl tracking-wider ${transparent ? "text-white" : "text-black"}`}>
-            DESIGNER HOME
-          </span>
+          {logoUrl ? (
+            <img src={logoUrl} alt={siteName} className="h-12 w-auto object-contain" />
+          ) : (
+            <div className="w-10 h-10 bg-[#C59D5F] flex items-center justify-center rounded-sm group-hover:scale-110 transition-transform">
+              <span className="text-white font-bold text-2xl">{siteName.charAt(0)}</span>
+            </div>
+          )}
+          <span className={`font-bold text-xl tracking-wider ${transparent ? 'text-white' : 'text-black'}`}>{siteName}</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-10 text-sm font-bold tracking-widest">
@@ -65,34 +70,19 @@ const Navbar = ({ transparent = true }: { transparent?: boolean }) => {
             >
               SERVICES <ChevronDown size={14} />
             </button>
-
-            <div className="absolute top-full left-0 mt-4 w-52 bg-white shadow-xl rounded-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 text-gray-800 border border-neutral-100">
-              {/* "All Services" always present */}
-              <Link
-                href="/services"
-                className={`block px-4 py-3 text-xs font-bold uppercase border-b border-neutral-50 hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${
-                  pathname === "/services" ? "text-[#C59D5F]" : ""
-                }`}
-              >
-                All Services
-              </Link>
-
-              {serviceCategories.length > 0 ? (
-                serviceCategories.map((cat) => (
-                  <Link
-                    key={cat.id}
-                    href={`/services?category=${cat.slug}`}
-                    className={`block px-4 py-3 text-xs font-semibold uppercase hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${
-                      pathname.includes(cat.slug) ? "text-[#C59D5F]" : ""
-                    }`}
-                  >
-                    {cat.name}
-                  </Link>
-                ))
-              ) : (
-                <div className="px-4 py-3 text-[10px] text-neutral-400 uppercase italic">
-                  Loading...
-                </div>
+            <div className="absolute top-full left-0 mt-4 w-56 bg-white shadow-xl rounded-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 text-gray-800 border border-neutral-100">
+              <Link href="/services" className={`block px-4 py-3 text-xs font-bold uppercase border-b border-neutral-50 hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname === '/services' ? 'text-[#C59D5F]' : ''}`}>Explore All</Link>
+              {serviceCategories.map((cat) => (
+                <Link 
+                  key={cat.id}
+                  href={`/services?category=${cat.slug}`} 
+                  className={`block px-4 py-3 text-xs font-semibold uppercase hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname.includes(cat.slug) ? 'text-[#C59D5F]' : ''}`}
+                >
+                  {cat.name}
+                </Link>
+              ))}
+              {serviceCategories.length === 0 && (
+                 <div className="px-4 py-3 text-[10px] text-neutral-400 uppercase italic">Loading...</div>
               )}
             </div>
           </div>
@@ -111,16 +101,9 @@ const Navbar = ({ transparent = true }: { transparent?: boolean }) => {
               PROJECTS <ChevronDown size={14} />
             </button>
             <div className="absolute top-full left-0 mt-4 w-56 bg-white shadow-xl rounded-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 text-gray-800 border border-neutral-100">
-              <Link
-                href="/projects"
-                className={`block px-4 py-3 text-xs font-bold uppercase border-b border-neutral-50 hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${
-                  pathname === "/projects" ? "text-[#C59D5F]" : ""
-                }`}
-              >
-                Explore All
-              </Link>
+              <Link href="/projects" className={`block px-4 py-3 text-xs font-bold uppercase border-b border-neutral-50 hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname === '/projects' ? 'text-[#C59D5F]' : ''}`}>Explore All</Link>
               {projectCategories.map((cat) => (
-                <Link
+                <Link 
                   key={cat.id}
                   href={`/projects?category=${cat.slug}`}
                   className={`block px-4 py-3 text-xs font-semibold uppercase hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${
@@ -131,26 +114,15 @@ const Navbar = ({ transparent = true }: { transparent?: boolean }) => {
                 </Link>
               ))}
               {projectCategories.length === 0 && (
-                <div className="px-4 py-3 text-[10px] text-neutral-400 uppercase italic">
-                  Loading categories...
-                </div>
+                 <div className="px-4 py-3 text-[10px] text-neutral-400 uppercase italic">Loading...</div>
               )}
             </div>
           </div>
 
           <Link href="/portfolio" className={getLinkClasses("/portfolio")}>PORTFOLIO</Link>
-          <Link href="/blog" className={getLinkClasses("/blog")}>BLOG</Link>
-
-          <Link
-            href="/contact"
-            className={`ml-4 px-6 py-2 border rounded-full transition-all text-center ${
-              pathname === "/contact"
-                ? "bg-[#C59D5F] border-[#C59D5F] text-white"
-                : transparent
-                ? "border-white/50 text-white hover:bg-white hover:text-black"
-                : "border-black text-black hover:bg-black hover:text-white"
-            }`}
-          >
+          {/* <Link href="/blog" className={getLinkClasses("/blog")}>BLOG</Link> */}
+          
+          <Link href="/contact" className={`ml-4 px-6 py-2 border rounded-full transition-all text-center ${pathname === '/contact' ? 'bg-[#C59D5F] border-[#C59D5F] text-white' : (transparent ? 'border-white/50 text-white hover:bg-white hover:text-black' : 'border-black text-black hover:bg-black hover:text-white')}`}>
             CONTACT
           </Link>
         </div>

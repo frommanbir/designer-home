@@ -34,6 +34,10 @@ class ProjectCategoryRequest extends FormRequest
                 'max:255',
                 Rule::unique('project_categories', 'slug')->ignore($projectCategory?->id),
             ],
+            'hero_title' => ['nullable', 'string', 'max:255'],
+            'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'subtitle' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
         ];
     }
 }

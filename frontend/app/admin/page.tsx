@@ -1,107 +1,190 @@
-import React from "react";
-import { 
-  Users, 
-  ShoppingBag, 
-  TrendingUp, 
-  DollarSign,
-  ArrowUpRight,
-  ArrowDownRight
-} from "lucide-react";
+"use client";
 
-const stats = [
-  { name: "Total Users", value: "2,543", icon: Users, change: "+12.5%", trending: "up" },
-  { name: "Total Orders", value: "1,205", icon: ShoppingBag, change: "+8.2%", trending: "up" },
-  { name: "Revenue", value: "$45,231", icon: DollarSign, change: "-2.4%", trending: "down" },
-  { name: "Growth", value: "24.3%", icon: TrendingUp, change: "+4.1%", trending: "up" },
+import React, { useEffect, useState } from "react";
+import { fetchApi } from "@/lib/api";
+import {
+  Briefcase,
+  Image,
+  BookOpen,
+  Star,
+  MessageSquare,
+  Folder,
+  AlertCircle,
+  CheckCheck,
+  MessageCircleReply,
+  ArrowUpRight,
+} from "lucide-react";
+import Link from "next/link";
+
+interface DashboardData {
+  services: number;
+  projects: number;
+  portfolios: number;
+  blogs: number;
+  ratings: number;
+  inquiries: {
+    total: number;
+    new: number;
+    read: number;
+    replied: number;
+  };
+  recent_inquiries: {
+    id: number;
+    name: string;
+    email: string;
+    subject: string | null;
+    status: string;
+    created_at: string;
+  }[];
+}
+
+const STATS_CONFIG = [
+  { key: "services",   label: "Services",   icon: Briefcase,   color: "text-blue-600",   bg: "bg-blue-50",   link: "/admin/services" },
+  { key: "projects",   label: "Projects",   icon: Folder,      color: "text-violet-600", bg: "bg-violet-50", link: "/admin/projects" },
+  { key: "portfolios", label: "Portfolios", icon: Image,       color: "text-rose-600",   bg: "bg-rose-50",   link: "/admin/portfolios" },
+  { key: "blogs",      label: "Blog Posts", icon: BookOpen,    color: "text-amber-600",  bg: "bg-amber-50",  link: "/admin/blogs" },
+  { key: "ratings",    label: "Ratings",    icon: Star,        color: "text-emerald-600", bg: "bg-emerald-50", link: "/admin/settings" },
 ];
 
+const STATUS_COLOR: Record<string, string> = {
+  new:     "bg-blue-50 text-blue-700",
+  read:    "bg-gray-50 text-gray-600",
+  replied: "bg-emerald-50 text-emerald-700",
+  closed:  "bg-neutral-100 text-neutral-500",
+};
+
 export default function AdminDashboard() {
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchApi("/admin/dashboard")
+      .then((res) => setData(res.data))
+      .catch((err) => setError(err.message || "Failed to load dashboard"))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="space-y-6 animate-pulse">
+        <div className="h-8 w-48 bg-neutral-200 rounded" />
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+          {Array(5).fill(0).map((_, i) => (
+            <div key={i} className="h-28 bg-neutral-100 rounded-2xl" />
+          ))}
+        </div>
+        <div className="h-64 bg-neutral-100 rounded-2xl" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 text-center gap-4">
+        <AlertCircle className="text-red-400" size={40} />
+        <h2 className="text-lg font-semibold text-neutral-700">Failed to load dashboard</h2>
+        <p className="text-sm text-neutral-400">{error}</p>
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-black text-white text-sm rounded-lg">
+          Retry
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div>
         <h1 className="text-2xl font-bold text-neutral-900">Dashboard Overview</h1>
-        <p className="text-neutral-500 text-sm mt-1">Welcome back, here's what's happening today.</p>
+        <p className="text-neutral-500 text-sm mt-1">Live statistics from your website content.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat) => (
-          <div key={stat.name} className="p-6 bg-white/50 rounded-2xl border border-neutral-200/50 shadow-sm hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
-              <div className="p-2 rounded-xl bg-neutral-100 text-black">
-                <stat.icon size={24} />
-              </div>
-              <div className={`flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
-                stat.trending === 'up' 
-                  ? 'bg-emerald-50 text-emerald-700' 
-                  : 'bg-red-50 text-red-700'
-              }`}>
-                {stat.trending === 'up' ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-                {stat.change}
-              </div>
+      {/* Content Stats */}
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        {STATS_CONFIG.map(({ key, label, icon: Icon, color, bg, link }) => (
+          <Link href={link} key={key} className="group p-5 bg-white rounded-2xl border border-neutral-200 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
+            <div className={`w-10 h-10 ${bg} ${color} rounded-xl flex items-center justify-center mb-4`}>
+              <Icon size={20} />
             </div>
-            <div>
-              <p className="text-sm text-neutral-500 font-medium">{stat.name}</p>
-              <h3 className="text-2xl font-bold text-neutral-900 mt-1">{stat.value}</h3>
-            </div>
-          </div>
+            <p className="text-sm text-neutral-500 font-medium">{label}</p>
+            <h3 className="text-3xl font-black text-neutral-900 mt-1">
+              {data ? (data as any)[key] : "—"}
+            </h3>
+            <p className="text-xs text-neutral-400 mt-2 flex items-center gap-1 group-hover:text-black transition-colors">
+              Manage <ArrowUpRight size={12} />
+            </p>
+          </Link>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 p-6 bg-white rounded-2xl border border-neutral-200 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="font-bold text-neutral-900">Recent Transactions</h3>
-            <button className="text-xs text-indigo-600 hover:underline">View all</button>
+      {/* Inquiry Status */}
+      {data?.inquiries && (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {[
+            { label: "Total Inquiries", value: data.inquiries.total, icon: MessageSquare, color: "text-neutral-700" },
+            { label: "New",     value: data.inquiries.new,     icon: AlertCircle,        color: "text-blue-600" },
+            { label: "Read",    value: data.inquiries.read,    icon: CheckCheck,         color: "text-gray-500" },
+            { label: "Replied", value: data.inquiries.replied, icon: MessageCircleReply, color: "text-emerald-600" },
+          ].map(({ label, value, icon: Icon, color }) => (
+            <div key={label} className="p-5 bg-white rounded-2xl border border-neutral-200 shadow-sm flex items-center gap-4">
+              <Icon className={color} size={24} />
+              <div>
+                <p className="text-sm text-neutral-500">{label}</p>
+                <p className="text-2xl font-black text-neutral-900">{value}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Recent Inquiries Table */}
+      {data?.recent_inquiries && data.recent_inquiries.length > 0 && (
+        <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
+          <div className="flex items-center justify-between p-6 border-b border-neutral-100">
+            <h3 className="font-bold text-neutral-900">Recent Inquiries</h3>
+            <Link href="/admin/inquiries" className="text-xs font-semibold text-black hover:underline flex items-center gap-1">
+              View all <ArrowUpRight size={12} />
+            </Link>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="text-xs text-neutral-500 uppercase border-b border-neutral-100">
+            <table className="w-full text-left text-sm">
+              <thead className="text-xs text-neutral-400 uppercase border-b border-neutral-100 bg-neutral-50">
                 <tr>
-                  <th className="pb-3 pr-4">Order ID</th>
-                  <th className="pb-3 pr-4">Customer</th>
-                  <th className="pb-3 pr-4">Status</th>
-                  <th className="pb-3 pr-4 text-right">Amount</th>
+                  <th className="px-6 py-3">Name</th>
+                  <th className="px-6 py-3">Email</th>
+                  <th className="px-6 py-3">Subject</th>
+                  <th className="px-6 py-3">Status</th>
+                  <th className="px-6 py-3">Date</th>
                 </tr>
               </thead>
-              <tbody className="text-sm text-neutral-600">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <tr key={i} className="border-b border-neutral-50 last:border-0">
-                    <td className="py-4 pr-4">#ORD-00{i}</td>
-                    <td className="py-4 pr-4 font-medium text-neutral-900">Customer Name</td>
-                    <td className="py-4 pr-4">
-                      <span className="px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs">
-                        Completed
+              <tbody>
+                {data.recent_inquiries.map((inq) => (
+                  <tr key={inq.id} className="border-b border-neutral-50 last:border-0 hover:bg-neutral-50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-neutral-900">{inq.name}</td>
+                    <td className="px-6 py-4 text-neutral-500">{inq.email}</td>
+                    <td className="px-6 py-4 text-neutral-500 max-w-xs truncate">{inq.subject || "—"}</td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold capitalize ${STATUS_COLOR[inq.status] || "bg-neutral-100 text-neutral-600"}`}>
+                        {inq.status}
                       </span>
                     </td>
-                    <td className="py-4 pr-4 text-right font-medium text-neutral-900">$120.00</td>
+                    <td className="px-6 py-4 text-neutral-400 text-xs">
+                      {new Date(inq.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         </div>
+      )}
 
-        <div className="p-6 bg-white rounded-2xl border border-neutral-200 shadow-sm">
-          <h3 className="font-bold text-neutral-900 mb-6">Popular Products</h3>
-          <div className="space-y-6">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-neutral-100 flex-shrink-0 animate-pulse"></div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-semibold text-neutral-900 truncate">Premium Product {i}</p>
-                  <p className="text-xs text-neutral-500">224 sales</p>
-                </div>
-                <div className="text-right">
-                  <p className="font-bold text-neutral-900">$45.00</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <button className="w-full mt-8 py-3 bg-neutral-100 hover:bg-neutral-200 rounded-xl text-sm font-semibold transition-colors">
-            Manage Inventory
-          </button>
+      {data?.recent_inquiries?.length === 0 && (
+        <div className="py-20 text-center bg-white rounded-2xl border border-neutral-200">
+          <MessageSquare className="mx-auto text-neutral-300 mb-4" size={40} />
+          <p className="text-neutral-400">No inquiries received yet.</p>
         </div>
-      </div>
+      )}
     </div>
   );
 }

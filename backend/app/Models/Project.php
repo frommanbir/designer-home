@@ -6,17 +6,17 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use App\Traits\HasSlug;
+
 class Project extends Model
 {
+    use HasSlug;
     protected $fillable = [
         'project_category_id',
         'title',
         'slug',
         'subtitle',
-        'short_description',
         'description',
-        'thumbnail_image_path',
-        'hero_image_path',
         'gallery_images',
         'sort_order',
         'is_active',

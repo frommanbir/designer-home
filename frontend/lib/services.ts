@@ -1,52 +1,35 @@
-import { fetchApi } from "@/lib/api";
-import { ServiceCategory } from "@/lib/service-categories";
+import { serverFetch } from "./server-api";
+import { fetchApi } from "./api";
+import { Service, ServiceFilters } from "@/types/service";
 
-export interface ServiceImage {
-  url: string;
+/** Public storefront — SSR safe */
+export async function getServices(filters: ServiceFilters = {}): Promise<Service[]> {
+  const query = new URLSearchParams();
+  if (filters.category) query.append("category", filters.category);
+  const qs = query.toString();
+  const res = await serverFetch(`/services${qs ? `?${qs}` : ""}`);
+  return res.data ?? [];
 }
 
-export interface WhyChoose {
-  title?: string | null;
-  description?: string | null;
-  points?: string[];
-  image?: ServiceImage | null;
+export async function getServiceBySlug(slug: string): Promise<Service> {
+  const res = await serverFetch(`/services/${slug}`);
+  return res.data;
 }
 
-export interface Service {
-  id: number;
-  category?: ServiceCategory | null;
-  title: string;
-  slug: string;
-  subtitle?: string | null;
-  short_description?: string | null;
-  description?: string | null;
-  thumbnail_image?: ServiceImage;
-  hero_image?: ServiceImage;
-  gallery_images?: ServiceImage[];
-  why_choose?: WhyChoose;
-  sort_order: number;
-  is_active: boolean;
-}
-
+/** Admin — client-side auth needed */
 export async function getAdminServices(): Promise<Service[]> {
   const res = await fetchApi("/admin/services");
   return res.data;
 }
 
 export async function createService(formData: FormData): Promise<Service> {
-  const res = await fetchApi("/admin/services", {
-    method: "POST",
-    body: formData,
-  });
+  const res = await fetchApi("/admin/services", { method: "POST", body: formData });
   return res.data;
 }
 
 export async function updateService(id: number, formData: FormData): Promise<Service> {
-  formData.append("_method", "PUT");
-  const res = await fetchApi(`/admin/services/${id}`, {
-    method: "POST",
-    body: formData,
-  });
+  if (formData instanceof FormData) formData.append("_method", "PUT");
+  const res = await fetchApi(`/admin/services/${id}`, { method: "POST", body: formData });
   return res.data;
 }
 

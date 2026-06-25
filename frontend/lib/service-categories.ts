@@ -1,22 +1,21 @@
-import { fetchApi } from "@/lib/api";
+import { serverFetch } from "./server-api";
+import { fetchApi } from "./api";
+import { ServiceCategory } from "@/types/service-category";
+export type { ServiceCategory } from "@/types/service-category";
 
-export interface ServiceCategory {
-  id: number;
-  name: string;
-  slug: string;
-}
-
+/** Public storefront — SSR safe */
 export async function getServiceCategories(): Promise<ServiceCategory[]> {
-  const res = await fetchApi("/service-categories");
-  return res.data;
+  const res = await serverFetch("/service-categories");
+  return res.data ?? [];
 }
 
 export async function getAdminServiceCategories(): Promise<ServiceCategory[]> {
   const res = await fetchApi("/admin/service-categories");
-  return res.data;
+  return res.data ?? [];
 }
 
-export async function createServiceCategory(data: { name: string; slug?: string }): Promise<ServiceCategory> {
+/** Admin — client-side auth needed */
+export async function createServiceCategory(data: { name: string; slug?: string | null }): Promise<ServiceCategory> {
   const res = await fetchApi("/admin/service-categories", {
     method: "POST",
     body: JSON.stringify(data),

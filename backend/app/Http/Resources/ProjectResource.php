@@ -15,10 +15,7 @@ class ProjectResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'subtitle' => $this->subtitle,
-            'short_description' => $this->short_description,
             'description' => $this->description,
-            'thumbnail_image_url' => $this->imageUrl($this->thumbnail_image_path),
-            'hero_image_url' => $this->imageUrl($this->hero_image_path),
             'gallery_image_urls' => collect($this->gallery_images ?? [])
                 ->map(fn (string $path): string => $this->imageUrl($path))
                 ->values()

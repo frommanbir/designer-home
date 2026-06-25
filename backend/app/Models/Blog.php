@@ -5,8 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\HasSlug;
+
 class Blog extends Model
 {
+    use HasSlug;
     protected $fillable = [
         'title',
         'slug',
