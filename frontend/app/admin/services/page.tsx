@@ -61,6 +61,7 @@ const EMPTY_FORM = {
   why_choose_description: "",
   why_choose_points: [""],
   thumbnail_image: null as File | null,
+  hero_image: null as File | null,
   why_choose_image: null as File | null,
   gallery_images: [] as File[],
 };
@@ -135,11 +136,13 @@ export default function AdminServicesPage() {
           ? service.why_choose.points
           : [""],
         thumbnail_image: null,
+        hero_image: null,
         why_choose_image: null,
         gallery_images: [],
       });
       setPreviews({
         thumbnail_image: service.thumbnail_image?.url ?? "",
+        hero_image: service.hero_image?.url ?? "",
         why_choose_image: service.why_choose?.image?.url ?? "",
       });
     } else {
@@ -184,6 +187,7 @@ export default function AdminServicesPage() {
       .forEach((p) => fd.append("why_choose_points[]", p));
     if (form.thumbnail_image)
       fd.append("thumbnail_image", form.thumbnail_image);
+    if (form.hero_image) fd.append("hero_image", form.hero_image);
     if (form.why_choose_image)
       fd.append("why_choose_image", form.why_choose_image);
     form.gallery_images.forEach((img) => fd.append("gallery_images[]", img));
@@ -278,13 +282,6 @@ export default function AdminServicesPage() {
           >
             <FaTag size={13} />
             Categories
-          </Link>
-          <Link
-            href="/admin/services-page"
-            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl hover:bg-neutral-50 transition-all font-semibold text-sm shadow-sm"
-          >
-            <FaImage size={13} />
-            Page Settings
           </Link>
           <button
             onClick={() => handleOpenModal()}
@@ -655,6 +652,11 @@ export default function AdminServicesPage() {
                           label: "Thumbnail Image",
                           key: "thumbnail_image",
                           hint: "Shown in service listings. 4:3 ratio recommended.",
+                        },
+                        {
+                          label: "Hero Image",
+                          key: "hero_image",
+                          hint: "Displayed in the service hero section.",
                         },
                         {
                           label: "Why Choose Image",
