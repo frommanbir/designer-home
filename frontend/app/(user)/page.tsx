@@ -29,7 +29,7 @@ export default async function HomePage() {
       <Navbar transparent={true} settings={settings} />
 
       {/* ── Section 1: Hero ───────────────────────── */}
-      <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[70vh] sm:min-h-[80vh] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/40 z-10" />
           <img
@@ -83,7 +83,7 @@ export default async function HomePage() {
                  <img
                    src="/images/designspace.png"
                    alt="Expert Design"
-                   className="w-full h-[500px] object-cover transition-transform duration-1000 group-hover:scale-110"
+                   className="w-full h-[320px] md:h-[500px] object-cover transition-transform duration-1000 group-hover:scale-110"
                  />
               </div>
             </div>
@@ -139,7 +139,7 @@ export default async function HomePage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.slice(0, 3).map((srv: any, idx: number) => (
-              <div key={srv.id} className="group relative h-[500px] rounded-[30px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ring-1 ring-black/5">
+              <div key={srv.id} className="group relative h-[340px] md:h-[500px] rounded-[30px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ring-1 ring-black/5">
                 <img
                   src={srv.thumbnail_image?.url || `/images/service-${idx + 1}.jpg`}
                   alt={srv.title}
@@ -147,7 +147,7 @@ export default async function HomePage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
                 <div className="absolute bottom-10 left-10 right-10 z-20 flex justify-between items-end transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                   <div className="max-w-[70%]">
+                   <div className="w-full md:max-w-[70%]">
                      <h3 className="text-white text-2xl md:text-3xl font-bold font-inter mb-2 leading-tight drop-shadow-md">{srv.title}</h3>
                      <p className="text-white/60 text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all delay-200">View Services</p>
                    </div>
@@ -225,7 +225,7 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-2 gap-12 lg:gap-16">
             {/* Project Card 1 */}
             <div className="space-y-8 group cursor-pointer">
-              <div className="h-[550px] rounded-[50px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
+              <div className="h-[320px] md:h-[550px] rounded-[50px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
                 <img
                   src="/images/bedroom.jpg"
                   alt="Residential"
@@ -245,7 +245,7 @@ export default async function HomePage() {
 
             {/* Project Card 2 */}
             <div className="space-y-8 group cursor-pointer">
-              <div className="h-[550px] rounded-[50px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
+              <div className="h-[320px] md:h-[550px] rounded-[50px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
                 <img
                   src="/images/dining.jpg"
                   alt="Commercial"
@@ -361,7 +361,7 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-2 gap-16 lg:gap-20">
             {blogs.length > 0 ? blogs.slice(0, 2).map((blog: any) => (
               <div key={blog.id} className="group flex flex-col space-y-10">
-                <div className="h-[480px] rounded-[50px] overflow-hidden relative shadow-2xl ring-1 ring-black/5">
+                <div className="h-[320px] md:h-[480px] rounded-[50px] overflow-hidden relative shadow-2xl ring-1 ring-black/5">
                   <img
                     src={blog.featured_image_url || "/images/blog-placeholder.jpg"}
                     alt={blog.title}
@@ -406,7 +406,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <Footer settings={settings} />
     </div>
   );
 }

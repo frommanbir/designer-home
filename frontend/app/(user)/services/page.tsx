@@ -66,7 +66,7 @@ export default async function ServicesPage({
     <div className="bg-white font-sans overflow-x-hidden">
 
       {/* Hero */}
-      <section className="relative h-screen min-h-175 w-full flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[70vh] sm:min-h-[80vh] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/60 z-10" />
           <img

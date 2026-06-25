@@ -24,7 +24,7 @@ export default async function PortfolioPage({
   return (
     <div className="bg-white font-sans overflow-x-hidden min-h-screen text-neutral-900 border-none">
       {/* Hero */}
-      <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[75vh] sm:min-h-[85vh] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 to-transparent z-10" />
           <img
@@ -93,10 +93,8 @@ export default async function PortfolioPage({
                         <img
                           src={item.main_image_url || item.gallery_image_urls?.[0] || "/images/about-home.png"}
                           alt={item.title}
-                          className="w-full h-[600px] md:h-[800px] object-cover transition-transform duration-[3s] group-hover:scale-105"
+                          className="w-full h-[320px] md:h-[600px] object-cover transition-transform duration-[3s] group-hover:scale-105"
                         />
-
-                        {/* Overlay Style Card (Gorkarneshwor style) */}
                         {isOverlayStyle && (
                            <div className="absolute top-0 left-0 w-full md:w-[600px] h-full bg-neutral-800/90 flex flex-col justify-center px-12 md:px-20 space-y-8 animate-in fade-in slide-in-from-left duration-700">
                               <h3 className="text-white text-3xl md:text-5xl font-semibold font-inter leading-tight">

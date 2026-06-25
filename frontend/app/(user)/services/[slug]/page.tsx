@@ -66,7 +66,7 @@ export default async function ServiceDetailPage({
     <div className="bg-white font-sans overflow-x-hidden min-h-screen">
 
       {/* Hero Section */}
-      <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center">
+      <section className="relative min-h-[75vh] sm:min-h-[80vh] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-black/80 z-10" />
           <img
@@ -143,7 +143,7 @@ export default async function ServiceDetailPage({
               "/images/placeholder.jpg"
             }
             alt={service.title}
-            className="relative rounded-[1.5rem] shadow-2xl w-full h-[500px] object-cover"
+            className="relative rounded-[1.5rem] shadow-2xl w-full h-[320px] md:h-[500px] object-cover"
           />
         </div>
       </section>
@@ -186,7 +186,7 @@ export default async function ServiceDetailPage({
                   <img
                     src={whyChoose!.image.url}
                     alt="Why Choose Us"
-                    className="relative rounded-[1.5rem] shadow-2xl w-full h-[500px] object-cover"
+                    className="relative rounded-[1.5rem] shadow-2xl w-full h-[320px] md:h-[500px] object-cover"
                   />
                 </div>
               ) : (
@@ -210,7 +210,7 @@ export default async function ServiceDetailPage({
       {/* Gallery */}
       {galleryImages.length > 0 && (
         <section className="py-32 px-6">
-          <div className="max-w-[1400px] mx-auto">
+          <div className="max-w-screen-2xl mx-auto">
             <div className="text-center mb-20">
               <h4 className="text-[#C59D5F] font-bold tracking-[0.4em] uppercase text-sm mb-4">
                 Visual Showcase

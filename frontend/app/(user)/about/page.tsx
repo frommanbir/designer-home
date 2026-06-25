@@ -25,7 +25,7 @@ export default async function AboutPage() {
     <div className="bg-white font-sans overflow-x-hidden">
 
       {/* Hero */}
-      <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[70vh] sm:min-h-[80vh] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/60 z-10" />
           <img
@@ -62,7 +62,7 @@ export default async function AboutPage() {
             <img
               src={main_about?.image?.url || "/images/about-company.jpg"}
               alt="Our Work"
-              className="relative rounded-[1.5rem] w-full h-[500px] object-cover shadow-2xl z-0"
+              className="relative rounded-[1.5rem] w-full h-[320px] md:h-[500px] object-cover shadow-2xl z-0"
             />
           </div>
           <div className="lg:col-span-2 space-y-8">

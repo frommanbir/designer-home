@@ -32,7 +32,7 @@ export default async function ProjectsPage({
     <div className="bg-white font-sans overflow-x-hidden min-h-screen">
 
       {/* Hero Section */}
-      <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[70vh] sm:min-h-[80vh] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/50 z-10" />
           <img
@@ -133,7 +133,7 @@ export default async function ProjectsPage({
                       key={i} 
                       className={`relative rounded-[2.5rem] overflow-hidden shadow-2xl transition-transform duration-700 hover:scale-[1.02] 
                         ${project.gallery_image_urls.length === 1 ? 'col-span-2 aspect-[16/10]' : 'aspect-[4/5]'} 
-                        ${(i === 1 && project.gallery_image_urls.length > 1) ? 'translate-y-8' : ''}`}
+                        ${(i === 1 && project.gallery_image_urls.length > 1) ? 'md:translate-y-8' : ''}`}
                     >
                       <img src={url} alt={project.title} className="w-full h-full object-cover" />
                     </div>

@@ -17,7 +17,7 @@ export default async function ProjectDetailPage({
   return (
     <div className="bg-white font-sans overflow-x-hidden min-h-screen">
       {/* Hero */}
-      <section className="relative h-[80vh] w-full flex flex-col justify-center items-center text-center px-6">
+      <section className="relative min-h-[60vh] sm:min-h-[80vh] w-full flex flex-col justify-center items-center text-center px-6">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/40 z-10" />
           <img
@@ -56,7 +56,7 @@ export default async function ProjectDetailPage({
       {/* Gallery */}
       {project.gallery_image_urls?.length > 0 && (
         <section className="bg-neutral-50 py-32 px-6">
-          <div className="max-w-[1400px] mx-auto">
+          <div className="max-w-screen-2xl mx-auto">
             <div className="text-center mb-20">
               <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tighter text-neutral-900">
                 Visual <span className="text-[#C59D5F]">Gallery</span>

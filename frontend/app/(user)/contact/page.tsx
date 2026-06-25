@@ -211,7 +211,7 @@ const ContactPage = () => {
       </section>
 
       {/* Map Section */}
-      <section className="h-[500px] w-full bg-gray-100 grayscale hover:grayscale-0 transition-all duration-700">
+      <section className="h-[320px] md:h-[500px] w-full bg-gray-100 grayscale hover:grayscale-0 transition-all duration-700">
          <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold uppercase tracking-widest">
             Interactive Map Integration
          </div>
