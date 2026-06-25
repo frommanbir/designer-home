@@ -1,46 +1,15 @@
 import Link from "next/link";
-import { serverFetch } from "@/lib/server-api";
 import { getServicesPageData } from "@/lib/services-page";
-
-interface ServiceCategory {
-  id: number;
-  name: string;
-  slug: string;
-}
-
-interface Service {
-  id: number;
-  title: string;
-  slug: string;
-  subtitle: string | null;
-  short_description: string | null;
-  description: string | null;
-  category: ServiceCategory | null;
-  thumbnail_image: { path: string | null; url: string | null } | null;
-  hero_image: { path: string | null; url: string | null } | null;
-  sort_order: number;
-  is_active: boolean;
-}
+import { getServices } from "@/lib/services";
+import { getServiceCategories } from "@/lib/service-categories";
+import type { Service } from "@/types/service";
+import type { ServiceCategory } from "@/types/service-category";
 
 interface SearchParams {
   category?: string;
 }
 
 export const dynamic = "force-dynamic";
-
-// Helper: unwrap various response formats from serverFetch
-function unwrapList<T>(res: unknown): T[] {
-  if (Array.isArray(res)) return res as T[];
-  if (res && typeof res === "object") {
-    const r = res as Record<string, unknown>;
-    // Try common wrapper properties
-    if (Array.isArray(r.data)) return r.data as T[];
-    if (Array.isArray(r.result)) return r.result as T[];
-    if (Array.isArray(r.items)) return r.items as T[];
-  }
-  console.warn("[unwrapList] Unexpected response format:", res);
-  return [];
-}
 
 export default async function ServicesPage({
   searchParams,
@@ -52,20 +21,26 @@ export default async function ServicesPage({
   console.log("[ServicesPage] Received searchParams category:", category);
 
   const pageData = await getServicesPageData().catch(() => ({} as any));
-  const heroData = (pageData.hero ?? {
+  const heroData = {
     title:
       (pageData as any).service_hero_title ??
-      (pageData as any).hero_title,
+      (pageData as any).hero_title ??
+      "Our Services",
     subtitle:
       (pageData as any).service_hero_subtitle ??
-      (pageData as any).hero_subtitle,
+      (pageData as any).hero_subtitle ??
+      "Our Expertise",
     description:
       (pageData as any).service_hero_description ??
-      (pageData as any).hero_description,
+      (pageData as any).hero_description ??
+      "From conceptualization to final execution, we provide end-to-end interior design solutions.",
     image:
+      (pageData as any).service_hero_image?.url ??
       (pageData as any).service_hero_image ??
-      (pageData as any).hero_image,
-  }) as {
+      (pageData as any).hero_image?.url ??
+      (pageData as any).hero_image ??
+      "/images/about-home.png",
+  } as {
     title?: string;
     subtitle?: string;
     description?: string;
@@ -76,47 +51,22 @@ export default async function ServicesPage({
   let categories: ServiceCategory[] = [];
 
   try {
-    console.log("[ServicesPage] Starting fetch from /services and /service-categories");
-    const [servicesRes, categoriesRes] = await Promise.all([
-      // Fetch ALL services — we filter client-side by category slug
-      // This sidesteps any backend query-param mismatch
-      serverFetch<unknown>("/services"),
-      serverFetch<unknown>("/service-categories"),
-    ]);
+    allServices = await getServices({ category });
+    categories = await getServiceCategories();
 
-    console.log("[ServicesPage] Raw services response:", servicesRes);
-    console.log("[ServicesPage] Raw categories response:", categoriesRes);
-
-    allServices = unwrapList<Service>(servicesRes);
-    categories = unwrapList<ServiceCategory>(categoriesRes);
-
-    console.log("[ServicesPage] Unwrapped services count:", allServices.length);
-    console.log("[ServicesPage] Unwrapped categories count:", categories.length);
-    if (allServices[0]) console.log("[ServicesPage] First service:", JSON.stringify(allServices[0], null, 2));
-    if (categories[0]) console.log("[ServicesPage] First category:", JSON.stringify(categories[0], null, 2));
-
-    // Filter out inactive services
-    allServices = allServices.filter((s) => s.is_active);
-    console.log("[ServicesPage] After filtering inactive services:", allServices.length);
+    // Filter out inactive services in case the backend returns them
+    allServices = allServices.filter((service) => service.is_active);
   } catch (err) {
     console.error("[ServicesPage] fetch error:", err);
   }
 
-  // Filter by category slug on the frontend — avoids backend query param issues entirely
-  const services = category
-    ? allServices.filter((s) => {
-        const match = s.category?.slug === category;
-        console.log("[ServicesPage] Filtering service:", { title: s.title, serviceSlug: s.category?.slug, paramCategory: category, match });
-        return match;
-      })
-    : allServices;
-  console.log("[ServicesPage] Final filtered services count:", services.length);
+  const services = allServices;
 
   return (
     <div className="bg-white font-sans overflow-x-hidden">
 
       {/* Hero */}
-      <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative h-screen min-h-175 w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/60 z-10" />
           <img
@@ -129,7 +79,7 @@ export default async function ServicesPage({
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="relative z-20 flex flex-col items-center text-center px-6 animate-in fade-in slide-in-from-bottom-10 duration-[1500ms]">
+        <div className="relative z-20 flex flex-col items-center text-center px-6 animate-in fade-in slide-in-from-bottom-10 duration-1500">
           <h4 className="text-[#C59D5F] font-bold tracking-[0.3em] uppercase mb-4">
             {heroData.subtitle || "Our Expertise"}
           </h4>
@@ -190,7 +140,7 @@ export default async function ServicesPage({
               }`}
             >
               <div className="w-full lg:w-1/2 relative">
-                <div className="relative overflow-hidden rounded-[1.5rem] shadow-2xl aspect-[4/5] lg:h-[600px]">
+                <div className="relative overflow-hidden rounded-3xl shadow-2xl aspect-4/5 lg:h-150">
                   <img
                     src={
                       service.thumbnail_image?.url ||
@@ -211,7 +161,7 @@ export default async function ServicesPage({
                     {service.category.name}
                   </span>
                 )}
-                <h2 className="text-4xl md:text-6xl font-black text-[#222] tracking-tighter uppercase leading-[1]">
+                <h2 className="text-4xl md:text-6xl font-black text-[#222] tracking-tighter uppercase leading-none">
                   {service.title}
                 </h2>
                 <div className="w-20 h-2 bg-[#C59D5F]" />
@@ -231,7 +181,7 @@ export default async function ServicesPage({
                     className="inline-flex items-center group text-lg font-black text-[#222] tracking-widest uppercase hover:text-[#C59D5F] transition-colors"
                   >
                     Learn More
-                    <span className="ml-4 w-10 h-[2px] bg-[#222] group-hover:bg-[#C59D5F] group-hover:w-16 transition-all duration-300" />
+                    <span className="ml-4 w-10 h-0.5 bg-[#222] group-hover:bg-[#C59D5F] group-hover:w-16 transition-all duration-300" />
                   </Link>
                 </div>
               </div>

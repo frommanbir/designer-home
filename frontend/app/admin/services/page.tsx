@@ -41,7 +41,7 @@ interface Service {
   why_choose: {
     title: string | null;
     description: string | null;
-    image: object;
+    image: { path: string | null; url: string | null } | null;
     points: string[];
   };
   sort_order: number;
@@ -187,7 +187,6 @@ export default function AdminServicesPage() {
     if (form.why_choose_image)
       fd.append("why_choose_image", form.why_choose_image);
     form.gallery_images.forEach((img) => fd.append("gallery_images[]", img));
-    if (isEditing) fd.append("_method", "PUT");
     return fd;
   };
 
@@ -199,7 +198,7 @@ export default function AdminServicesPage() {
       const url = isEditing
         ? `/admin/services/${editingId}`
         : "/admin/services";
-      await fetchApi(url, { method: "POST", body: fd });
+      await fetchApi(url, { method: isEditing ? "PUT" : "POST", body: fd });
       toast.success(isEditing ? "Service updated" : "Service created");
       setIsModalOpen(false);
       fetchAll();
@@ -444,7 +443,7 @@ export default function AdminServicesPage() {
             {/* Tab + Content Layout */}
             <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
               {/* Vertical Tabs */}
-              <div className="w-full lg:w-52 flex-shrink-0 p-4 space-y-1 border-b lg:border-b-0 lg:border-r border-neutral-200 bg-white flex lg:flex-col flex-row overflow-x-auto">
+              <div className="w-full lg:w-52 shrink-0 p-4 space-y-1 border-b lg:border-b-0 lg:border-r border-neutral-200 bg-white flex lg:flex-col flex-row overflow-x-auto">
                 {modalTabs.map((tab) => {
                   const isActive = activeTab === tab.id;
                   return (

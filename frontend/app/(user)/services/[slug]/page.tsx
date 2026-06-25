@@ -1,7 +1,8 @@
 import React from "react";
 import Link from "next/link";
 import { serverFetch } from "@/lib/server-api";
-import { ArrowLeft, Maximize2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import ServiceGallery from "@/components/ServiceGallery";
 import { notFound } from "next/navigation";
 
 interface WhyChoose {
@@ -78,15 +79,16 @@ export default async function ServiceDetailPage({
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="relative z-20 text-center px-6 max-w-5xl mx-auto mt-20">
+        <div className="absolute top-6 left-6 z-20 py-20">
           <Link
             href="/services"
-            className="inline-flex items-center gap-3 text-white/80 hover:text-white font-black text-xs uppercase tracking-[0.3em] mb-12 transition-colors"
+            className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/40 px-4 py-2 text-white text-xs uppercase tracking-[0.3em] shadow-lg backdrop-blur-sm transition hover:bg-black/60"
           >
             <ArrowLeft size={16} />
             <span>All Services</span>
           </Link>
-
+        </div>
+        <div className="relative z-20 text-center px-6 max-w-5xl mx-auto mt-20">
           {service.category && (
             <h4 className="text-[#C59D5F] font-black tracking-[0.3em] uppercase text-sm mb-4">
               {service.category.name}
@@ -218,26 +220,7 @@ export default async function ServiceDetailPage({
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-              {galleryImages.map((img, idx) => (
-                <div
-                  key={idx}
-                  className={`relative group overflow-hidden rounded-3xl bg-neutral-200 aspect-[4/5] shadow-lg ${
-                    idx % 2 === 1 ? "md:translate-y-12" : ""
-                  }`}
-                >
-                  <img
-                    src={img.url || "/images/placeholder.jpg"}
-                    alt={`${service.title} Gallery ${idx + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-700" />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Maximize2 size={32} className="text-white" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ServiceGallery images={galleryImages} title={service.title} />
           </div>
         </section>
       )}

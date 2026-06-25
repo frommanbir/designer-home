@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { fetchApi } from "@/lib/api";
 import { FaSave, FaImage, FaSpinner } from "react-icons/fa";
+import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 export default function ServicesPageSettings() {
@@ -63,9 +65,14 @@ export default function ServicesPageSettings() {
     setSaving(true);
 
     const formData = new FormData();
-    formData.append("service_hero_title", heroTitle);
-    formData.append("service_hero_subtitle", heroSubtitle);
-    if (heroImageFile) formData.append("service_hero_image", heroImageFile);
+    formData.set("service_hero_title", heroTitle);
+    formData.set("hero_title", heroTitle);
+    formData.set("service_hero_subtitle", heroSubtitle);
+    formData.set("hero_subtitle", heroSubtitle);
+    if (heroImageFile) {
+      formData.set("service_hero_image", heroImageFile);
+      formData.set("hero_image", heroImageFile);
+    }
 
     try {
       const res = await fetchApi("/admin/site-settings", {
@@ -87,11 +94,22 @@ export default function ServicesPageSettings() {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-900">Services Page Settings</h1>
-        <p className="text-neutral-500 text-sm mt-1">
-          Configure the public Services page hero banner and headline.
-        </p>
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 text-sm text-neutral-500">
+          <Link
+            href="/admin/services"
+            className="inline-flex items-center gap-2 text-neutral-500 hover:text-neutral-900 transition-colors"
+          >
+            <ArrowLeft size={16} />
+            Back to Services
+          </Link>
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-neutral-900">Services Page Settings</h1>
+          <p className="text-neutral-500 text-sm mt-1">
+            Configure the public Services page hero banner and headline.
+          </p>
+        </div>
       </div>
 
       {loading ? (
