@@ -10,111 +10,94 @@ export const dynamic = "force-dynamic";
 const BlogListPage = async () => {
   const blogs = await getBlogs();
 
-  return (
-    <div className="bg-white overflow-x-hidden min-h-screen">
+  const heroImage = "/images/about-home.png"; 
+  const heroTitle = "The Journal";
 
-      {/* Hero Header */}
-      <section className="pt-40 pb-20 px-6 border-b border-neutral-100">
-        <div className="max-w-7xl mx-auto text-center">
-          <h4 className="text-[#C59D5F] font-bold tracking-[0.4em] uppercase text-[10px] mb-6">Insights & Aesthetics</h4>
-          <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase mb-8 text-neutral-900 leading-[0.85]">
-            The <span className="italic font-light">Journal</span>
-          </h1>
-          <p className="text-neutral-500 max-w-2xl mx-auto text-lg font-light leading-relaxed font-sans">
-            Curated narratives on spatial design, material mastery, and the art of professional living.
-          </p>
+  return (
+    <div className="bg-white font-sans overflow-x-hidden min-h-screen">
+
+      {/* Hero Section */}
+      <section className="relative h-[70vh] min-h-[700px] w-full overflow-hidden">
+        {/* Background */}
+        <div className="absolute inset-0">
+          <img
+            src={heroImage}
+            alt={heroTitle}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-black/30" />
+        </div>
+
+        {/* Content */}
+        <div className="absolute bottom-0 z-20">
+          <div className="backdrop-blur-sm p-8 rounded">
+            <h1 className="text-white text-5xl md:text-7xl leading-tight font-bold">
+              Insights &
+              <br />
+              Aesthetics
+            </h1>
+            <div className="mt-6 h-[3px] w-[500px] bg-[#C59D5F]"></div>
+          </div>
         </div>
       </section>
 
-      {/* Featured/Latest Blog */}
-      {blogs.length > 0 && (
-        <section className="max-w-7xl mx-auto py-24 px-6">
-          <Link href={`/blog/${blogs[0].slug}`} className="group grid lg:grid-cols-2 gap-16 items-center">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-[2.5rem] bg-neutral-100">
-              <img 
-                src={blogs[0].image_url || "/images/placeholder.jpg"} 
-                alt={blogs[0].title}
-                className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
-              />
-              <div className="absolute top-8 left-8 px-5 py-2 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-[#C59D5F] shadow-sm">
-                Featured Insight
-              </div>
-            </div>
-            
-            <div className="space-y-8">
-              <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 font-sans">
-                <span className="flex items-center gap-1.5"><Calendar size={12} /> {new Date(blogs[0].published_date).toLocaleDateString()}</span>
-                <span className="flex items-center gap-1.5"><Clock size={12} /> 5 MIN READ</span>
-              </div>
-              
-              <h2 className="text-5xl font-black text-neutral-900 leading-tight group-hover:text-[#C59D5F] transition-colors">
-                {blogs[0].title}
-              </h2>
-              
-              <p className="text-neutral-500 text-xl font-light leading-relaxed font-sans">
-                {blogs[0].short_description}
-              </p>
-              
-              <div className="pt-4 inline-flex items-center gap-4 text-sm font-bold uppercase tracking-widest text-neutral-900 font-sans">
-                <span>Read Article</span>
-                <div className="w-12 h-[1px] bg-neutral-900 group-hover:w-20 transition-all"></div>
-              </div>
-            </div>
-          </Link>
-        </section>
-      )}
+      {/* Intro Section */}
+      <section className="max-w-7xl mx-auto py-24 px-6 text-center space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700">
+        <div className="space-y-4">
+          <h4 className="text-[#C59D5F] font-bold tracking-[0.4em] uppercase text-[10px]">The Designer Home Perspective</h4>
+          <h2 className="text-6xl md:text-7xl font-black text-[#222] tracking-tighter uppercase leading-[0.85]">
+            The <span className="italic font-light">Journal</span>
+          </h2>
+        </div>
+        <p className="text-lg text-[#666] leading-relaxed max-w-7xl mx-auto font-light">
+          Curated narratives on spatial design, material mastery, and the art of professional living. We share our vision of turning houses into dream homes.
+        </p>
+      </section>
 
-      {/* Secondary Grid */}
-      <section className="bg-neutral-50 py-32 px-6">
-        <div className="max-w-7xl mx-auto space-y-24">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
-            {blogs.slice(1).map((blog) => (
-              <Link key={blog.id} href={`/blog/${blog.slug}`} className="group block space-y-8">
-                <div className="relative aspect-square overflow-hidden rounded-[2rem] bg-white shadow-sm border border-neutral-100">
+      {/* Blogs Grid */}
+      <section className="max-w-7xl mx-auto pb-32 px-6">
+        {blogs.length === 0 ? (
+          <div className="py-20 text-center bg-[#F9F9F9] rounded-[3rem]">
+            <h3 className="text-2xl font-light text-neutral-400 italic">Our editorial team is currently crafting new design stories.</h3>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-20">
+            {blogs.map((blog, idx) => (
+              <Link 
+                key={blog.id} 
+                href={`/blog/${blog.slug}`} 
+                className={`group block space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-${idx * 100}`}
+              >
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[2.5rem] bg-neutral-100 shadow-xl transition-transform duration-700 group-hover:scale-[1.02]">
                   <img 
                     src={blog.image_url || "/images/placeholder.jpg"} 
                     alt={blog.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
                   />
+                  <div className="absolute top-8 left-8 px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest text-[#C59D5F] shadow-sm transform -translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                    {new Date(blog.published_date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
+                  </div>
                 </div>
                 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest text-[#C59D5F] font-sans">
-                    <span>{new Date(blog.published_date).toLocaleDateString()}</span>
-                    <div className="w-1 h-1 bg-neutral-200 rounded-full"></div>
-                    <span>Design Insight</span>
-                  </div>
-                  
-                  <h3 className="text-2xl font-black text-neutral-900 leading-snug group-hover:text-[#C59D5F] transition-colors">
+                <div className="space-y-4 px-2 transform transition-transform group-hover:translate-x-2 duration-500">
+                 
+                  <h3 className="text-3xl font-black text-neutral-900 leading-tight group-hover:text-[#C59D5F] transition-colors">
                     {blog.title}
                   </h3>
                   
-                  <p className="text-neutral-500 text-sm font-light leading-relaxed font-sans line-clamp-3">
-                    {blog.short_description}
+                  <p className="text-[#666] text-base font-light leading-relaxed line-clamp-3 text-justify">
+                    {blog.short_description || "Exploring the intersection of luxury, comfort, and state-of-the-art architectural design trends for current and future living."}
                   </p>
+
+                  <div className="pt-4 flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-neutral-900">
+                    <span>Read Article</span>
+                    <ArrowRight size={16} className="transform group-hover:translate-x-2 transition-transform text-[#C59D5F]" />
+                  </div>
                 </div>
               </Link>
             ))}
           </div>
-
-          {blogs.length === 0 && (
-            <div className="py-40 text-center border-2 border-dashed border-neutral-200 rounded-[3rem]">
-              <h3 className="text-2xl font-light text-neutral-400 italic">Our editorial team is currently crafting new design stories.</h3>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* Newsletter simple */}
-      <section className="py-32 px-6 bg-white text-center">
-        <div className="max-w-2xl mx-auto space-y-8">
-          <h2 className="text-4xl font-black uppercase tracking-tighter text-neutral-900">Weekly <span className="text-[#C59D5F]">Aesthetic</span></h2>
-          <p className="text-neutral-500 font-light font-sans text-lg">Receive our curated design picks and professional insights directly in your inbox.</p>
-          <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto font-sans pt-4">
-            <input type="email" placeholder="Email Address" className="flex-1 px-6 py-4 bg-neutral-50 border border-neutral-200 rounded-xl focus:border-black outline-none transition-all placeholder:text-neutral-400" />
-            <button className="px-8 py-4 bg-black text-white font-bold uppercase tracking-widest text-xs rounded-xl hover:bg-[#C59D5F] transition-all">Subscribe</button>
-          </div>
-        </div>
+        )}
       </section>
     </div>
   );

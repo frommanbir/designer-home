@@ -27,7 +27,7 @@ export default async function AboutPage() {
       {/* Hero */}
       <section className="relative h-[70vh] min-h-[700px] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-black/60 z-10" />
+          <div className="absolute inset-0 bg-black/40 z-10" />
           <img
             src={hero?.image?.url || "/images/about-home.png"}
             alt="About Designer Home"
