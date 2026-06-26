@@ -70,7 +70,8 @@ export default async function ServicesPage({
 
       {/* Services List */}
       {services.length > 0 ? (
-        <section className="max-w-7xl mx-auto py-20 px-6 space-y-40">
+        // <section className="max-w-7xl mx-auto py-20 px-6 space-y-40">
+        <section className="relative h-[70vh] min-h-[700px] w-full flex items-center justify-center overflow-hidden">
           {services.map((service: any, idx: number) => (
             <div key={service.id} className={`flex flex-col lg:flex-row gap-16 items-center ${idx % 2 !== 0 ? "lg:flex-row-reverse" : ""}`}>
               <div className="w-full lg:w-1/2 relative">

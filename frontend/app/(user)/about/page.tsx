@@ -25,7 +25,7 @@ export default async function AboutPage() {
     <div className="bg-white font-sans overflow-x-hidden">
 
       {/* Hero */}
-      <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative h-[70vh] min-h-[700px] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/60 z-10" />
           <img
@@ -72,25 +72,15 @@ export default async function AboutPage() {
             <div className="space-y-6 text-[#444] text-md leading-relaxed whitespace-pre-line text-justify">
               <p>{main_about?.description || "Established in 2016 A.D., Designer Home Pvt. Ltd. is dedicated to transforming ideas into inspiring spaces through innovative interior design solutions."}</p>
             </div>
-            <div className="pt-4">
-              <Link href="/projects" className="px-8 py-4 bg-[#222] text-white font-bold rounded-lg hover:bg-[#C59D5F] transition-all transform hover:-translate-y-1 inline-block">
-                EXPLORE OUR PROJECTS
-              </Link>
-            </div>
           </div>
         </div>
       </section>
 
       {/* Why Choose Us */}
-      <section className="max-w-7xl mx-auto py-6 px-6">
+      <section className="max-w-7xl mx-auto py-10 px-6">
         <h2 className="text-5xl font-black text-[#222] mb-6 tracking-tight uppercase">
           WHY CHOOSE US
         </h2>
-        {/* {why_choose_us?.description && (
-          <p className="text-xl text-[#666] mb-16 max-w-3xl leading-relaxed whitespace-pre-line">
-            {why_choose_us.description}
-          </p>
-        )} */}
         <div className="grid md:grid-cols-2 gap-x-12 gap-y-16">
           {features.map((item: any, idx: number) => (
             <div key={idx} className="bg-[#F5F5F5] p-12 rounded-lg space-y-6 transition-all duration-300 hover:shadow-md">

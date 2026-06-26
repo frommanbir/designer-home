@@ -38,16 +38,6 @@ export default async function HomePage() {
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="relative z-20 flex flex-col items-center text-center px-6 animate-in fade-in slide-in-from-bottom-10 duration-1000">
-          <div className="mb-8">
-             <div className="w-24 h-24 md:w-32 md:h-32 bg-[#C59D5F] flex items-center justify-center rounded-sm shadow-2xl">
-                <span className="text-white font-bold text-6xl md:text-8xl italic">H</span>
-             </div>
-          </div>
-          <h1 className="text-white text-3xl md:text-5xl font-baumans tracking-[0.3em] uppercase opacity-90 drop-shadow-lg">
-             Designer Home
-          </h1>
-        </div>
       </section>
 
       {/* ── Section 2: Designing Spaces ────────────────── */}
@@ -405,8 +395,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      <Footer settings={settings} />
     </div>
   );
 }

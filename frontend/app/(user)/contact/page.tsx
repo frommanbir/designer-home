@@ -38,7 +38,6 @@ const ContactPage = () => {
 
   return (
     <div className="bg-white font-sans overflow-x-hidden">
-      <Navbar transparent={true} />
 
       {/* Hero Section */}
       <section className="relative h-[45vh] min-h-[350px] w-full flex items-center justify-center">
@@ -102,14 +101,14 @@ const ContactPage = () => {
             </div>
 
             <div className="pt-8">
-               <h4 className="font-black text-[#222] text-sm tracking-widest uppercase mb-6">Follow Us</h4>
-               <div className="flex gap-4">
-                  {["FB", "IG", "LI", "TW"].map((soc) => (
-                    <a key={soc} href="#" className="w-12 h-12 border-2 border-gray-100 rounded-full flex items-center justify-center font-bold text-xs text-[#666] hover:border-[#C59D5F] hover:text-[#C59D5F] transition-all">
-                      {soc}
-                    </a>
-                  ))}
-               </div>
+              <h4 className="font-black text-[#222] text-sm tracking-widest uppercase mb-6">Follow Us</h4>
+              <div className="flex gap-4">
+                {["FB", "IG", "LI", "TW"].map((soc) => (
+                  <a key={soc} href="#" className="w-12 h-12 border-2 border-gray-100 rounded-full flex items-center justify-center font-bold text-xs text-[#666] hover:border-[#C59D5F] hover:text-[#C59D5F] transition-all">
+                    {soc}
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -125,28 +124,28 @@ const ContactPage = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-black text-[#222] tracking-widest uppercase mb-3">Full Name *</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="name"
                     required
                     value={formData.name}
                     onChange={handleChange}
                     maxLength={255}
-                    placeholder="John Doe" 
-                    className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors" 
+                    placeholder="John Doe"
+                    className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-black text-[#222] tracking-widest uppercase mb-3">Email Address *</label>
-                  <input 
-                    type="email" 
+                  <input
+                    type="email"
                     name="email"
                     required
                     value={formData.email}
                     onChange={handleChange}
                     maxLength={255}
-                    placeholder="john@example.com" 
-                    className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors" 
+                    placeholder="john@example.com"
+                    className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors"
                   />
                 </div>
               </div>
@@ -154,44 +153,44 @@ const ContactPage = () => {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-xs font-black text-[#222] tracking-widest uppercase mb-3">Phone Number</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
                     maxLength={50}
-                    placeholder="+977 98XXXXXXX" 
-                    className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors" 
+                    placeholder="+977 98XXXXXXX"
+                    className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors"
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-black text-[#222] tracking-widest uppercase mb-3">Subject</label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
                     maxLength={255}
-                    placeholder="Design Consultation" 
-                    className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors" 
+                    placeholder="Design Consultation"
+                    className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors"
                   />
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-black text-[#222] tracking-widest uppercase mb-3">Message *</label>
-                <textarea 
+                <textarea
                   name="message"
                   required
                   value={formData.message}
                   onChange={handleChange}
-                  rows={6} 
-                  placeholder="Tell us about your space..." 
+                  rows={6}
+                  placeholder="Tell us about your space..."
                   className="w-full bg-white border border-gray-200 rounded-xl px-6 py-4 outline-none focus:border-[#C59D5F] transition-colors resize-none"
                 ></textarea>
               </div>
 
-              <button 
+              <button
                 type="submit"
                 disabled={loading}
                 className={`w-full bg-[#222] text-white font-black tracking-widest uppercase py-5 rounded-xl transition-all shadow-lg flex items-center justify-center gap-4 ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#C59D5F] transform hover:-translate-y-1'}`}
@@ -212,12 +211,10 @@ const ContactPage = () => {
 
       {/* Map Section */}
       <section className="h-[500px] w-full bg-gray-100 grayscale hover:grayscale-0 transition-all duration-700">
-         <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold uppercase tracking-widest">
-            Interactive Map Integration
-         </div>
+        <div className="w-full h-full flex items-center justify-center text-gray-400 font-bold uppercase tracking-widest">
+          Interactive Map Integration
+        </div>
       </section>
-
-      <Footer />
     </div>
   );
 };

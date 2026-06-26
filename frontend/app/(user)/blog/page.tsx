@@ -12,7 +12,6 @@ const BlogListPage = async () => {
 
   return (
     <div className="bg-white overflow-x-hidden min-h-screen">
-      <Navbar transparent={false} />
 
       {/* Hero Header */}
       <section className="pt-40 pb-20 px-6 border-b border-neutral-100">
@@ -117,8 +116,6 @@ const BlogListPage = async () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   );
 };
