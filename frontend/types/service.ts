@@ -22,7 +22,7 @@ export interface Service {
   thumbnail_image: ServiceImage;
   hero_image: ServiceImage;
   gallery_images: ServiceImage[];
-  why_choose: ServiceWhyChoose;
+  why_choose: ServiceWhyChoose | ServiceWhyChoose[] | null;
   sort_order: number;
   is_active: boolean;
   category: ServiceCategory | null;

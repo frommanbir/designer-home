@@ -1,12 +1,14 @@
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Link from "next/link";
 import { getServices } from "@/lib/services";
 import { getProjects } from "@/lib/projects";
 import { getBlogs } from "@/lib/blogs";
 import { getRatings } from "@/lib/ratings";
 import { serverFetch } from "@/lib/server-api";
-import { ArrowRight, Star, Clock, CheckCircle, Headphones, Award, MoveRight } from "lucide-react";
+import { ArrowRight, Star, Clock, CheckCircle, Headphones, Award, MoveRight, Users, PencilRuler, Ruler, Building2, KeyRound } from "lucide-react";
+import React from "react";
+import TestimonialsSlider from "@/components/TestimonialsSlider";
+import BlogSlider from "@/components/BlogSlider";
 
 async function getSiteSettings() {
   try {
@@ -31,27 +33,17 @@ export default async function HomePage() {
       {/* ── Section 1: Hero ───────────────────────── */}
       <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-black/40 z-10" />
+          <div className="absolute inset-0 bg-black/30 z-10" />
           <img
             src="/images/about-home.png"
             alt="Designer Home Hero"
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="relative z-20 flex flex-col items-center text-center px-6 animate-in fade-in slide-in-from-bottom-10 duration-1000">
-          <div className="mb-8">
-             <div className="w-24 h-24 md:w-32 md:h-32 bg-[#C59D5F] flex items-center justify-center rounded-sm shadow-2xl">
-                <span className="text-white font-bold text-6xl md:text-8xl italic">H</span>
-             </div>
-          </div>
-          <h1 className="text-white text-3xl md:text-5xl font-baumans tracking-[0.3em] uppercase opacity-90 drop-shadow-lg">
-             Designer Home
-          </h1>
-        </div>
       </section>
 
       {/* ── Section 2: Designing Spaces ────────────────── */}
-      <section className="py-24 md:py-32 bg-white">
+      <section className="py-6 md:py-16 bg-white">
         <div className="container mx-auto px-6 lg:px-24">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-10">
@@ -59,32 +51,31 @@ export default async function HomePage() {
                 Designing Spaces <br /> That inspire Living
               </h2>
               <div className="space-y-6">
-                <p className="text-neutral-600 text-lg md:text-xl font-medium leading-relaxed max-w-xl">
-                  Transform your vision into reality with innovative interior & architectural design solutions. From concept creation & 3D visualization.
+                <p className="text-neutral-600 text-lg md:text-xl font-medium leading-relaxed max-w-xl font-inter">
+                  Transform your vision into reality with innovative interior & architectural design solutions. From concept creation & 3D visualization to project execution & supervision, Designer Home delivers exceptional
+                  spaces tailored to your lifestyle and needs.
                 </p>
                 <div className="pt-2">
-                  <p className="text-neutral-500 text-base md:text-lg leading-relaxed max-w-xl">
-                    Established in 2016 A.D. <br /> Your trusted partner for customized residential, commercial, and hospitality design projects.
-                  </p>
+                  <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-xl font-inter">
+                    Established in 2016 A.D.<br></br>Your trusted partner for customized residential, commercial, and hospitality <br></br> design projects.</p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-4 pt-4">
-                <Link href="/about" className="px-10 py-4 bg-zinc-800 text-white font-semibold rounded-full hover:bg-neutral-700 transition-all transform hover:-translate-y-1 shadow-lg">
-                  Learn More
+                <Link href="/about" className="px-10 py-4 bg-zinc-600 text-white font-semibold rounded-full hover:bg-neutral-700 transition-all transform hover:-translate-y-1 shadow-lg">
+                  Click for Inquiry
                 </Link>
                 <Link href="/portfolio" className="px-10 py-4 border border-zinc-300 text-zinc-800 font-semibold rounded-full hover:bg-zinc-50 transition-all shadow-sm">
-                  Our Portfolio
+                  Explore Our Projects
                 </Link>
               </div>
             </div>
-            <div className="relative group">
-              <div className="absolute -top-10 -right-10 w-64 h-64 bg-orange-100/50 blur-[80px] rounded-full -z-10" />
-              <div className="rounded-[40px] overflow-hidden shadow-2xl ring-1 ring-black/5">
-                 <img
-                   src="/images/designspace.png"
-                   alt="Expert Design"
-                   className="w-full h-[500px] object-cover transition-transform duration-1000 group-hover:scale-110"
-                 />
+            <div className="relative group ">
+              <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-black/5">
+                <img
+                  src="/images/designspace.png"
+                  alt="Expert Design"
+                  className="w-full h-[500px] object-cover  transition-transform duration-1000 group-hover:scale-110"
+                />
               </div>
             </div>
           </div>
@@ -92,321 +83,248 @@ export default async function HomePage() {
       </section>
 
       {/* ── Section 3: Value Proposition ───────────────── */}
-      <section className="py-24 bg-zinc-50/50">
+      <section className="py-6 md:py-16 bg-zinc-100">
         <div className="container mx-auto px-6 lg:px-24">
-          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-32">
-             <div className="flex-1">
-                <p className="text-neutral-600 text-lg md:text-xl font-medium leading-relaxed border-l-4 border-[#C59D5F] pl-8 py-4">
-                  We bring dreams to life through thoughtful interior & architecture design, creating beautiful, functional spaces that reflect your vision and lifestyle.
-                </p>
-             </div>
-             <div className="flex-1 grid grid-cols-3 gap-8 md:gap-16 w-full">
-                <div className="text-center lg:text-left">
-                  <h3 className="text-neutral-900 text-4xl md:text-5xl lg:text-6xl font-black mb-2">200+</h3>
-                  <p className="text-neutral-500 text-xs md:text-sm font-bold uppercase tracking-widest">Projects</p>
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+
+            {/* Left Image */}
+            <div className="flex-1">
+              <img
+                src="/images/webring.png"
+                alt="Interior Design"
+                className="w-full h-[600px] object-cover rounded-lg"
+              />
+            </div>
+
+            {/* Right Content */}
+            <div className="flex-1">
+              <p className="text-neutral-600 text-3xl md:text-xl font-medium leading-relaxed border-l-4 border-[#C59D5F] pl-8 py-4">
+                We bring dreams to life through thoughtful interior & architecture
+                design, creating beautiful, functional spaces that reflect your
+                vision and lifestyle.
+              </p>
+
+              <div className="grid grid-cols-3 gap-8 mt-12">
+                <div>
+                  <h3 className="text-5xl font-black">200+</h3>
+                  <p className="text-xs uppercase tracking-widest text-neutral-500">
+                    Our Expertise
+                  </p>
                 </div>
-                <div className="text-center lg:text-left">
-                  <h3 className="text-neutral-900 text-4xl md:text-5xl lg:text-6xl font-black mb-2">400+</h3>
-                  <p className="text-neutral-500 text-xs md:text-sm font-bold uppercase tracking-widest">Clients</p>
+
+                <div>
+                  <h3 className="text-5xl font-black">400+</h3>
+                  <p className="text-xs uppercase tracking-widest text-neutral-500">
+                    Projects
+                  </p>
                 </div>
-                <div className="text-center lg:text-left">
-                  <h3 className="text-neutral-900 text-4xl md:text-5xl lg:text-6xl font-black mb-2">4.5</h3>
-                  <p className="text-neutral-500 text-xs md:text-sm font-bold uppercase tracking-widest">Ratings</p>
+
+                <div>
+                  <h3 className="text-5xl font-black">4.5</h3>
+                  <p className="text-xs uppercase tracking-widest text-neutral-500">
+                    Out of 5.0
+                  </p>
                 </div>
-             </div>
-          </div>
-          <div className="mt-20 text-center lg:text-left lg:ml-[53%]">
-             <Link href="/projects" className="px-12 py-3 bg-zinc-800 text-white text-xs font-bold rounded-lg hover:bg-[#C59D5F] transition-all uppercase tracking-[0.2em] shadow-md">
-                Explore Projects
-             </Link>
+              </div>
+
+              <div className="mt-12">
+                <Link
+                  href="/about"
+                  className="px-12 py-3 bg-zinc-500 text-white text-xs font-bold rounded-full hover:bg-zinc-700 transition-all uppercase tracking-[0.2em]"
+                >
+                  Learn More
+                </Link>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
-      {/* ── Section 4: Solutions ───────────────────────── */}
-      <section className="py-32 bg-white">
+      {/* ── Section 4: Complete Design Solutions ───────────────────────── */}
+      <section className="py-24 md:py-32 bg-white overflow-hidden">
         <div className="container mx-auto px-6 lg:px-24">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-             <div className="space-y-4">
-               <h2 className="text-neutral-800 text-4xl md:text-5xl font-bold font-inter leading-tight max-w-xl italic">
-                 Complete Design Solutions Under One Roof
-               </h2>
-             </div>
-             <p className="text-neutral-500 max-w-xs text-sm font-medium leading-relaxed italic border-b border-neutral-200 pb-2">
-               Providing specialized design and construction services tailored to your unique aesthetic.
-             </p>
+          
+          {/* Header: Title Left, Description Right */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-20 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+            <h2 className="text-neutral-900 text-3xl md:text-4xl lg:text-6xl font-black tracking-tight leading-tight max-w-4xl">
+              Complete Design <br /> Solutions Under One Roof
+            </h2>
+            <p className="text-neutral-500 text-sm md:text-base font-medium leading-relaxed max-w-sm lg:text-left">
+              We transform your vision into functional, inspiring spaces
+              with creativity, quality, and attention to detail.
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Grid: 3 Column Layout */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
             {services.slice(0, 3).map((srv: any, idx: number) => (
-              <div key={srv.id} className="group relative h-[500px] rounded-[30px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ring-1 ring-black/5">
+              <Link
+                key={srv.id}
+                href={`/services/${srv.slug}`}
+                className="group relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl transition-all duration-700 bg-neutral-100 block"
+              >
+                {/* Background Image */}
                 <img
-                  src={srv.thumbnail_image?.url || `/images/service-${idx + 1}.jpg`}
+                  src={srv.thumbnail_image?.url || srv.hero_image?.url || `/images/service-placeholder.jpg`}
                   alt={srv.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
-                <div className="absolute bottom-10 left-10 right-10 z-20 flex justify-between items-end transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                   <div className="max-w-[70%]">
-                     <h3 className="text-white text-2xl md:text-3xl font-bold font-inter mb-2 leading-tight drop-shadow-md">{srv.title}</h3>
-                     <p className="text-white/60 text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all delay-200">View Services</p>
-                   </div>
-                   <Link href={`/services/${srv.slug}`} className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/30 hover:bg-[#C59D5F] hover:border-[#C59D5F] transition-all group-hover:scale-110 shadow-xl">
-                     <ArrowRight size={22} className="-rotate-45 transition-transform group-hover:scale-110" />
-                   </Link>
+                
+                {/* Dark Overlay Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+
+                {/* Arrow Icon Button (Top Right) */}
+                <div className="absolute top-6 right-6 w-12 h-12 bg-white rounded-full flex items-center justify-center text-neutral-900 shadow-xl z-20 transform translate-x-2 -translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500">
+                  <MoveRight size={20} className="-rotate-45" />
                 </div>
-              </div>
+
+                {/* Service Title (Bottom Left) */}
+                <div className="absolute bottom-8 left-8 z-20">
+                  <h3 className="text-white text-2xl md:text-3xl font-bold tracking-tight transform group-hover:translate-x-2 transition-transform duration-500">
+                    {srv.title}
+                  </h3>
+                </div>
+              </Link>
             ))}
           </div>
 
-          <div className="mt-20 text-center">
-             <Link href="/services" className="inline-block px-12 py-4 border-2 border-neutral-800 text-neutral-800 text-[10px] font-black rounded-full hover:bg-neutral-800 hover:text-white transition-all uppercase tracking-[0.4em] shadow-sm">
-               View All Services
-             </Link>
+          <div className="mt-20 flex justify-center">
+            <Link 
+              href="/services" 
+              className="group flex items-center gap-4 px-10 py-5 bg-black text-white rounded-full font-bold text-xs uppercase tracking-[0.3em] hover:bg-neutral-800 transition-all shadow-xl active:scale-95"
+            >
+              Learn More About Services
+              <MoveRight size={18} className="transition-transform group-hover:translate-x-2" />
+            </Link>
           </div>
         </div>
       </section>
 
       {/* ── Section 5: OUR PROCESS ─────────────────────── */}
-      <section className="py-32 bg-zinc-50/50 overflow-hidden relative">
+      <section className="py-32 bg-white overflow-hidden relative">
         <div className="container mx-auto px-6 lg:px-24">
-          <div className="flex justify-between items-center mb-24">
-             <h2 className="text-neutral-800 text-4xl md:text-5xl font-black font-inter tracking-tighter uppercase italic opacity-90 group">
-               Our Process
-               <span className="block h-1.5 w-1/2 bg-[#C59D5F] mt-2 origin-left transition-transform duration-700 scale-x-0 group-hover:scale-x-100" />
-             </h2>
-             <Link href="/contact" className="hidden md:inline-flex px-10 py-4 bg-neutral-800 text-white text-[10px] font-bold rounded-lg hover:bg-[#C59D5F] transition-all uppercase tracking-[0.3em] items-center gap-2 shadow-lg">
-                Learn More <ArrowRight size={14} />
-             </Link>
+          <div className="flex justify-between items-center mb-20">
+            <h2 className="text-neutral-900 text-4xl md:text-5xl font-extrabold uppercase tracking-tight">
+              Our Process
+            </h2>
           </div>
 
-          <div className="relative flex flex-col lg:flex-row justify-between items-center gap-12 lg:gap-4">
-            {/* Connection Line */}
-            <div className="absolute top-[4.5rem] left-[10%] right-[10%] h-[1px] bg-neutral-200 hidden lg:block z-0" />
-
+          <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-10 lg:gap-2">
             {[
-              { title: "Interior Design", icon: Headphones },
-              { title: "Construction & Planning", icon: Award },
-              { title: "Floor Planning", icon: CheckCircle },
-              { title: "Site Visit & Supervision", icon: Clock },
-              { title: "3D Modeling", icon: Star }
-            ].map((step, idx) => (
-              <div key={idx} className="flex-1 flex flex-col items-center gap-8 relative z-10 group cursor-default">
-                <div className={`w-36 h-36 rounded-full border-2 flex items-center justify-center transition-all duration-700 shadow-sm
-                  ${idx % 2 === 0 ? 'bg-white border-neutral-100 group-hover:border-[#C59D5F] text-neutral-600 group-hover:text-[#C59D5F]' : 'bg-neutral-800 border-neutral-800 text-white group-hover:bg-[#C59D5F] group-hover:border-[#C59D5F]'}
-                  group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-2xl`}>
-                  <step.icon size={56} strokeWidth={1} />
+              { title: "Consultation and Planning", icon: Users, filled: true },
+              { title: "Concept Design and Visualization", icon: PencilRuler },
+              { title: "Design Finalization", icon: Ruler },
+              { title: "Execution & Supervision", icon: Building2 },
+              { title: "Project Handover", icon: KeyRound },
+            ].map((step, idx, arr) => (
+              <React.Fragment key={idx}>
+                <div className="flex flex-col items-center gap-6 shrink-0">
+                  <div
+                    className={`w-36 h-36 rounded-full flex items-center justify-center transition-all duration-300
+                ${step.filled
+                        ? "bg-neutral-300 text-white"
+                        : "bg-white border border-neutral-200 text-neutral-700 hover:border-neutral-400"
+                      }`}
+                  >
+                    <step.icon size={48} strokeWidth={1.25} />
+                  </div>
+                  <p className="text-center text-[15px] text-neutral-600 leading-snug max-w-[150px]">
+                    {step.title}
+                  </p>
                 </div>
-                <div className="space-y-2 text-center transform transition-transform group-hover:translate-y-2">
-                   <p className="text-[#C59D5F] text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Step 0{idx + 1}</p>
-                   <p className="text-neutral-700 font-bold text-sm uppercase tracking-wider max-w-[150px] transition-colors group-hover:text-black">{step.title}</p>
-                </div>
-              </div>
+
+                {idx < arr.length - 1 && (
+                  <div className="hidden lg:flex items-center h-36">
+                    <ArrowRight
+                      size={20}
+                      strokeWidth={1.5}
+                      className="text-neutral-400 shrink-0"
+                    />
+                  </div>
+                )}
+              </React.Fragment>
             ))}
           </div>
         </div>
       </section>
 
       {/* ── Section 6: Our Projects ──────────────────────── */}
-      <section className="py-32 bg-white">
+      <section className="py-6 md:py-16 bg-zinc-100">
         <div className="container mx-auto px-6 lg:px-24">
           <div className="flex flex-col md:flex-row justify-between items-center mb-20 gap-8">
-            <h2 className="text-neutral-800 text-4xl md:text-5xl font-extrabold font-inter uppercase tracking-tighter italic">Our Projects</h2>
+            <h2 className="text-neutral-800 text-4xl md:text-5xl font-extrabold font-inter uppercase tracking-tighter">Our Projects</h2>
             <div className="flex gap-4">
-               <button className="w-12 h-12 rounded-full border border-neutral-100 flex items-center justify-center text-neutral-300 hover:border-black hover:text-black transition-all shadow-sm">
-                 <MoveRight size={24} className="rotate-180" />
-               </button>
-               <button className="w-12 h-12 rounded-full bg-[#C59D5F] flex items-center justify-center text-white shadow-lg hover:bg-neutral-800 transition-all">
-                 <MoveRight size={24} />
-               </button>
+              <button className="w-12 h-12 rounded-full border border-neutral-100 flex items-center justify-center text-neutral-300 hover:border-black hover:text-black transition-all shadow-sm">
+                <MoveRight size={24} className="rotate-180" />
+              </button>
+              <button className="w-12 h-12 rounded-full bg-[#C59D5F] flex items-center justify-center text-white shadow-lg hover:bg-neutral-800 transition-all">
+                <MoveRight size={24} />
+              </button>
             </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-12 lg:gap-16">
-            {/* Project Card 1 */}
-            <div className="space-y-8 group cursor-pointer">
-              <div className="h-[550px] rounded-[50px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
-                <img
-                  src="/images/bedroom.jpg"
-                  alt="Residential"
-                  className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
-                />
-                <div className="absolute top-10 right-10 w-16 h-16 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-black border border-black/5 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-x-4 group-hover:translate-x-0 shadow-2xl">
-                   <ArrowRight size={28} className="-rotate-45" />
+            {projects.length > 0 ? (
+              projects.slice().sort((a: any, b: any) => b.id - a.id).slice(0, 2).map((project: any) => (
+                <Link key={project.id} href={`/projects/${project.slug}`} className="space-y-8 group cursor-pointer">
+                  <div className="h-[550px] rounded-[20px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
+                    <img
+                      src={project.thumbnail_image_url || project.gallery_image_urls?.[0] || "/images/project-placeholder.jpg"}
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
+                    />
+                    <div className="absolute top-10 right-10 w-16 h-16 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-black border border-black/5 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-x-4 group-hover:translate-x-0 shadow-2xl">
+                      <ArrowRight size={28} className="-rotate-45" />
+                    </div>
+                  </div>
+                  <div className="space-y-4 px-4">
+                    <h3 className="text-neutral-800 text-3xl font-black font-inter group-hover:text-[#C59D5F] transition-colors">{project.title}</h3>
+                    <p className="text-neutral-500 text-lg leading-relaxed max-w-md italic border-l-2 border-neutral-100 pl-4">
+                      {project.short_description || project.subtitle || "Modern design solution tailored to specific client needs and space requirements."}
+                    </p>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              // Realistic Project Placeholders
+              [1, 2].map((i) => (
+                <div key={i} className="space-y-8">
+                  <div className="h-[550px] rounded-[50px] bg-neutral-50 animate-pulse border border-neutral-100" />
+                  <div className="space-y-4 px-4">
+                    <div className="h-10 w-3/4 bg-neutral-100 animate-pulse rounded-full" />
+                    <div className="h-6 w-full bg-neutral-50 animate-pulse rounded-full" />
+                  </div>
                 </div>
-              </div>
-              <div className="space-y-4 px-4">
-                <h3 className="text-neutral-800 text-3xl font-black font-inter group-hover:text-[#C59D5F] transition-colors">Residential Projects</h3>
-                <p className="text-neutral-500 text-lg leading-relaxed max-w-md italic border-l-2 border-neutral-100 pl-4">
-                   Bespoke living environments that blend intimacy with luxury. Every detail is curated to reflect the art of high-end living.
-                </p>
-              </div>
-            </div>
-
-            {/* Project Card 2 */}
-            <div className="space-y-8 group cursor-pointer">
-              <div className="h-[550px] rounded-[50px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
-                <img
-                  src="/images/dining.jpg"
-                  alt="Commercial"
-                  className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
-                />
-                <div className="absolute top-10 right-10 w-16 h-16 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-black border border-black/5 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-x-4 group-hover:translate-x-0 shadow-2xl">
-                   <ArrowRight size={28} className="-rotate-45" />
-                </div>
-              </div>
-              <div className="space-y-4 px-4">
-                <h3 className="text-neutral-800 text-3xl font-black font-inter group-hover:text-[#C59D5F] transition-colors">Commercial Projects</h3>
-                <p className="text-neutral-500 text-lg leading-relaxed max-w-md italic border-l-2 border-neutral-100 pl-4">
-                   Elevate your business presence with sophisticated architectural designs that inspire productivity and define your brand.
-                </p>
-              </div>
-            </div>
+              ))
+            )}
           </div>
 
           <div className="text-center mt-24">
-            <Link href="/projects" className="inline-block px-14 py-4 border-2 border-neutral-200 text-neutral-800 text-[10px] font-black rounded-full hover:border-neutral-800 hover:bg-neutral-50 transition-all uppercase tracking-[0.4em] shadow-sm">
-               Explore Full Portfolio
+            <Link href="/projects" className="inline-block px-14 py-4 border-2 border-neutral-200 text-neutral-800 font-black rounded-full hover:border-neutral-800 hover:bg-neutral-50 transition-all">
+              View Our Portfolio
             </Link>
           </div>
         </div>
       </section>
 
       {/* ── Section 7: What Our Customer Says ──────────────── */}
-      <section className="py-32 bg-neutral-900 text-white relative overflow-hidden">
-        {/* Background Accents */}
-        <div className="absolute -bottom-48 -left-48 w-96 h-96 bg-[#C59D5F]/20 blur-[120px] rounded-full" />
-        <div className="absolute -top-48 -right-48 w-96 h-96 bg-white/5 blur-[120px] rounded-full" />
-
-        <div className="container mx-auto px-6 lg:px-24 relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-24 gap-12">
-             <h2 className="text-4xl md:text-5xl lg:text-7xl font-bold font-inter leading-tight">
-                What Our <br />
-                <span className="text-[#C59D5F] italic">
-                  Customer
-                </span> Says
-             </h2>
-             <div className="flex gap-4">
-                <button className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center text-white/30 hover:text-white hover:border-white transition-all shadow-inner">
-                  <MoveRight size={28} className="rotate-180" />
-                </button>
-                <button className="w-16 h-16 rounded-full border border-white/60 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all">
-                  <MoveRight size={28} />
-                </button>
-             </div>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12">
-            {ratings.length > 0 ? ratings.slice(0, 2).map((rating: any) => (
-              <div key={rating.id} className="p-12 bg-white/5 backdrop-blur-xl rounded-[60px] border border-white/5 hover:bg-white/10 transition-all duration-700 group hover:-translate-y-2">
-                <div className="flex justify-between items-start mb-12">
-                  <div>
-                    <h4 className="text-3xl font-bold font-inter group-hover:text-[#C59D5F] transition-colors">{rating.customer_name}</h4>
-                    <p className="text-white/20 text-[10px] mt-2 uppercase tracking-[0.3em] font-black">{rating.review_date || "VALUED CLIENT"}</p>
-                  </div>
-                  <div className="flex gap-1.5 p-4 bg-white/5 rounded-3xl border border-white/5 shadow-inner">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} size={20} fill={i < rating.rating ? "#C59D5F" : "none"} className={i < rating.rating ? "text-[#C59D5F]" : "text-white/5"} />
-                    ))}
-                  </div>
-                </div>
-                <p className="text-white/60 text-xl leading-relaxed italic line-clamp-5 font-baumans opacity-80 group-hover:opacity-100 transition-opacity">
-                  "{rating.review_text}"
-                </p>
-              </div>
-            )) : (
-              // Enhanced Placeholder
-              [1, 2].map((i) => (
-                <div key={i} className="p-12 bg-white/5 backdrop-blur-md rounded-[60px] border border-white/5 opacity-40">
-                  <div className="flex justify-between items-start mb-12">
-                    <div className="h-10 w-56 bg-white/5 animate-pulse rounded-full" />
-                    <div className="h-10 w-32 bg-white/5 animate-pulse rounded-full" />
-                  </div>
-                  <div className="space-y-4">
-                    <div className="h-4 w-full bg-white/5 animate-pulse rounded" />
-                    <div className="h-4 w-full bg-white/5 animate-pulse rounded" />
-                    <div className="h-4 w-3/4 bg-white/5 animate-pulse rounded" />
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          <div className="flex justify-center gap-4 mt-24">
-             <div className="w-20 h-1 bg-[#C59D5F] rounded-full" />
-             <div className="w-4 h-1 bg-white/10 rounded-full" />
-             <div className="w-4 h-1 bg-white/10 rounded-full" />
-          </div>
+      <section className="py-32 relative overflow-hidden min-h-[800px]">
+        {/* Background with Blur & Overlay */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/images/living-room.jpg"
+            alt="Testimonials Background"
+            className="w-full h-full object-cover blur-md scale-110 brightness-[0.4]"
+          />
         </div>
-      </section>
 
+        <TestimonialsSlider ratings={ratings} />
+      </section>
       {/* ── Section 8: Blogs ───────────────────────────── */}
-      <section className="py-32 bg-white">
-        <div className="container mx-auto px-6 lg:px-24">
-          <div className="flex flex-col md:flex-row justify-between items-center mb-24 gap-8">
-            <h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-black font-inter uppercase tracking-tighter group cursor-default">
-              Latest Blog Updates
-              <span className="block h-1 w-24 bg-[#C59D5F] mt-3 group-hover:w-full transition-all duration-700" />
-            </h2>
-            <div className="hidden md:flex gap-4">
-               <button className="w-12 h-12 rounded-full border border-neutral-100 flex items-center justify-center text-neutral-300 hover:border-black hover:text-black transition-all">
-                 <MoveRight size={24} className="rotate-180" />
-               </button>
-               <button className="w-12 h-12 rounded-full bg-[#111] flex items-center justify-center text-white shadow-lg hover:bg-[#C59D5F] transition-all">
-                 <MoveRight size={24} />
-               </button>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-16 lg:gap-20">
-            {blogs.length > 0 ? blogs.slice(0, 2).map((blog: any) => (
-              <div key={blog.id} className="group flex flex-col space-y-10">
-                <div className="h-[480px] rounded-[50px] overflow-hidden relative shadow-2xl ring-1 ring-black/5">
-                  <img
-                    src={blog.featured_image_url || "/images/blog-placeholder.jpg"}
-                    alt={blog.title}
-                    className="w-full h-full object-cover transition-transform duration-[2.5s] group-hover:scale-110"
-                  />
-                  <div className="absolute top-10 right-10 w-14 h-14 bg-white/95 backdrop-blur rounded-full flex items-center justify-center text-black border border-black/5 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-700 scale-0 group-hover:scale-100 hover:bg-[#C59D5F] hover:text-white">
-                     <ArrowRight size={26} className="-rotate-45" />
-                  </div>
-                </div>
-                <div className="space-y-6 px-4 group-hover:translate-x-2 transition-transform duration-500">
-                   <div className="flex items-center gap-3">
-                      <span className="text-[#C59D5F] text-[10px] font-black uppercase tracking-widest border border-[#C59D5F]/20 px-3 py-1 rounded-full">Article</span>
-                      <span className="text-neutral-300 text-[10px] uppercase font-bold tracking-widest">5 min read</span>
-                   </div>
-                   <h3 className="text-neutral-900 text-3xl font-black font-inter group-hover:text-[#C59D5F] transition-colors line-clamp-2 leading-tight">
-                     {blog.title}
-                   </h3>
-                   <p className="text-neutral-500 text-lg leading-relaxed line-clamp-3 italic opacity-80 group-hover:opacity-100 transition-opacity">
-                     {blog.short_description || "Exploring the intersection of luxury, comfort, and state-of-the-art architectural design trends for current and future living."}
-                   </p>
-                </div>
-              </div>
-            )) : (
-              // Realistic Blog Placeholders
-              [1, 2].map((i) => (
-                <div key={i} className="space-y-10">
-                  <div className="h-[480px] rounded-[50px] bg-neutral-50 animate-pulse border border-neutral-100" />
-                  <div className="space-y-6 px-4">
-                    <div className="h-10 w-full bg-neutral-100 animate-pulse rounded-full" />
-                    <div className="h-6 w-5/6 bg-neutral-50 animate-pulse rounded-full" />
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          <div className="text-center mt-32">
-            <Link href="/blog" className="inline-block px-16 py-5 bg-[#111] text-white text-[10px] font-black rounded-full hover:bg-[#C59D5F] transition-all uppercase tracking-[0.5em] shadow-2xl transform hover:-translate-y-1">
-               Read The Journal
-            </Link>
-          </div>
-        </div>
+      <section className="py-6 md:py-16 bg-white">
+        <BlogSlider blogs={blogs} />
       </section>
-
-      <Footer settings={settings} />
     </div>
   );
 }

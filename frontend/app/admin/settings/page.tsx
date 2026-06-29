@@ -54,19 +54,34 @@ export default function SiteSettingsPage() {
         };
 
         setSettings({
-          branding: { ...settings.branding, ...sanitize(res.data.branding) },
-          about: { ...settings.about, ...sanitize(res.data.about) },
+          branding: { 
+            website_title: res.data.branding?.website_title || "", 
+            website_slogan: res.data.branding?.website_slogan || "", 
+            logo: res.data.branding?.logo?.path || "", 
+            favicon: res.data.branding?.favicon?.path || "" 
+          },
+          about: { about_us: res.data.about?.about_us || "" },
           contact_details: { ...settings.contact_details, ...sanitize(res.data.contact_details) },
-          social_media: { ...settings.social_media, ...sanitize(res.data.social_media) }
+          social_media: { 
+            facebook_title: res.data.social_media?.facebook?.title || "",
+            facebook_url: res.data.social_media?.facebook?.url || "",
+            facebook_icon: res.data.social_media?.facebook?.icon?.path || "",
+            twitter_title: res.data.social_media?.x?.title || "",
+            twitter_url: res.data.social_media?.x?.url || "",
+            twitter_icon: res.data.social_media?.x?.icon?.path || "",
+            instagram_title: res.data.social_media?.instagram?.title || "",
+            instagram_url: res.data.social_media?.instagram?.url || "",
+            instagram_icon: res.data.social_media?.instagram?.icon?.path || "",
+          }
         });
         
         // Pre-fill previews
         setPreviews({
-          logo: res.data.branding?.logo || "",
-          favicon: res.data.branding?.favicon || "",
-          facebook_icon: res.data.social_media?.facebook_icon || "",
-          twitter_icon: res.data.social_media?.twitter_icon || "",
-          instagram_icon: res.data.social_media?.instagram_icon || "",
+          logo: res.data.branding?.logo?.url || "",
+          favicon: res.data.branding?.favicon?.url || "",
+          facebook_icon: res.data.social_media?.facebook?.icon?.url || "",
+          twitter_icon: res.data.social_media?.x?.icon?.url || "",
+          instagram_icon: res.data.social_media?.instagram?.icon?.url || "",
         });
       }
     } catch (error: any) {
@@ -120,10 +135,51 @@ export default function SiteSettingsPage() {
         body: formData, // fetchApi will clear Content-Type for FormData
       });
 
-      if (res.success) {
+      if (res.success && res.data) {
         toast.success("Site settings updated successfully.");
+        
+        // Update state with saved data to get correct URLs
+        const sanitize = (obj: any) => {
+          if (!obj) return {};
+          return Object.fromEntries(
+            Object.entries(obj).map(([k, v]) => [k, v === null ? "" : v])
+          );
+        };
+
+        setSettings({
+          branding: { 
+            website_title: res.data.branding?.website_title || "", 
+            website_slogan: res.data.branding?.website_slogan || "", 
+            logo: res.data.branding?.logo?.path || "", 
+            favicon: res.data.branding?.favicon?.path || "" 
+          },
+          about: { about_us: res.data.about?.about_us || "" },
+          contact_details: { ...settings.contact_details, ...sanitize(res.data.contact_details) },
+          social_media: { 
+            facebook_title: res.data.social_media?.facebook?.title || "",
+            facebook_url: res.data.social_media?.facebook?.url || "",
+            facebook_icon: res.data.social_media?.facebook?.icon?.path || "",
+            twitter_title: res.data.social_media?.x?.title || "",
+            twitter_url: res.data.social_media?.x?.url || "",
+            twitter_icon: res.data.social_media?.x?.icon?.path || "",
+            instagram_title: res.data.social_media?.instagram?.title || "",
+            instagram_url: res.data.social_media?.instagram?.url || "",
+            instagram_icon: res.data.social_media?.instagram?.icon?.path || "",
+          }
+        });
+        
+        setPreviews({
+          logo: res.data.branding?.logo?.url || "",
+          favicon: res.data.branding?.favicon?.url || "",
+          facebook_icon: res.data.social_media?.facebook?.icon?.url || "",
+          twitter_icon: res.data.social_media?.x?.icon?.url || "",
+          instagram_icon: res.data.social_media?.instagram?.icon?.url || "",
+        });
+
+        setFiles({ logo: null, favicon: null, facebook_icon: null, twitter_icon: null, instagram_icon: null });
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
+      } else if (!res.success) {
         toast.error(res.message || "Failed to update settings.");
       }
     } catch (error: any) {

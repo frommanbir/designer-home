@@ -25,12 +25,14 @@ class Service extends Model
         'why_choose_image_path',
         'why_choose_points',
         'gallery_images',
+        'why_choose',
         'sort_order',
         'is_active',
     ];
 
     protected $casts = [
         'why_choose_points' => 'array',
+        'why_choose' => 'array',
         'gallery_images' => 'array',
         'sort_order' => 'integer',
         'is_active' => 'boolean',

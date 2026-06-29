@@ -66,7 +66,7 @@ class ServiceService
         $data = Arr::except($validated, [
             'thumbnail_image',
             'hero_image',
-            'why_choose_image',
+            'why_choose',
             'gallery_images',
         ]);
 
@@ -77,10 +77,10 @@ class ServiceService
             $data['is_active'] = $data['is_active'] ?? true;
         }
 
+        // Standard image fields
         $imageFields = [
             'thumbnail_image' => 'thumbnail_image_path',
             'hero_image' => 'hero_image_path',
-            'why_choose_image' => 'why_choose_image_path',
         ];
 
         foreach ($imageFields as $requestField => $databaseColumn) {
@@ -93,6 +93,38 @@ class ServiceService
 
                 $data[$databaseColumn] = $newPath;
             }
+        }
+
+        // Multi-block why_choose processing
+        if (isset($validated['why_choose']) && is_array($validated['why_choose'])) {
+            $whyChooseData = [];
+            $existingWhyChoose = $service?->why_choose ?? [];
+
+            foreach ($validated['why_choose'] as $index => $block) {
+                $blockData = [
+                    'title' => $block['title'] ?? '',
+                    'description' => $block['description'] ?? '',
+                    'points' => $block['points'] ?? [],
+                    'image' => null,
+                ];
+
+                // Check if a new file was uploaded for this block
+                if (isset($files['why_choose'][$index]['image'])) {
+                    $imagePath = $files['why_choose'][$index]['image']->store('services/why-choose', 'public');
+                    $blockData['image'] = [
+                        'url' => Storage::url($imagePath),
+                        'path' => $imagePath,
+                    ];
+                } 
+                // Keep existing image if no new one provided
+                elseif (!empty($existingWhyChoose[$index]['image'])) {
+                    $blockData['image'] = $existingWhyChoose[$index]['image'];
+                }
+
+                $whyChooseData[] = $blockData;
+            }
+
+            $data['why_choose'] = $whyChooseData;
         }
 
         if (isset($files['gallery_images'])) {
@@ -125,6 +157,13 @@ class ServiceService
         ] as $path) {
             if ($path) {
                 Storage::disk('public')->delete($path);
+            }
+        }
+
+        // Delete images in multi-block why_choose
+        foreach ($service->why_choose ?? [] as $block) {
+            if (!empty($block['image']['path'])) {
+                Storage::disk('public')->delete($block['image']['path']);
             }
         }
 

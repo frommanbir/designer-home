@@ -27,17 +27,31 @@ class ServiceResource extends JsonResource
                 'url' => $this->imageUrl($this->hero_image_path),
             ],
             'gallery_images' => $this->galleryImages(),
-            'why_choose' => [
-                'title' => $this->why_choose_title,
-                'description' => $this->why_choose_description,
-                'image' => [
-                    'path' => $this->why_choose_image_path,
-                    'url' => $this->imageUrl($this->why_choose_image_path),
-                ],
-                'points' => $this->why_choose_points ?? [],
-            ],
+            'why_choose' => $this->whyChooseData(),
             'sort_order' => $this->sort_order,
             'is_active' => $this->is_active,
+        ];
+    }
+
+    private function whyChooseData(): array
+    {
+        if (is_array($this->why_choose)) {
+            return collect($this->why_choose)->map(function ($block) {
+                if (isset($block['image']['path'])) {
+                    $block['image']['url'] = $this->imageUrl($block['image']['path']);
+                }
+                return $block;
+            })->all();
+        }
+
+        return [
+            'title' => $this->why_choose_title,
+            'description' => $this->why_choose_description,
+            'image' => [
+                'path' => $this->why_choose_image_path,
+                'url' => $this->imageUrl($this->why_choose_image_path),
+            ],
+            'points' => $this->why_choose_points ?? [],
         ];
     }
 

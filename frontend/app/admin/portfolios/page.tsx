@@ -169,13 +169,13 @@ export default function PortfoliosPage() {
         </div>
         
         <div className="flex items-center gap-3">
-          <Link 
+          {/* <Link 
             href="/admin/portfolios/categories"
             className="flex items-center gap-2 px-4 py-2.5 bg-neutral-100 text-neutral-900 rounded-xl hover:bg-neutral-200 transition-all font-semibold border border-neutral-200"
           >
             <Tag size={18} />
             Categories
-          </Link>
+          </Link> */}
           <button 
             onClick={() => handleOpenModal()}
             className="flex items-center gap-2 px-4 py-2.5 bg-black text-white rounded-xl hover:bg-neutral-800 transition-all font-semibold shadow-sm"
@@ -199,7 +199,7 @@ export default function PortfoliosPage() {
           />
         </div>
         
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <Filter size={18} className="text-neutral-400" />
           <select 
             value={selectedCategory}
@@ -211,7 +211,7 @@ export default function PortfoliosPage() {
               <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
-        </div>
+        </div> */}
       </div>
 
       {/* Table */}
@@ -353,7 +353,7 @@ export default function PortfoliosPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Category</label>
                 <select 
                   className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all"
@@ -365,7 +365,7 @@ export default function PortfoliosPage() {
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
-              </div>
+              </div> */}
 
               <div className="space-y-2">
                 <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Short Description</label>
@@ -397,7 +397,7 @@ export default function PortfoliosPage() {
                 </div>
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Gallery Images</label>
                 <div className="space-y-4">
                   {currentPortfolio?.gallery_image_urls && currentPortfolio.gallery_image_urls.length > 0 && (
@@ -425,7 +425,7 @@ export default function PortfoliosPage() {
                     </p>
                   )}
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex items-center gap-8 py-2">
                 <label className="flex items-center gap-2 cursor-pointer group">
@@ -438,7 +438,7 @@ export default function PortfoliosPage() {
                   <span className="text-sm font-semibold text-neutral-700 group-hover:text-black">Active</span>
                 </label>
                 
-                <label className="flex items-center gap-2 cursor-pointer group">
+                {/* <label className="flex items-center gap-2 cursor-pointer group">
                   <input 
                     type="checkbox"
                     checked={currentPortfolio?.is_featured || false}
@@ -446,7 +446,7 @@ export default function PortfoliosPage() {
                     className="w-4 h-4 rounded border-neutral-300 text-black focus:ring-black"
                   />
                   <span className="text-sm font-semibold text-neutral-700 group-hover:text-black">Featured</span>
-                </label>
+                </label> */}
               </div>
 
               <div className="flex gap-4 pt-4">

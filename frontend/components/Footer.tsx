@@ -63,8 +63,8 @@ const Footer = ({ settings }: { settings?: any }) => {
                {contact.email || "info@designerhomenepal.com"}
             </p>
             <p className="flex flex-col gap-2">
-               <span className="font-bold text-[#C59D5F] text-xs uppercase tracking-widest">Phome</span>
-               {contact.phone || "+977 9709080688, 9702910457"}
+               <span className="font-bold text-[#C59D5F] text-xs uppercase tracking-widest">Phone</span>
+               {contact.phone && contact.phone2 ? `${contact.phone}, ${contact.phone2}` : contact.phone || "+977 9709080688, 9702910457"}
             </p>
           </div>
         </div>
