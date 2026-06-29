@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+const ITEMS_PER_PAGE = 10;
+
 export default function ContactInquiriesPage() {
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,6 +34,7 @@ export default function ContactInquiriesPage() {
   const [selectedInquiry, setSelectedInquiry] = useState<ContactInquiry | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     fetchInquiries();
@@ -82,6 +85,16 @@ export default function ContactInquiriesPage() {
     item.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (item.subject?.toLowerCase() || "").includes(searchQuery.toLowerCase())
   );
+
+  const totalPages = Math.ceil(filteredInquiries.length / ITEMS_PER_PAGE);
+  const paginatedInquiries = filteredInquiries.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+  
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
@@ -161,6 +174,7 @@ export default function ContactInquiriesPage() {
             <table className="w-full text-left">
               <thead className="bg-neutral-50/50 border-b border-neutral-100">
                 <tr>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">S.No</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">User</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Subject</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider text-center">Status</th>
@@ -168,8 +182,9 @@ export default function ContactInquiriesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-50">
-                {filteredInquiries.map((item) => (
+                {paginatedInquiries.map((item, index) => (
                   <tr key={item.id} className="hover:bg-neutral-50/40 transition-colors group">
+                    <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                     <td className="py-4 px-6">
                       <div className="flex flex-col">
                         <span className="font-semibold text-neutral-900">{item.name}</span>
@@ -228,6 +243,42 @@ export default function ContactInquiriesPage() {
                 ))}
               </tbody>
             </table>
+            <div className="px-6 py-4 bg-neutral-50/30 border-t border-neutral-100 flex items-center justify-between">
+              <div className="text-sm text-neutral-600 font-medium">
+                Showing {filteredInquiries.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredInquiries.length)} of {filteredInquiries.length}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Previous
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
+                        currentPage === page
+                          ? "bg-black text-white"
+                          : "border border-neutral-200 text-neutral-600 hover:bg-neutral-50"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
