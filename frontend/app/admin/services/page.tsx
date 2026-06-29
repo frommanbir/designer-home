@@ -366,7 +366,7 @@ export default function ServicesAdminPage() {
                     type="button"
                     onClick={() => setActiveTab(t.id)}
                     className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                      isActive ? "bg-black text-white shadow-md" : "text-neutral-400 hover:text-black hover:bg-white"
+                      isActive ? "bg-[#C59D5F] text-white shadow-md" : "text-neutral-400 hover:text-black hover:bg-white"
                     }`}
                   >
                     <t.icon size={14} /> {t.label}
@@ -432,7 +432,7 @@ export default function ServicesAdminPage() {
                     ) : (
                        <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mb-6 text-neutral-200 shadow-sm"><ImageIcon size={32} /></div>
                     )}
-                    <label className="cursor-pointer bg-black text-white px-8 py-3 rounded-2xl font-bold text-xs shadow-xl active:scale-95 transition-all">
+                    <label className="cursor-pointer bg-[#C59D5F] text-white px-8 py-3 rounded-2xl font-bold text-xs shadow-xl active:scale-95 transition-all">
                       Choose Hero Image
                       <input type="file" className="hidden" accept="image/*" onChange={e => setHeroImageFile(e.target.files?.[0] || null)} />
                     </label>
@@ -546,9 +546,9 @@ export default function ServicesAdminPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-10 py-4 bg-black text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl shadow-black/40 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center gap-3 disabled:opacity-50 cursor-pointer"
+                  className="px-10 py-4 bg-[#C59D5F] text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl shadow-black/40 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center gap-3 disabled:opacity-50 cursor-pointer"
                 >
-                  {saving ? <Loader2 size={18} className="animate-spin text-[#C59D5F]" /> : <Save size={18} className="text-[#C59D5F]" />}
+                  {saving ? <Loader2 size={18} className="animate-spin text-black" /> : <Save size={18} className="text-black" />}
                   {selectedServiceId === 'new' ? "Create Expertise" : "Save All Changes"}
                 </button>
               </div>
