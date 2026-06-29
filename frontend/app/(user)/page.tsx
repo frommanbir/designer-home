@@ -69,12 +69,12 @@ export default async function HomePage() {
                 </Link>
               </div>
             </div>
-            <div className="relative group ">
+            <div className="relative group w-full">
               <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-black/5">
                 <img
                   src="/images/designspace.png"
                   alt="Expert Design"
-                  className="w-full h-[500px] object-cover  transition-transform duration-1000 group-hover:scale-110"
+                  className="w-full h-[300px] sm:h-[400px] lg:h-[500px] object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
               </div>
             </div>
@@ -88,11 +88,11 @@ export default async function HomePage() {
           <div className="flex flex-col lg:flex-row items-center gap-16">
 
             {/* Left Image */}
-            <div className="flex-1">
+            <div className="flex-1 w-full">
               <img
                 src="/images/webring.png"
                 alt="Interior Design"
-                className="w-full h-[600px] object-cover rounded-lg"
+                className="w-full h-[300px] sm:h-[450px] lg:h-[600px] object-cover rounded-lg"
               />
             </div>
 
@@ -104,24 +104,24 @@ export default async function HomePage() {
                 vision and lifestyle.
               </p>
 
-              <div className="grid grid-cols-3 gap-8 mt-12">
+              <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-12">
                 <div>
-                  <h3 className="text-5xl font-black">200+</h3>
-                  <p className="text-xs uppercase tracking-widest text-neutral-500">
+                  <h3 className="text-4xl sm:text-5xl font-black">200+</h3>
+                  <p className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500">
                     Our Expertise
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-5xl font-black">400+</h3>
-                  <p className="text-xs uppercase tracking-widest text-neutral-500">
+                  <h3 className="text-4xl sm:text-5xl font-black">400+</h3>
+                  <p className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500">
                     Projects
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-5xl font-black">4.5</h3>
-                  <p className="text-xs uppercase tracking-widest text-neutral-500">
+                  <h3 className="text-4xl sm:text-5xl font-black">4.5</h3>
+                  <p className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500">
                     Out of 5.0
                   </p>
                 </div>
@@ -158,7 +158,7 @@ export default async function HomePage() {
 
           {/* Grid: 3 Column Layout */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
-            {services.slice(0, 8).map((srv: any, idx: number) => (
+            {services.slice(0, 4).map((srv: any, idx: number) => (
               <Link
                 key={srv.id}
                 href={`/services/${srv.slug}`}
@@ -189,13 +189,13 @@ export default async function HomePage() {
             ))}
           </div>
 
-          <div className="mt-20 flex justify-center">
+          <div className="mt-16 flex justify-center">
             <Link 
               href="/services" 
-              className="group flex items-center gap-4 px-10 py-5 bg-black text-white rounded-full font-bold text-xs uppercase tracking-[0.3em] hover:bg-neutral-800 transition-all shadow-xl active:scale-95"
+              className="group flex items-center gap-4 px-10 py-5 bg-black text-white rounded-full font-bold text-xs uppercase tracking-[0.3em] hover:bg-neutral-800 hover:text-white transition-all shadow-xl active:scale-95 cursor-pointer"
             >
-              Learn More About Services
-              <MoveRight size={18} className="transition-transform group-hover:translate-x-2" />
+              View All
+              <MoveRight size={18} className="transition-transform group-hover:translate-x-2 text-[#C59D5F]" />
             </Link>
           </div>
         </div>
@@ -268,7 +268,7 @@ export default async function HomePage() {
             {projects.length > 0 ? (
               projects.slice().sort((a: any, b: any) => b.id - a.id).slice(0, 2).map((project: any) => (
                 <Link key={project.id} href={`/projects/${project.slug}`} className="space-y-8 group cursor-pointer">
-                  <div className="h-[550px] rounded-[20px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
+                  <div className="h-[300px] sm:h-[450px] lg:h-[550px] rounded-[20px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
                     <img
                       src={project.thumbnail_image_url || project.gallery_image_urls?.[0] || "/images/project-placeholder.jpg"}
                       alt={project.title}
@@ -290,7 +290,7 @@ export default async function HomePage() {
               // Realistic Project Placeholders
               [1, 2].map((i) => (
                 <div key={i} className="space-y-8">
-                  <div className="h-[550px] rounded-[50px] bg-neutral-50 animate-pulse border border-neutral-100" />
+                  <div className="h-[300px] sm:h-[450px] lg:h-[550px] rounded-[50px] bg-neutral-50 animate-pulse border border-neutral-100" />
                   <div className="space-y-4 px-4">
                     <div className="h-10 w-3/4 bg-neutral-100 animate-pulse rounded-full" />
                     <div className="h-6 w-full bg-neutral-50 animate-pulse rounded-full" />

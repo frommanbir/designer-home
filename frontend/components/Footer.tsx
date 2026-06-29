@@ -1,6 +1,6 @@
 import React from "react";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
-import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import Link from "next/link";
 
 const Footer = ({ settings }: { settings?: any }) => {
@@ -27,17 +27,7 @@ const Footer = ({ settings }: { settings?: any }) => {
           <p className="text-white/60 leading-relaxed text-sm max-w-xs font-inter">
             {settings?.branding?.website_slogan || "Building beautiful and functional spaces that reflect your unique vision and lifestyle since 2016."}
           </p>
-          <div className="flex gap-4">
-             {[
-               { icon: FaFacebook, link: socials.facebook },
-               { icon: FaInstagram, link: socials.instagram },
-               { icon: FaLinkedin, link: socials.linkedin }
-             ].map((soc, i) => soc.link && (
-               <a key={i} href={soc.link} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black transition-all">
-                 <soc.icon size={18} />
-               </a>
-             ))}
-          </div>
+
         </div>
 
         <div>
@@ -71,18 +61,26 @@ const Footer = ({ settings }: { settings?: any }) => {
 
         <div>
           <h3 className="font-bold text-xl mb-8 font-inter">Stay Connected</h3>
-          <p className="text-white/60 text-sm mb-8 font-inter leading-relaxed">
-            Subscribe to our newsletter for the latest design trends and updates.
+          <p className="text-white/60 text-sm leading-relaxed mb-6 font-inter">
+            Follow us on social media for the latest design inspiration, updates, and sneak peeks of our projects.
           </p>
-          <div className="space-y-4">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full bg-transparent border border-white/20 p-4 rounded-sm focus:outline-none focus:border-white transition-colors text-white text-sm"
-            />
-            <button className="w-full bg-white text-neutral-800 font-bold py-4 rounded-sm hover:bg-[#C59D5F] hover:text-white transition-all uppercase tracking-widest text-sm">
-              Submit
-            </button>
+          <div className="flex gap-4">
+             {[
+               { icon: FaFacebook, link: socials.facebook || "https://facebook.com", label: "Facebook" },
+               { icon: FaInstagram, link: socials.instagram || "https://instagram.com", label: "Instagram" },
+               { icon: FaTwitter, link: socials.twitter || "https://twitter.com", label: "Twitter" }
+             ].map((soc, i) => (
+               <a 
+                 key={i} 
+                 href={soc.link} 
+                 target="_blank" 
+                 rel="noopener noreferrer" 
+                 title={soc.label}
+                 className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center hover:bg-white hover:text-black hover:border-white transition-all duration-300"
+               >
+                 <soc.icon size={18} />
+               </a>
+             ))}
           </div>
         </div>
       </div>

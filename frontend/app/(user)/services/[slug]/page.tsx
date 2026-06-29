@@ -152,8 +152,6 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
           {/* GALLERY REMOVED PER USER REQUEST */}
         </div>
       </main>
-
-      <Footer settings={settings} />
     </div>
   );
 };

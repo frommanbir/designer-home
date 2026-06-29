@@ -34,19 +34,9 @@ export default async function PortfolioPage({
           <h1 className="text-white text-6xl md:text-8xl font-bold font-inter tracking-tight drop-shadow-lg">
             PORTFOLIO
           </h1>
-          <p className="text-white text-2xl md:text-4xlfont-baumans tracking-wide opacity-90 drop-shadow-md">
+          <p className="text-white text-2xl md:text-4xl font-baumans tracking-wide opacity-90 drop-shadow-md">
             Our Work Speaks for Itself
           </p>
-        </div>
-
-        {/* Content */}
-        <div className="absolute bottom-0 z-20">
-          <div className="backdrop-blur-sm p-8 rounded">
-            <h1 className="text-white text-5xl md:text-7xl leading-tight font-bold text-align-left">
-              Portfolio
-            </h1>
-            <div className="mt-6 h-[3px] w-[500px] bg-[#C59D5F]"></div>
-          </div>
         </div>
       </section>
 

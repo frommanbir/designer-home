@@ -44,17 +44,17 @@ export default function PortfolioList({ portfolios }: PortfolioListProps) {
                 <img
                   src={imageUrl}
                   alt={item.title}
-                  className="w-full h-[600px] md:h-[800px] object-cover transition-transform duration-[3s] group-hover:scale-105 cursor-zoom-in"
+                  className="w-full h-[300px] sm:h-[450px] md:h-[600px] lg:h-[800px] object-cover transition-transform duration-[3s] group-hover:scale-105 cursor-zoom-in"
                   onClick={() => openFullscreen(imageUrl)}
                 />
 
                 {/* Overlay Style Card (Used if description exists) */}
                 {hasDescription && (
-                  <div className="absolute top-0 left-0 w-full md:w-[600px] h-full bg-neutral-800/90 flex flex-col justify-center px-12 md:px-20 space-y-8 animate-in fade-in slide-in-from-left duration-700">
-                    <h3 className="text-white text-3xl md:text-5xl font-semibold font-inter leading-tight">
+                  <div className="absolute inset-0 md:right-auto md:w-[600px] bg-neutral-900/90 flex flex-col justify-center px-8 sm:px-12 md:px-20 space-y-4 md:space-y-8 animate-in fade-in slide-in-from-left duration-700">
+                    <h3 className="text-white text-2xl sm:text-3xl md:text-5xl font-semibold font-inter leading-tight">
                       {item.title}
                     </h3>
-                    <p className="text-white/80 text-base font-baumans leading-relaxed">
+                    <p className="text-white/85 text-xs sm:text-sm md:text-base font-medium leading-relaxed">
                       {item.short_description}
                     </p>
                   </div>
