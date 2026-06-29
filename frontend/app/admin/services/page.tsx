@@ -190,7 +190,7 @@ export default function ServicesAdminPage() {
 
   const tabs = [
     { id: "content", label: "Basic Content", icon: Type },
-    { id: "hero", label: "Hero Image", icon: Layout },
+    { id: "hero", label: "Main Image", icon: Layout },
     { id: "why_choose", label: "Why Choose Us Blocks", icon: Star },
     { id: "settings", label: "Status & Sorting", icon: SettingsIcon },
   ];
