@@ -4,6 +4,8 @@ import React from "react";
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { getServices } from "@/lib/services";
+import { getProjectCategories } from "@/lib/project-categories";
 
 const Navbar = ({ transparent = true, settings }: { transparent?: boolean; settings?: any }) => {
   const pathname = usePathname();
@@ -20,22 +22,26 @@ const Navbar = ({ transparent = true, settings }: { transparent?: boolean; setti
   };
 
   const [projectCategories, setProjectCategories] = React.useState<any[]>([]);
-  const [serviceCategories, setServiceCategories] = React.useState<any[]>([]);
+  const [allServices, setAllServices] = React.useState<any[]>([]);
 
   React.useEffect(() => {
     // Fetch Project Categories
-    import("@/lib/project-categories").then(lib => {
-      lib.getProjectCategories().then(data => {
-        setProjectCategories(data);
-      }).catch(() => {});
-    });
+    getProjectCategories()
+      .then(data => {
+        setProjectCategories(data || []);
+      })
+      .catch(err => {
+        console.error("Navbar: Failed to fetch project categories", err);
+      });
 
-    // Fetch Service Categories
-    import("@/lib/service-categories").then(lib => {
-      lib.getServiceCategories().then(data => {
-        setServiceCategories(data);
-      }).catch(() => {});
-    });
+    // Fetch all Services for dropdown
+    getServices()
+      .then((data) => {
+        setAllServices(data || []);
+      })
+      .catch(err => {
+        console.error("Navbar: Failed to fetch services", err);
+      });
   }, []);
 
   const logoUrl = settings?.branding?.logo_url;
@@ -63,20 +69,26 @@ const Navbar = ({ transparent = true, settings }: { transparent?: boolean; setti
             <button className={`flex items-center gap-1 transition-colors uppercase cursor-pointer outline-none ${pathname.startsWith('/services') ? 'text-[#C59D5F]' : (transparent ? 'text-white/95 hover:text-[#C59D5F]' : 'text-gray-800 hover:text-[#C59D5F]')}`}>
               SERVICES <ChevronDown size={14} />
             </button>
-            <div className="absolute top-full left-0 mt-4 w-56 bg-white shadow-xl rounded-md overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 text-gray-800 border border-neutral-100">
-              {/* <Link href="/services" className={`block px-4 py-3 text-xs font-bold uppercase border-b border-neutral-50 hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname === '/services' ? 'text-[#C59D5F]' : ''}`}>Explore All</Link> */}
-              {serviceCategories.map((cat) => (
-                <Link 
-                  key={cat.id}
-                  href={`/services?category=${cat.slug}`} 
-                  className={`block px-4 py-3 text-xs font-semibold uppercase hover:bg-[#F9F9F9] hover:text-[#C59D5F] ${pathname.includes(cat.slug) ? 'text-[#C59D5F]' : ''}`}
-                >
-                  {cat.name}
-                </Link>
-              ))}
-              {serviceCategories.length === 0 && (
-                 <div className="px-4 py-3 text-[10px] text-neutral-400 uppercase italic">Loading...</div>
-              )}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-72 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-2xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-500 transform translate-y-4 group-hover:translate-y-0 text-gray-800 border border-neutral-100 z-[100]">
+              {/* Decorative Tip */}
+              <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-l border-t border-neutral-100" />
+              
+              <div className={`relative bg-white p-2 ${allServices.length > 12 ? "max-h-[500px] overflow-y-auto custom-scrollbar" : ""}`}>
+                {allServices.map((srv) => (
+                  <Link
+                    key={srv.id}
+                    href={`/services/${srv.slug}`}
+                    className={`block px-6 py-3.5 text-[11px] font-bold uppercase tracking-[0.1em] rounded-lg hover:bg-[#C59D5F]/5 hover:text-[#C59D5F] transition-all duration-300 ${pathname === `/services/${srv.slug}` ? 'text-[#C59D5F] bg-[#C59D5F]/5' : 'text-neutral-600'}`}
+                  >
+                    {srv.title}
+                  </Link>
+                ))}
+                {allServices.length === 0 && (
+                  <div className="px-6 py-8 text-center text-[10px] text-neutral-400 uppercase italic tracking-widest">
+                    Updating Collections...
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

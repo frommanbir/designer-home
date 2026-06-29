@@ -141,45 +141,61 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── Section 4: Solutions ───────────────────────── */}
-      <section className="py-32 bg-white">
+      {/* ── Section 4: Complete Design Solutions ───────────────────────── */}
+      <section className="py-24 md:py-32 bg-white overflow-hidden">
         <div className="container mx-auto px-6 lg:px-24">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8">
-            <div className="space-y-4">
-              <h2 className="text-neutral-800 text-7xl md:text-5xl font-bold font-inter leading-tight max-w-xl italic">
-                Complete Design<br></br> Solutions Under One Roof
-              </h2>
-            </div>
-            <p className="text-neutral-500 max-w-xs text-sm font-medium leading-relaxed italic border-b border-neutral-200 pb-2">
-              Providing specialized design and construction services tailored to your unique aesthetic.
+          
+          {/* Header: Title Left, Description Right */}
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-20 animate-in fade-in slide-in-from-bottom-6 duration-1000">
+            <h2 className="text-neutral-900 text-3xl md:text-4xl lg:text-6xl font-black tracking-tight leading-tight max-w-4xl">
+              Complete Design <br /> Solutions Under One Roof
+            </h2>
+            <p className="text-neutral-500 text-sm md:text-base font-medium leading-relaxed max-w-sm lg:text-left">
+              We transform your vision into functional, inspiring spaces
+              with creativity, quality, and attention to detail.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Grid: 3 Column Layout */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
             {services.slice(0, 3).map((srv: any, idx: number) => (
-              <div key={srv.id} className="group relative h-[500px] rounded-[30px] overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-700 ring-1 ring-black/5">
+              <Link
+                key={srv.id}
+                href={`/services/${srv.slug}`}
+                className="group relative aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl transition-all duration-700 bg-neutral-100 block"
+              >
+                {/* Background Image */}
                 <img
-                  src={srv.thumbnail_image?.url || `/images/service-${idx + 1}.jpg`}
+                  src={srv.thumbnail_image?.url || srv.hero_image?.url || `/images/service-placeholder.jpg`}
                   alt={srv.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1500ms] group-hover:scale-110"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
-                <div className="absolute bottom-10 left-10 right-10 z-20 flex justify-between items-end transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-                  <div className="max-w-[70%]">
-                    <h3 className="text-white text-2xl md:text-3xl font-bold font-inter mb-2 leading-tight drop-shadow-md">{srv.title}</h3>
-                    <p className="text-white/60 text-[10px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-all delay-200">View Services</p>
-                  </div>
-                  <Link href={`/services/${srv.slug}`} className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center text-white border border-white/30 hover:bg-[#C59D5F] hover:border-[#C59D5F] transition-all group-hover:scale-110 shadow-xl">
-                    <ArrowRight size={22} className="-rotate-45 transition-transform group-hover:scale-110" />
-                  </Link>
+                
+                {/* Dark Overlay Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
+
+                {/* Arrow Icon Button (Top Right) */}
+                <div className="absolute top-6 right-6 w-12 h-12 bg-white rounded-full flex items-center justify-center text-neutral-900 shadow-xl z-20 transform translate-x-2 -translate-y-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-500">
+                  <MoveRight size={20} className="-rotate-45" />
                 </div>
-              </div>
+
+                {/* Service Title (Bottom Left) */}
+                <div className="absolute bottom-8 left-8 z-20">
+                  <h3 className="text-white text-2xl md:text-3xl font-bold tracking-tight transform group-hover:translate-x-2 transition-transform duration-500">
+                    {srv.title}
+                  </h3>
+                </div>
+              </Link>
             ))}
           </div>
 
-          <div className="mt-20 text-center">
-            <Link href="/services" className="inline-block px-12 py-4 border-2 border-neutral-800 text-neutral-800 text-[10px] font-black rounded-full hover:bg-neutral-800 hover:text-white transition-all uppercase tracking-[0.4em] shadow-sm">
-              View All Services
+          <div className="mt-20 flex justify-center">
+            <Link 
+              href="/services" 
+              className="group flex items-center gap-4 px-10 py-5 bg-black text-white rounded-full font-bold text-xs uppercase tracking-[0.3em] hover:bg-neutral-800 transition-all shadow-xl active:scale-95"
+            >
+              Learn More About Services
+              <MoveRight size={18} className="transition-transform group-hover:translate-x-2" />
             </Link>
           </div>
         </div>
@@ -192,12 +208,6 @@ export default async function HomePage() {
             <h2 className="text-neutral-900 text-4xl md:text-5xl font-extrabold uppercase tracking-tight">
               Our Process
             </h2>
-            {/* <Link
-              href="/contact"
-              className="hidden md:inline-flex px-6 py-3 bg-neutral-700 text-white text-sm font-medium rounded-full hover:bg-neutral-800 transition-colors items-center gap-2"
-            >
-              View in detail
-            </Link> */}
           </div>
 
           <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-10 lg:gap-2">
