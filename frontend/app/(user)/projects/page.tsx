@@ -45,15 +45,12 @@ export default async function ProjectsPage({
 
         {/* Content */}
         <div className="absolute bottom-0 z-20 left-0 w-full px-6">
-          <div className="backdrop-blur-sm p-4 md:p-8 rounded max-w-7xl mx-auto">
             <h1 className="text-white text-5xl md:text-7xl leading-tight">
               Turning Houses Into
               <br />
               Dream Homes
             </h1>
-
             <div className="mt-6 h-[3px] w-full max-w-[500px] bg-white"></div>
-          </div>
         </div>
       </section>
 
