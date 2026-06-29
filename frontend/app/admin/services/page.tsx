@@ -278,6 +278,7 @@ export default function ServicesAdminPage() {
               <thead className="bg-neutral-50/50 border-b border-neutral-100">
                 <tr>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">S.No</th>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Image</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Service</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Status</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider text-right">Actions</th>
@@ -288,6 +289,21 @@ export default function ServicesAdminPage() {
                   return (
                     <tr key={s.id} className="hover:bg-neutral-50/40 transition-colors">
                       <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
+                      <td className="py-4 px-6">
+                        {s.hero_image?.url || s.thumbnail_image?.url ? (
+                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-neutral-100 border border-neutral-100 shadow-sm">
+                            <img
+                              src={s.hero_image?.url || s.thumbnail_image?.url || ""}
+                              alt={s.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div className="w-12 h-12 rounded-xl bg-neutral-50 border border-neutral-200/60 flex items-center justify-center text-neutral-300">
+                            <ImageIcon size={18} />
+                          </div>
+                        )}
+                      </td>
                       <td className="py-4 px-6">
                         <span className="text-sm font-bold text-neutral-900">
                           {s.title}
