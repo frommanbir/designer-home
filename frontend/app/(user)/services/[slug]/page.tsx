@@ -86,11 +86,11 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
           )}
 
           {/* Service Primary Image (Big & Centered) */}
-          <div className="max-w-5xl mx-auto overflow-hidden rounded-3xl shadow-[0_30px_100px_-20px_rgba(0,0,0,0.15)] ring-1 ring-neutral-100">
+          <div className="max-w-6xl mx-auto overflow-hidden rounded-2xl shadow-[0_30px_100px_-20px_rgba(0,0,0,0.15)] ring-1 ring-neutral-100">
             <img
               src={primaryImage}
               alt={service.title}
-              className="w-full h-auto object-cover max-h-[800px]"
+              className="w-full h-auto object-cover max-h-[600px]"
             />
           </div>
 

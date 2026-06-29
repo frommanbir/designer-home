@@ -74,7 +74,7 @@ export default async function HomePage() {
                 <img
                   src="/images/designspace.png"
                   alt="Expert Design"
-                  className="w-full h-[300px] sm:h-[400px] lg:h-[500px] object-cover transition-transform duration-1000 group-hover:scale-110"
+                  className="w-full h-[400px] sm:h-[500px] lg:h-[600px] object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
               </div>
             </div>
