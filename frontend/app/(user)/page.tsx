@@ -46,25 +46,25 @@ export default async function HomePage() {
       {/* ── Section 2: Designing Spaces ────────────────── */}
       <section className="py-6 md:py-16 bg-white">
         <div className="container mx-auto px-6 lg:px-24">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start mt-6">
             
             {/* Left Content */}
-            <div className="space-y-8 lg:space-y-10 text-center lg:text-left flex flex-col items-center lg:items-start order-2 lg:order-1">
-              <h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight">
+            <div className="space-y-8 lg:space-y-10 text-left flex flex-col items-start order-2 lg:order-1">
+              <h2 className="text-neutral-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight">
                 Designing Spaces <br className="hidden lg:block" /> That inspire Living
               </h2>
-              <div className="space-y-6 flex flex-col items-center lg:items-start">
-                <p className="text-neutral-600 text-lg md:text-xl font-medium leading-relaxed max-w-xl font-inter mx-auto lg:mx-0">
+              <div className="space-y-6 flex flex-col items-start">
+                <p className="text-neutral-600 text-lg md:text-xl font-medium leading-relaxed max-w-xl font-inter mx-0">
                   Transform your vision into reality with innovative interior & architectural design solutions. From concept creation & 3D visualization to project execution & supervision, Designer Home delivers exceptional
                   spaces tailored to your lifestyle and needs.
                 </p>
                 <div className="pt-2">
-                  <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-xl font-inter mx-auto lg:mx-0">
+                  <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-xl font-inter mx-0">
                     Established in 2016 A.D.<br className="hidden lg:block" />Your trusted partner for customized residential, commercial, and hospitality <br className="hidden lg:block" /> design projects.
                   </p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-4 justify-center lg:justify-start w-full pt-4">
+              <div className="flex flex-wrap gap-4 justify-start w-full pt-4">
                 <Link href="/about" className="px-10 py-4 bg-zinc-600 text-white font-semibold rounded-full hover:bg-neutral-700 transition-all transform hover:-translate-y-1 shadow-lg text-sm sm:text-base">
                   Click for Inquiry
                 </Link>
@@ -75,8 +75,8 @@ export default async function HomePage() {
             </div>
 
             {/* Right Image */}
-            <div className="relative group w-full flex justify-center order-1 lg:order-2">
-              <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-black/5 w-full max-w-[600px] lg:max-w-none">
+            <div className="relative group w-full flex justify-start lg:justify-end order-1 lg:order-2">
+              <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-black/5 w-full max-w-[600px]">
                 <img
                   src="/images/designspace.png"
                   alt="Expert Design"
@@ -164,8 +164,8 @@ export default async function HomePage() {
           </div>
 
           {/* Grid: 3 Column Layout */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
-            {services.slice(0, 4).map((srv: any, idx: number) => (
+          <div className="grid md:grid-cols-3 lg:grid-cols-3 gap-8 lg:gap-10">
+            {services.slice(0, 3).map((srv: any, idx: number) => (
               <Link
                 key={srv.id}
                 href={`/services/${srv.slug}`}
@@ -188,7 +188,7 @@ export default async function HomePage() {
 
                 {/* Service Title (Bottom Left) */}
                 <div className="absolute bottom-8 left-8 z-20">
-                  <h3 className="text-white text-2xl md:text-3xl font-bold tracking-tight transform group-hover:translate-x-2 transition-transform duration-500">
+                  <h3 className="text-white text-[28px] font-normal font-baumans tracking-tight transform group-hover:translate-x-2 transition-transform duration-500">
                     {srv.title}
                   </h3>
                 </div>
