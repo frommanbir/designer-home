@@ -16,6 +16,7 @@ async function getSiteSettings() {
     return res.data ?? {};
   } catch { return {}; }
 }
+export const revalidate = 0;
 
 export default async function HomePage() {
   const [services, projects, blogs, settings, ratings] = await Promise.all([
@@ -45,39 +46,45 @@ export default async function HomePage() {
       {/* ── Section 2: Designing Spaces ────────────────── */}
       <section className="py-6 md:py-16 bg-white">
         <div className="container mx-auto px-6 lg:px-24">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div className="space-y-10">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            
+            {/* Left Content */}
+            <div className="space-y-8 lg:space-y-10 text-center lg:text-left flex flex-col items-center lg:items-start order-2 lg:order-1">
               <h2 className="text-neutral-800 text-4xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight">
-                Designing Spaces <br /> That inspire Living
+                Designing Spaces <br className="hidden lg:block" /> That inspire Living
               </h2>
-              <div className="space-y-6">
-                <p className="text-neutral-600 text-lg md:text-xl font-medium leading-relaxed max-w-xl font-inter">
+              <div className="space-y-6 flex flex-col items-center lg:items-start">
+                <p className="text-neutral-600 text-lg md:text-xl font-medium leading-relaxed max-w-xl font-inter mx-auto lg:mx-0">
                   Transform your vision into reality with innovative interior & architectural design solutions. From concept creation & 3D visualization to project execution & supervision, Designer Home delivers exceptional
                   spaces tailored to your lifestyle and needs.
                 </p>
                 <div className="pt-2">
-                  <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-xl font-inter">
-                    Established in 2016 A.D.<br></br>Your trusted partner for customized residential, commercial, and hospitality <br></br> design projects.</p>
+                  <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-xl font-inter mx-auto lg:mx-0">
+                    Established in 2016 A.D.<br className="hidden lg:block" />Your trusted partner for customized residential, commercial, and hospitality <br className="hidden lg:block" /> design projects.
+                  </p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-4 pt-4">
-                <Link href="/about" className="px-10 py-4 bg-zinc-600 text-white font-semibold rounded-full hover:bg-neutral-700 transition-all transform hover:-translate-y-1 shadow-lg">
+              <div className="flex flex-wrap gap-4 justify-center lg:justify-start w-full pt-4">
+                <Link href="/about" className="px-10 py-4 bg-zinc-600 text-white font-semibold rounded-full hover:bg-neutral-700 transition-all transform hover:-translate-y-1 shadow-lg text-sm sm:text-base">
                   Click for Inquiry
                 </Link>
-                <Link href="/portfolio" className="px-10 py-4 border border-zinc-300 text-zinc-800 font-semibold rounded-full hover:bg-zinc-50 transition-all shadow-sm">
+                <Link href="/portfolio" className="px-10 py-4 border border-zinc-300 text-zinc-800 font-semibold rounded-full hover:bg-zinc-50 transition-all shadow-sm text-sm sm:text-base">
                   Explore Our Projects
                 </Link>
               </div>
             </div>
-            <div className="relative group w-full">
-              <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-black/5">
+
+            {/* Right Image */}
+            <div className="relative group w-full flex justify-center order-1 lg:order-2">
+              <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-black/5 w-full max-w-[600px] lg:max-w-none">
                 <img
                   src="/images/designspace.png"
                   alt="Expert Design"
-                  className="w-full h-[400px] sm:h-[500px] lg:h-[600px] object-cover transition-transform duration-1000 group-hover:scale-110"
+                  className="w-full h-[300px] sm:h-[400px] lg:h-[600px] object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
               </div>
             </div>
+
           </div>
         </div>
       </section>
@@ -166,7 +173,7 @@ export default async function HomePage() {
               >
                 {/* Background Image */}
                 <img
-                  src={srv.thumbnail_image?.url || srv.hero_image?.url || `/images/service-placeholder.jpg`}
+                  src={srv.hero_image?.url || srv.thumbnail_image?.url || `/images/service-placeholder.jpg`}
                   alt={srv.title}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
                 />
@@ -192,10 +199,8 @@ export default async function HomePage() {
           <div className="mt-16 flex justify-center">
             <Link 
               href="/services" 
-              className="group flex items-center gap-4 px-10 py-5 bg-black text-white rounded-full font-bold text-xs uppercase tracking-[0.3em] hover:bg-neutral-800 hover:text-white transition-all shadow-xl active:scale-95 cursor-pointer"
-            >
+              className="inline-block px-14 py-4 border-2 border-neutral-200 text-neutral-800 font-black rounded-full hover:border-neutral-800 hover:bg-neutral-50 transition-all"> 
               View All
-              <MoveRight size={18} className="transition-transform group-hover:translate-x-2 text-[#C59D5F]" />
             </Link>
           </div>
         </div>

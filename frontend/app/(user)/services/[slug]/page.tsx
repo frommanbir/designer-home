@@ -52,9 +52,10 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
             className="w-full h-full object-cover"
           />
         </div>
+
         <div className="absolute bottom-0 z-20 left-0 w-full px-6">
           <h1 className="text-white/80 text-5xl md:text-7xl leading-tight">
-            {service.category?.hero_title || "Creating Spaces Without Compromise"}
+            Creating Spaces <br />Without Compromise
           </h1>
           <div className="mt-6 h-[3px] w-full max-w-[500px] bg-white"></div>
         </div>
