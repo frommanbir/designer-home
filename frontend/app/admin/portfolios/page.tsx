@@ -429,6 +429,17 @@ export default function PortfoliosPage() {
               </div>
 
               <div className="space-y-2">
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Sort Order</label>
+                <input 
+                  type="number"
+                  min="0"
+                  value={currentPortfolio?.sort_order ?? 0}
+                  onChange={(e) => setCurrentPortfolio(prev => ({ ...prev, sort_order: Math.max(0, parseInt(e.target.value) || 0) }))}
+                  className="w-full md:w-1/2 px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all"
+                />
+              </div>
+
+              <div className="space-y-2">
                 <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Main Image</label>
                 <div className="flex items-center gap-4">
                   {(formFiles.main_image || currentPortfolio?.main_image_url) && (

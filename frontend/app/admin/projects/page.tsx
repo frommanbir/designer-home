@@ -245,6 +245,7 @@ export default function ProjectsPage() {
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Project</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Category</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Status</th>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Order</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
@@ -279,6 +280,9 @@ export default function ProjectsPage() {
                         {item.is_active ? <CheckCircle2 size={12} /> : <XCircle size={12} />}
                         {item.is_active ? 'Active' : 'Inactive'}
                       </span>
+                    </td>
+                    <td className="py-4 px-6 text-sm text-neutral-600 font-medium">
+                      {item.sort_order}
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center justify-end gap-2">
@@ -415,6 +419,17 @@ export default function ProjectsPage() {
                   onChange={(e) => setCurrentProject(prev => ({ ...prev, description: e.target.value }))}
                   className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all resize-none"
                   placeholder="Describe this specific project..."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Sort Order</label>
+                <input 
+                  type="number"
+                  min="0"
+                  value={currentProject?.sort_order ?? 0}
+                  onChange={(e) => setCurrentProject(prev => ({ ...prev, sort_order: Math.max(0, parseInt(e.target.value) || 0) }))}
+                  className="w-full md:w-1/2 px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all"
                 />
               </div>
 

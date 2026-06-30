@@ -496,10 +496,6 @@ export default function ServicesAdminPage() {
                                </div>
                              </div>
                            </div>
-                           <div className="space-y-2">
-                             <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Description</label>
-                             <textarea rows={2} value={block.description} onChange={e => updateBlock(bi, { description: e.target.value })} className="w-full px-5 py-3 bg-white border border-neutral-200 rounded-2xl outline-none focus:border-black transition-all resize-none font-medium" />
-                           </div>
                            <div className="space-y-3">
                              <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Bullet Points</label>
                              {block.points.map((p, pi) => (

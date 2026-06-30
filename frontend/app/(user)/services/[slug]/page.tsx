@@ -54,7 +54,7 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
         </div>
 
         <div className="absolute bottom-0 z-20 left-0 w-full px-6">
-          <h1 className="text-white/80 text-5xl md:text-7xl leading-tight">
+          <h1 className="text-white text-5xl md:text-7xl leading-tight">
             Creating Spaces <br />Without Compromise
           </h1>
           <div className="mt-6 h-[3px] w-full max-w-[500px] bg-white"></div>
@@ -79,8 +79,8 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
 
           {/* Description Paragraph (Centered) */}
           {(service.description || service.short_description) && (
-            <div className="max-w-4xl mx-auto text-center px-4">
-              <p className="text-neutral-600 text-sm md:text-lg leading-relaxed font-normal whitespace-pre-line text-justify md:text-center">
+            <div className="max-w-5xl mx-auto text-justify px-4">
+              <p className="text-neutral-600 text-sm md:text-lg leading-relaxed font-normal whitespace-pre-line text-justify md:text-justify">
                 {service.description || service.short_description}
               </p>
             </div>
