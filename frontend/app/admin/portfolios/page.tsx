@@ -29,12 +29,15 @@ import { PortfolioCategory } from "@/types/portfolio-category";
 import { toast } from "sonner";
 import Link from "next/link";
 
+const ITEMS_PER_PAGE = 10;
+
 export default function PortfoliosPage() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [categories, setCategories] = useState<PortfolioCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState(1);
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -160,6 +163,16 @@ export default function PortfoliosPage() {
     return matchesSearch && matchesCategory;
   });
 
+  const totalPages = Math.ceil(filteredPortfolios.length / ITEMS_PER_PAGE);
+  const paginatedPortfolios = filteredPortfolios.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+  
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory]);
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -234,6 +247,7 @@ export default function PortfoliosPage() {
             <table className="w-full text-left">
               <thead className="bg-neutral-50/50 border-b border-neutral-100">
                 <tr>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">S.No</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Project</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Category</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Status</th>
@@ -242,8 +256,9 @@ export default function PortfoliosPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-50">
-                {filteredPortfolios.map((item) => (
+                {paginatedPortfolios.map((item, index) => (
                   <tr key={item.id} className="hover:bg-neutral-50/40 transition-colors">
+                    <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-lg bg-neutral-100 overflow-hidden border border-neutral-200 flex-shrink-0">
@@ -304,6 +319,42 @@ export default function PortfoliosPage() {
                 ))}
               </tbody>
             </table>
+            <div className="px-6 py-4 bg-neutral-50/30 border-t border-neutral-100 flex items-center justify-between">
+              <div className="text-sm text-neutral-600 font-medium">
+                Showing {filteredPortfolios.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredPortfolios.length)} of {filteredPortfolios.length}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Previous
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
+                        currentPage === page
+                          ? "bg-black text-white"
+                          : "border border-neutral-200 text-neutral-600 hover:bg-neutral-50"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -374,6 +425,17 @@ export default function PortfoliosPage() {
                   value={currentPortfolio?.short_description || ""}
                   onChange={(e) => setCurrentPortfolio(prev => ({ ...prev, short_description: e.target.value }))}
                   className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all resize-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Sort Order</label>
+                <input 
+                  type="number"
+                  min="0"
+                  value={currentPortfolio?.sort_order ?? 0}
+                  onChange={(e) => setCurrentPortfolio(prev => ({ ...prev, sort_order: Math.max(0, parseInt(e.target.value) || 0) }))}
+                  className="w-full md:w-1/2 px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all"
                 />
               </div>
 

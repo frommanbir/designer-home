@@ -28,23 +28,18 @@ export default async function ProjectDetailPage({
         </div>
 
         {/* Content */}
-        <div className="absolute bottom-0 z-20">
-          <div className="backdrop-blur-sm p-8 rounded">
-            <h1 className="text-white text-5xl md:text-7xl leading-tight">
-              Turning Houses Into
-              <br />
-              Dream Homes
-            </h1>
-
-            <div className="mt-6 h-[3px] w-[500px] bg-white"></div>
-          </div>
+        <div className="absolute bottom-0 z-20 left-0 w-full px-6">
+          <h1 className="text-white text-5xl md:text-7xl leading-tight">
+            {project.category?.hero_title || "Turning Houses Into Dream Homes"}
+          </h1>
+          <div className="mt-6 h-[3px] w-full max-w-[500px] bg-white"></div>
         </div>
       </section>
 
       {/* Project Header */}
       <section className="max-w-7xl mx-auto pt-24 px-6 animate-in fade-in slide-in-from-bottom-5 duration-700">  
         <div className="space-y-6">
-          <h1 className="text-xl md:text-8xl font-black text-neutral-900 text-center tracking-tighter uppercase leading-[0.9]">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-neutral-900 text-center tracking-tighter uppercase leading-[0.9]">
             {project.title}
           </h1>
           {project.subtitle && (

@@ -27,12 +27,15 @@ import { ProjectCategory } from "@/types/project-category";
 import { toast } from "sonner";
 import Link from "next/link";
 
+const ITEMS_PER_PAGE = 10;
+
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [categories, setCategories] = useState<ProjectCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState(1);
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -154,6 +157,16 @@ export default function ProjectsPage() {
     return matchesSearch && matchesCategory;
   });
 
+  const totalPages = Math.ceil(filteredProjects.length / ITEMS_PER_PAGE);
+  const paginatedProjects = filteredProjects.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+  
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory]);
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500 text-neutral-900">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -228,15 +241,18 @@ export default function ProjectsPage() {
             <table className="w-full text-left">
               <thead className="bg-neutral-50/50 border-b border-neutral-100">
                 <tr>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">S.No</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Project</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Category</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Status</th>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Order</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-50">
-                {filteredProjects.map((item) => (
+                {paginatedProjects.map((item, index) => (
                   <tr key={item.id} className="hover:bg-neutral-50/40 transition-colors">
+                    <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-lg bg-neutral-100 overflow-hidden border border-neutral-200 flex-shrink-0">
@@ -265,6 +281,9 @@ export default function ProjectsPage() {
                         {item.is_active ? 'Active' : 'Inactive'}
                       </span>
                     </td>
+                    <td className="py-4 px-6 text-sm text-neutral-600 font-medium">
+                      {item.sort_order}
+                    </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center justify-end gap-2">
                         <button 
@@ -285,6 +304,42 @@ export default function ProjectsPage() {
                 ))}
               </tbody>
             </table>
+            <div className="px-6 py-4 bg-neutral-50/30 border-t border-neutral-100 flex items-center justify-between">
+              <div className="text-sm text-neutral-600 font-medium">
+                Showing {filteredProjects.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredProjects.length)} of {filteredProjects.length}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Previous
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
+                        currentPage === page
+                          ? "bg-black text-white"
+                          : "border border-neutral-200 text-neutral-600 hover:bg-neutral-50"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -364,6 +419,17 @@ export default function ProjectsPage() {
                   onChange={(e) => setCurrentProject(prev => ({ ...prev, description: e.target.value }))}
                   className="w-full px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all resize-none"
                   placeholder="Describe this specific project..."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Sort Order</label>
+                <input 
+                  type="number"
+                  min="0"
+                  value={currentProject?.sort_order ?? 0}
+                  onChange={(e) => setCurrentProject(prev => ({ ...prev, sort_order: Math.max(0, parseInt(e.target.value) || 0) }))}
+                  className="w-full md:w-1/2 px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all"
                 />
               </div>
 

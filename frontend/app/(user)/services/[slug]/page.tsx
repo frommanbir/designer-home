@@ -43,20 +43,21 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
       <Navbar transparent={true} settings={settings} />
 
       {/* ── 1. Page Hero (Top) ── */}
-      <section className="relative h-[60vh] min-h-[500px] w-full flex items-center justify-center overflow-hidden">
+      <section className="relative h-[70vh] min-h-[700px] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-black/40 z-10" />
+          <div className="absolute inset-0 bg-black/30 z-10" />
           <img
             src="/images/about-home.png"
-            alt="Our Services"
+            alt="Designer Home Hero"
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="relative z-20 flex flex-col items-center text-center px-6 animate-in fade-in zoom-in duration-[1500ms]">
-          <h1 className="text-white text-5xl md:text-8xl font-black uppercase tracking-[0.2em] leading-tight drop-shadow-2xl">
-            OUR <span className="text-[#C59D5F]">SERVICES</span>
+
+        <div className="absolute bottom-0 z-20 left-0 w-full px-6">
+          <h1 className="text-white text-5xl md:text-7xl leading-tight">
+            Creating Spaces <br />Without Compromise
           </h1>
-          <div className="w-24 h-1.5 bg-[#C59D5F] mt-8 rounded-full shadow-lg" />
+          <div className="mt-6 h-[3px] w-full max-w-[500px] bg-white"></div>
         </div>
       </section>
 
@@ -78,19 +79,19 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
 
           {/* Description Paragraph (Centered) */}
           {(service.description || service.short_description) && (
-            <div className="max-w-4xl mx-auto text-center px-4">
-              <p className="text-neutral-600 text-sm md:text-lg leading-relaxed font-normal whitespace-pre-line text-justify md:text-center">
+            <div className="max-w-5xl mx-auto text-justify px-4">
+              <p className="text-neutral-600 text-sm md:text-lg leading-relaxed font-normal whitespace-pre-line text-justify md:text-justify">
                 {service.description || service.short_description}
               </p>
             </div>
           )}
 
           {/* Service Primary Image (Big & Centered) */}
-          <div className="max-w-5xl mx-auto overflow-hidden rounded-3xl shadow-[0_30px_100px_-20px_rgba(0,0,0,0.15)] ring-1 ring-neutral-100">
+          <div className="max-w-6xl mx-auto overflow-hidden rounded-2xl shadow-[0_30px_100px_-20px_rgba(0,0,0,0.15)] ring-1 ring-neutral-100">
             <img
               src={primaryImage}
               alt={service.title}
-              className="w-full h-auto object-cover max-h-[800px]"
+              className="w-full h-auto object-cover max-h-[600px]"
             />
           </div>
 
@@ -152,8 +153,6 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
           {/* GALLERY REMOVED PER USER REQUEST */}
         </div>
       </main>
-
-      <Footer settings={settings} />
     </div>
   );
 };

@@ -1,9 +1,7 @@
 import React from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import Link from "next/link";
 import { getBlogs } from "@/lib/blogs";
-import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -29,15 +27,13 @@ const BlogListPage = async () => {
         </div>
 
         {/* Content */}
-        <div className="absolute bottom-0 z-20">
-          <div className="backdrop-blur-sm p-8 rounded">
-            <h1 className="text-white text-5xl md:text-7xl leading-tight font-bold">
-              Insights &
-              <br />
-              Aesthetics
-            </h1>
-            <div className="mt-6 h-[3px] w-[500px] bg-[#C59D5F]"></div>
-          </div>
+        <div className="absolute bottom-0 z-20 left-0 w-full px-6">
+          <h1 className="text-white text-5xl md:text-7xl leading-tight font-bold">
+            Insights &
+            <br />
+            Aesthetics
+          </h1>
+          <div className="mt-6 h-[3px] w-full max-w-[500px] bg-[#C59D5F]"></div>
         </div>
       </section>
 
@@ -80,7 +76,6 @@ const BlogListPage = async () => {
                 </div>
                 
                 <div className="space-y-4 px-2 transform transition-transform group-hover:translate-x-2 duration-500">
-                 
                   <h3 className="text-3xl font-black text-neutral-900 leading-tight group-hover:text-[#C59D5F] transition-colors">
                     {blog.title}
                   </h3>
