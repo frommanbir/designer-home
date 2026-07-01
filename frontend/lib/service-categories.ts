@@ -1,10 +1,16 @@
 import { serverFetch } from "./server-api";
 import { fetchApi } from "./api";
 import { ServiceCategory } from "@/types/service-category";
+export type { ServiceCategory } from "@/types/service-category";
 
 /** Public storefront — SSR safe */
 export async function getServiceCategories(): Promise<ServiceCategory[]> {
   const res = await serverFetch("/service-categories");
+  return res.data ?? [];
+}
+
+export async function getAdminServiceCategories(): Promise<ServiceCategory[]> {
+  const res = await fetchApi("/admin/service-categories");
   return res.data ?? [];
 }
 
@@ -17,7 +23,7 @@ export async function createServiceCategory(data: { name: string; slug?: string 
   return res.data;
 }
 
-export async function updateServiceCategory(id: number, data: { name: string; slug?: string | null }): Promise<ServiceCategory> {
+export async function updateServiceCategory(id: number, data: { name: string; slug?: string }): Promise<ServiceCategory> {
   const res = await fetchApi(`/admin/service-categories/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),

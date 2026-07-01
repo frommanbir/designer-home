@@ -28,8 +28,7 @@ export async function createService(formData: FormData): Promise<Service> {
 }
 
 export async function updateService(id: number, formData: FormData): Promise<Service> {
-  if (formData instanceof FormData) formData.append("_method", "PUT");
-  const res = await fetchApi(`/admin/services/${id}`, { method: "POST", body: formData });
+  const res = await fetchApi(`/admin/services/${id}`, { method: "PUT", body: formData });
   return res.data;
 }
 
