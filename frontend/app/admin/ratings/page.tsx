@@ -24,10 +24,13 @@ import {
 import { Rating } from "@/types/rating";
 import { toast } from "sonner";
 
+const ITEMS_PER_PAGE = 10;
+
 export default function RatingsAdminPage() {
   const [ratings, setRatings] = useState<Rating[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -112,6 +115,16 @@ export default function RatingsAdminPage() {
     return matchesSearch;
   });
 
+  const totalPages = Math.ceil(filteredRatings.length / ITEMS_PER_PAGE);
+  const paginatedRatings = filteredRatings.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+  
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500 text-neutral-900">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -163,6 +176,7 @@ export default function RatingsAdminPage() {
             <table className="w-full text-left">
               <thead className="bg-neutral-50/50 border-b border-neutral-100">
                 <tr>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">S.No</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Customer</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Rating</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider hidden md:table-cell">Date</th>
@@ -171,8 +185,9 @@ export default function RatingsAdminPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-50">
-                {filteredRatings.map((item) => (
+                {paginatedRatings.map((item, index) => (
                   <tr key={item.id} className="hover:bg-neutral-50/40 transition-colors">
+                    <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                     <td className="py-4 px-6">
                       <div className="flex flex-col">
                         <span className="font-bold">{item.customer_name}</span>
@@ -219,6 +234,42 @@ export default function RatingsAdminPage() {
                 ))}
               </tbody>
             </table>
+            <div className="px-6 py-4 bg-neutral-50/30 border-t border-neutral-100 flex items-center justify-between">
+              <div className="text-sm text-neutral-600 font-medium">
+                Showing {filteredRatings.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filteredRatings.length)} of {filteredRatings.length}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Previous
+                </button>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
+                        currentPage === page
+                          ? "bg-black text-white"
+                          : "border border-neutral-200 text-neutral-600 hover:bg-neutral-50"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>

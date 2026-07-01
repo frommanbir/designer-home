@@ -39,7 +39,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
         </header>
 
         {/* Hero Image */}
-        <div className="aspect-video w-full rounded-[3rem] overflow-hidden mb-20 shadow-2xl">
+        <div className="aspect-video w-full rounded-[1.5rem] md:rounded-[3rem] overflow-hidden mb-20 shadow-2xl">
           <img 
             src={blog.image_url || "/images/placeholder.jpg"} 
             alt={blog.title} 

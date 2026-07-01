@@ -19,16 +19,11 @@ import {
 import { XCircle, Plus } from "lucide-react";
 import { fetchApi } from "@/lib/api";
 import { toast } from "sonner";
-import Link from "next/link";
 
-interface ServiceCategory {
-  id: number;
-  name: string;
-  slug: string;
-}
+const ITEMS_PER_PAGE = 10;
 
-interface Service {
-  id: number;
+// ─── Types & Defaults ──────────────────────────────────────
+interface WhyChooseBlock {
   title: string;
   slug: string;
   subtitle: string | null;
@@ -72,21 +67,18 @@ export default function AdminServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showNewServiceModal, setShowNewServiceModal] = useState(false);
   
   // Selection & Tab Management
   const [selectedServiceId, setSelectedServiceId] = useState<number | 'new' | null>(null);
   const [activeTab, setActiveTab] = useState("content");
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [form, setForm] = useState({ ...EMPTY_FORM });
-  const [activeTab, setActiveTab] = useState<FormTab>("basic");
-
-  // Image previews inside modal
-  const [previews, setPreviews] = useState<Record<string, string>>({});
+  // Form State
+  const [currentService, setCurrentService] = useState<FormState>(emptyForm());
+  const [heroImageFile, setHeroImageFile] = useState<File | null>(null);
+  const [expandedBlock, setExpandedBlock] = useState<number>(0);
 
   useEffect(() => {
     fetchAll();
@@ -95,412 +87,314 @@ export default function AdminServicesPage() {
   async function fetchAll() {
     try {
       setLoading(true);
-      const [sRes, cRes] = await Promise.all([
-        fetchApi("/admin/services"),
-        fetchApi("/admin/service-categories"),
-      ]);
-      setServices(sRes.data ?? []);
-      setCategories(cRes.data ?? []);
-    } catch (e: any) {
-      toast.error(e.message || "Failed to load data");
+      const data = await getAdminServices();
+      setServices(data);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to fetch services");
     } finally {
       setLoading(false);
     }
   }
 
-  const handleDelete = async (id: number) => {
-    if (!confirm("Delete this service? This cannot be undone.")) return;
-    try {
-      await fetchApi(`/admin/services/${id}`, { method: "DELETE" });
-      setServices((prev) => prev.filter((s) => s.id !== id));
-      toast.success("Service deleted");
-    } catch (e: any) {
-      toast.error(e.message || "Failed to delete");
+  const openNewServiceModal = () => {
+    setSelectedServiceId('new');
+    setCurrentService(emptyForm());
+    setHeroImageFile(null);
+    setActiveTab("content");
+    setShowNewServiceModal(true);
+  };
+
+  const handleSelectService = (service: Service | 'new') => {
+    if (service === 'new') {
+      openNewServiceModal();
+      return;
     }
-  };
 
-  const handleOpenModal = (service?: Service) => {
-    setActiveTab("basic");
-    setPreviews({});
-    if (service) {
-      setIsEditing(true);
-      setEditingId(service.id);
-      setForm({
-        title: service.title,
-        slug: service.slug,
-        subtitle: service.subtitle ?? "",
-        short_description: service.short_description ?? "",
-        description: service.description ?? "",
-        service_category_id: service.category?.id?.toString() ?? "",
-        sort_order: service.sort_order.toString(),
-        is_active: service.is_active,
-        why_choose_title: service.why_choose?.title ?? "",
-        why_choose_description: service.why_choose?.description ?? "",
-        why_choose_points: service.why_choose?.points?.length
-          ? service.why_choose.points
-          : [""],
-        thumbnail_image: null,
-        hero_image: null,
-        why_choose_image: null,
-        gallery_images: [],
-      });
-      setPreviews({
-        thumbnail_image: service.thumbnail_image?.url ?? "",
-        hero_image: service.hero_image?.url ?? "",
-        why_choose_image: service.why_choose?.image?.url ?? "",
-      });
-    } else {
-      setIsEditing(false);
-      setEditingId(null);
-      setForm({ ...EMPTY_FORM, why_choose_points: [""] });
-    }
-    setIsModalOpen(true);
-  };
-
-  const handleFileChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    key: string
-  ) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setForm((prev) => ({ ...prev, [key]: file }));
-    setPreviews((prev) => ({
-      ...prev,
-      [key]: URL.createObjectURL(file),
-    }));
-  };
-
-  const buildFormData = () => {
-    const fd = new FormData();
-    fd.append("title", form.title);
-    if (form.slug) fd.append("slug", form.slug);
-    if (form.subtitle) fd.append("subtitle", form.subtitle);
-    if (form.short_description)
-      fd.append("short_description", form.short_description);
-    if (form.description) fd.append("description", form.description);
-    if (form.service_category_id)
-      fd.append("service_category_id", form.service_category_id);
-    fd.append("sort_order", form.sort_order);
-    fd.append("is_active", form.is_active ? "1" : "0");
-    if (form.why_choose_title)
-      fd.append("why_choose_title", form.why_choose_title);
-    if (form.why_choose_description)
-      fd.append("why_choose_description", form.why_choose_description);
-    form.why_choose_points
-      .filter(Boolean)
-      .forEach((p) => fd.append("why_choose_points[]", p));
-    if (form.thumbnail_image)
-      fd.append("thumbnail_image", form.thumbnail_image);
-    if (form.hero_image) fd.append("hero_image", form.hero_image);
-    if (form.why_choose_image)
-      fd.append("why_choose_image", form.why_choose_image);
-    form.gallery_images.forEach((img) => fd.append("gallery_images[]", img));
-    return fd;
+    setSelectedServiceId(service.id);
+    setCurrentService({
+      ...service,
+      why_choose_blocks: normalizeBlocks(service.why_choose),
+    });
+    setHeroImageFile(null);
+    setActiveTab("content");
+    setShowNewServiceModal(true);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      const fd = buildFormData();
-      const url = isEditing
-        ? `/admin/services/${editingId}`
-        : "/admin/services";
-      await fetchApi(url, { method: isEditing ? "PUT" : "POST", body: fd });
-      toast.success(isEditing ? "Service updated" : "Service created");
-      setIsModalOpen(false);
-      fetchAll();
-    } catch (e: any) {
-      toast.error(e.message || "Something went wrong");
+      const fd = new FormData();
+      if (currentService.title) fd.append("title", currentService.title);
+      if (currentService.slug) fd.append("slug", currentService.slug);
+      if (currentService.subtitle) fd.append("subtitle", currentService.subtitle);
+      if (currentService.short_description) fd.append("short_description", currentService.short_description);
+      if (currentService.description) fd.append("description", currentService.description);
+      fd.append("sort_order", String(currentService.sort_order || 0));
+      fd.append("is_active", currentService.is_active ? "1" : "0");
+
+      if (heroImageFile) fd.append("hero_image", heroImageFile);
+
+      currentService.why_choose_blocks.forEach((block, i) => {
+        if (block.title) fd.append(`why_choose[${i}][title]`, block.title);
+        if (block.description) fd.append(`why_choose[${i}][description]`, block.description);
+        block.points.filter(p => !!p?.trim()).forEach(p => fd.append(`why_choose[${i}][points][]`, p));
+        if (block.image_file) fd.append(`why_choose[${i}][image]`, block.image_file);
+      });
+
+      if (selectedServiceId === 'new') {
+        console.log("Creating new service via POST...");
+        const res = await createService(fd);
+        toast.success("Service created successfully!");
+        setSelectedServiceId(res.id);
+        setShowNewServiceModal(false);
+      } else if (selectedServiceId) {
+        console.log("Updating service via PUT...", selectedServiceId);
+        await updateService(selectedServiceId as number, fd);
+        toast.success("Service updated successfully!");
+        setShowNewServiceModal(false);
+      }
+      
+      console.log("Submission completed, refreshing data.");
+      fetchData();
+    } catch (error: any) {
+      console.error("Submission error:", error);
+      toast.error(error.message || "Failed to save changes. Check console for details.");
     } finally {
       setSaving(false);
     }
   };
 
-  const updatePoint = (idx: number, value: string) => {
-    setForm((prev) => {
-      const points = [...prev.why_choose_points];
-      points[idx] = value;
-      return { ...prev, why_choose_points: points };
-    });
+  const handleDelete = async (id: number) => {
+    if (!confirm("Delete this service permanently?")) return;
+    try {
+      await deleteService(id);
+      toast.success("Service deleted");
+      setShowNewServiceModal(false);
+      setSelectedServiceId(null);
+      fetchData();
+    } catch (error: any) {
+      toast.error(error.message || "Delete failed");
+    }
   };
 
-  const addPoint = () =>
-    setForm((prev) => ({
-      ...prev,
-      why_choose_points: [...prev.why_choose_points, ""],
-    }));
+  const tabs = [
+    { id: "content", label: "Basic Content", icon: Type },
+    { id: "hero", label: "Main Image", icon: Layout },
+    { id: "why_choose", label: "Why Choose Us Blocks", icon: Star },
+    { id: "settings", label: "Status & Sorting", icon: SettingsIcon },
+  ];
 
-  const removePoint = (idx: number) =>
-    setForm((prev) => ({
+  // ─── Block Helpers ────────────────────────────────────────
+  const updateBlock = (idx: number, patch: Partial<WhyChooseBlock>) => {
+    setCurrentService(prev => ({
       ...prev,
       why_choose_points: prev.why_choose_points.filter((_, i) => i !== idx),
     }));
+  };
+  const addBlock = () => {
+    setCurrentService(prev => ({ ...prev, why_choose_blocks: [...prev.why_choose_blocks, emptyBlock()] }));
+    setExpandedBlock(currentService.why_choose_blocks.length);
+  };
+  const removeBlock = (idx: number) => {
+    setCurrentService(prev => ({ ...prev, why_choose_blocks: prev.why_choose_blocks.filter((_, i) => i !== idx) }));
+  };
+  const addPoint = (bIdx: number) => {
+    updateBlock(bIdx, { points: [...currentService.why_choose_blocks[bIdx].points, ""] });
+  };
+  const updatePoint = (bIdx: number, pIdx: number, val: string) => {
+    const updated = [...currentService.why_choose_blocks[bIdx].points];
+    updated[pIdx] = val;
+    updateBlock(bIdx, { points: updated });
+  };
+  const removePoint = (bIdx: number, pIdx: number) => {
+    updateBlock(bIdx, { points: currentService.why_choose_blocks[bIdx].points.filter((_, i) => i !== pIdx) });
+  };
 
-  const filtered = services.filter(
-    (s) =>
-      s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.slug.toLowerCase().includes(searchQuery.toLowerCase())
+  const filtered = services.filter(s => s.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const paginatedServices = filtered.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
   );
 
-  const modalTabs: { id: FormTab; label: string; icon: React.ElementType }[] =
-    [
-      { id: "basic", label: "Basic Info", icon: FaLayerGroup },
-      { id: "images", label: "Images", icon: FaImage },
-      { id: "why_choose", label: "Why Choose Us", icon: FaListUl },
-    ];
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  if (loading && services.length === 0) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="animate-spin text-neutral-400" size={40} />
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-neutral-900">
-          Services Management
-        </h1>
-        <p className="text-neutral-500 text-sm mt-1">
-          Manage your services and their categories.
-        </p>
+    <div className="space-y-6 animate-in fade-in duration-500 text-neutral-900 font-sans">
+      
+      {/* ── Header ────────────────────────────────────────── */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Services Management</h1>
+          <p className="text-sm text-neutral-500 mt-1">Configure your professional offerings in a unified view.</p>
+        </div>
+        <div>
+          <button
+            type="button"
+            onClick={openNewServiceModal}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-black text-white rounded-2xl font-bold text-sm hover:bg-neutral-800 transition-all shadow-md active:scale-95 cursor-pointer"
+          >
+            <Plus size={18} /> New Service
+          </button>
+        </div>
       </div>
 
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
-        {/* Search */}
-        <div className="relative flex-1 max-w-sm">
-          <FaSearch
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400"
-            size={14}
-          />
+      {/* Filters (Outside of the table wrapper) */}
+      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
           <input
             type="text"
             placeholder="Search services..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-white border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all shadow-sm"
+            className="w-full pl-10 pr-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-2xl text-sm focus:ring-1 focus:ring-black outline-none transition-all"
           />
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link
-            href="/admin/services/categories"
-            className="flex items-center gap-2 px-4 py-2.5 bg-white border border-neutral-200 text-neutral-700 rounded-xl hover:bg-neutral-50 transition-all font-semibold text-sm shadow-sm"
-          >
-            <FaTag size={13} />
-            Categories
-          </Link>
-          <button
-            onClick={() => handleOpenModal()}
-            className="flex items-center gap-2 px-4 py-2.5 bg-blue-700 text-white rounded-xl hover:bg-blue-600 transition-all font-semibold text-sm shadow-md"
-          >
-            <FaPlus size={13} />
-            New Service
-          </button>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-24 gap-3">
-            <FaSpinner className="animate-spin text-neutral-400" size={28} />
-            <p className="text-sm text-neutral-500 font-medium">
-              Loading services...
-            </p>
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-16 h-16 bg-neutral-50 rounded-full flex items-center justify-center mb-4 text-neutral-400">
-              <FaLayerGroup size={24} />
-            </div>
-            <h3 className="font-bold text-neutral-900">No services found</h3>
-            <p className="text-sm text-neutral-500 mt-1">
-              Start by adding your first service.
-            </p>
-          </div>
-        ) : (
+      <div className="bg-white rounded-3xl border border-neutral-100 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-neutral-50/50 border-b border-neutral-100">
                 <tr>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">
-                    Service
-                  </th>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">
-                    Category
-                  </th>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">
-                    Order
-                  </th>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider text-right">
-                    Actions
-                  </th>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">S.No</th>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Image</th>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Service</th>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Status</th>
+                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-50">
-                {filtered.map((item) => (
-                  <tr
-                    key={item.id}
-                    className="hover:bg-neutral-50/40 transition-colors"
-                  >
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        {item.thumbnail_image?.url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img
-                            src={item.thumbnail_image.url}
-                            alt={item.title}
-                            className="w-10 h-10 rounded-lg object-cover border border-neutral-100"
-                          />
+                {paginatedServices.map((s, index) => {
+                  return (
+                    <tr key={s.id} className="hover:bg-neutral-50/40 transition-colors">
+                      <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
+                      <td className="py-4 px-6">
+                        {s.hero_image?.url || s.thumbnail_image?.url ? (
+                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-neutral-100 border border-neutral-100 shadow-sm">
+                            <img
+                              src={s.hero_image?.url || s.thumbnail_image?.url || ""}
+                              alt={s.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
                         ) : (
-                          <div className="w-10 h-10 rounded-lg bg-neutral-100 flex items-center justify-center text-neutral-400">
-                            <FaImage size={14} />
+                          <div className="w-12 h-12 rounded-xl bg-neutral-50 border border-neutral-200/60 flex items-center justify-center text-neutral-300">
+                            <ImageIcon size={18} />
                           </div>
                         )}
-                        <div>
-                          <p className="font-semibold text-neutral-900 text-sm">
-                            {item.title}
-                          </p>
-                          <p className="text-xs text-neutral-400 font-mono">
-                            {item.slug}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 text-sm text-neutral-600">
-                      {item.category?.name ?? (
-                        <span className="text-neutral-300 italic">None</span>
-                      )}
-                    </td>
-                    <td className="py-4 px-6 text-sm text-neutral-600">
-                      {item.sort_order}
-                    </td>
-                    <td className="py-4 px-6">
-                      <span
-                        className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                          item.is_active
-                            ? "bg-green-50 text-green-700"
-                            : "bg-neutral-100 text-neutral-500"
-                        }`}
-                      >
-                        {item.is_active ? (
-                          <FaCheckCircle size={10} />
-                        ) : null}
-                        {item.is_active ? "Active" : "Inactive"}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <div className="flex items-center justify-end gap-2">
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className="text-sm font-bold text-neutral-900">
+                          {s.title}
+                        </span>
+                      </td>
+                      <td className="py-4 px-6">
+                        <span className={`inline-flex items-center text-xs font-semibold ${s.is_active ? 'text-emerald-600' : 'text-red-500'}`}>
+                          {s.is_active ? 'Active' : 'Inactive'}
+                        </span>
+                      </td>
+                      <td className="py-4 px-6 text-right">
                         <button
-                          onClick={() => handleOpenModal(item)}
-                          className="p-2 text-neutral-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                          title="Edit"
+                          type="button"
+                          onClick={() => handleSelectService(s)}
+                          className="px-3 py-1.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all cursor-pointer text-neutral-400 hover:text-black hover:bg-neutral-100"
                         >
-                          <FaEdit size={14} />
+                          Edit
                         </button>
-                        <button
-                          onClick={() => handleDelete(item.id)}
-                          className="p-2 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                          title="Delete"
-                        >
-                          <FaTrash size={14} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
+          </div>
+
+          <div className="px-6 py-4 bg-neutral-50/30 border-t border-neutral-100 flex flex-col gap-3 sm:flex-row items-center justify-between">
+            <p className="text-sm text-neutral-600 font-medium">
+              Showing {filtered.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)} of {filtered.length} services
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                Previous
+              </button>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                  <button
+                    key={page}
+                    type="button"
+                    onClick={() => setCurrentPage(page)}
+                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${currentPage === page ? "bg-black text-white" : "border border-neutral-200 text-neutral-600 hover:bg-neutral-50"}`}
+                  >
+                    {page}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                Next
+              </button>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-neutral-50 w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 max-h-[90vh] flex flex-col">
-            {/* Modal Header */}
-            <div className="px-8 py-5 bg-white border-b border-neutral-100 flex items-center justify-between shrink-0">
-              <div>
-                <h2 className="text-xl font-bold text-neutral-900">
-                  {isEditing ? "Edit Service" : "New Service"}
-                </h2>
-                <p className="text-sm text-neutral-500 mt-0.5">
-                  {isEditing
-                    ? "Update the service details below."
-                    : "Fill in the details to create a new service."}
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(false)}
-                className="p-2 hover:bg-neutral-100 rounded-xl transition-all text-neutral-400"
-              >
-                <XCircle size={20} />
-              </button>
+        {/* ── EDITOR CONTENT ────────────────────────────────── */}
+        {showNewServiceModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+            <div className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden h-[85vh] flex flex-col">
+              
+              <div className="flex items-center justify-between px-8 py-5 border-b border-neutral-100 bg-neutral-50/30">
+            <div className="flex gap-4">
+              {tabs.map(t => {
+                const isActive = activeTab === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => setActiveTab(t.id)}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                      isActive ? "bg-[#C59D5F] text-white shadow-md" : "text-neutral-400 hover:text-black hover:bg-white"
+                    }`}
+                  >
+                    <t.icon size={14} /> {t.label}
+                  </button>
+                );
+              })}
             </div>
-
-            {/* Tab + Content Layout */}
-            <div className="flex flex-col lg:flex-row flex-1 overflow-hidden">
-              {/* Vertical Tabs */}
-              <div className="w-full lg:w-52 shrink-0 p-4 space-y-1 border-b lg:border-b-0 lg:border-r border-neutral-200 bg-white flex lg:flex-col flex-row overflow-x-auto">
-                {modalTabs.map((tab) => {
-                  const isActive = activeTab === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all whitespace-nowrap w-full text-left ${
-                        isActive
-                          ? "bg-blue-600 text-white shadow-md"
-                          : "text-neutral-600 hover:bg-neutral-100"
-                      }`}
-                    >
-                      <tab.icon
-                        size={15}
-                        className={isActive ? "text-white" : "text-neutral-500"}
-                      />
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Form Content */}
-              <form
-                onSubmit={handleSubmit}
-                className="flex-1 overflow-y-auto flex flex-col"
+            
+            {selectedServiceId !== 'new' && (
+              <button 
+                type="button"
+                onClick={() => handleDelete(selectedServiceId as number)}
+                className="p-2 text-neutral-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all cursor-pointer"
+                title="Delete Service"
               >
-                <div className="flex-1 p-6 md:p-8">
-                  {/* Basic Info Tab */}
-                  {activeTab === "basic" && (
-                    <div className="space-y-6 animate-in zoom-in-95 duration-300">
-                      <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">
-                        Basic Info
-                      </h2>
-
-                      <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-neutral-900">
-                          Title <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          required
-                          type="text"
-                          value={form.title}
-                          onChange={(e) => {
-                            const title = e.target.value;
-                            const slug = title
-                              .toLowerCase()
-                              .replace(/[^a-z0-9]+/g, "-")
-                              .replace(/(^-|-$)/g, "");
-                            setForm((prev) => ({ ...prev, title, slug }));
-                          }}
-                          placeholder="e.g. Interior Design Consultation"
-                          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
-                        />
-                      </div>
+                <Trash2 size={18} />
+              </button>
+            )}
+          </div>
 
                       <div className="space-y-2">
                         <label className="block text-sm font-semibold text-neutral-900">
@@ -644,171 +538,78 @@ export default function AdminServicesPage() {
                     </div>
                   )}
 
-                  {/* Images Tab */}
-                  {activeTab === "images" && (
-                    <div className="space-y-6 animate-in zoom-in-95 duration-300">
-                      <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">
-                        Images
-                      </h2>
+            {activeTab === "hero" && (
+              <div className="max-w-3xl space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+                <div className="space-y-4">
+                  <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Service Landing Image</label>
+                  <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-neutral-200 rounded-[3rem] bg-neutral-50 hover:bg-white hover:border-black transition-all group">
+                    {(heroImageFile || currentService.hero_image?.url) ? (
+                       <div className="relative w-full max-w-md aspect-video rounded-3xl overflow-hidden shadow-2xl mb-8">
+                          <img src={heroImageFile ? URL.createObjectURL(heroImageFile) : currentService.hero_image?.url || ""} className="w-full h-full object-cover" alt="hero" />
+                       </div>
+                    ) : (
+                       <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mb-6 text-neutral-200 shadow-sm"><ImageIcon size={32} /></div>
+                    )}
+                    <label className="cursor-pointer bg-[#C59D5F] text-white px-8 py-3 rounded-2xl font-bold text-xs shadow-xl active:scale-95 transition-all">
+                      Choose Main Image
+                      <input type="file" className="hidden" accept="image/*" onChange={e => setHeroImageFile(e.target.files?.[0] || null)} />
+                    </label>
+                  </div>
+                </div>
+              </div>
+            )}
 
-                      {[
-                        {
-                          label: "Thumbnail Image",
-                          key: "thumbnail_image",
-                          hint: "Shown in service listings. 4:3 ratio recommended.",
-                        },
-                        {
-                          label: "Hero Image",
-                          key: "hero_image",
-                          hint: "Displayed in the service hero section.",
-                        },
-                        {
-                          label: "Why Choose Image",
-                          key: "why_choose_image",
-                          hint: "Displayed alongside the Why Choose Us section.",
-                        },
-                      ].map(({ label, key, hint }) => (
-                        <div key={key} className="space-y-3">
-                          <label className="block text-sm font-semibold text-neutral-900">
-                            {label}
-                          </label>
-                          <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
-                            {previews[key] ? (
-                              // eslint-disable-next-line @next/next/no-img-element
-                              <img
-                                src={previews[key]}
-                                alt={label}
-                                className="h-28 object-cover rounded-xl mb-4 shadow-sm"
-                              />
-                            ) : (
-                              <div className="w-14 h-14 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
-                                <FaImage size={20} />
-                              </div>
-                            )}
-                            <label className="cursor-pointer bg-white border border-neutral-200 px-4 py-2 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 shadow-sm transition-all">
-                              Choose Image
-                              <input
-                                type="file"
-                                className="hidden"
-                                accept="image/*"
-                                onChange={(e) => handleFileChange(e, key)}
-                              />
-                            </label>
-                            <p className="text-xs text-neutral-400 mt-3 text-center">
-                              {hint}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-
-                      <div className="space-y-3">
-                        <label className="block text-sm font-semibold text-neutral-900">
-                          Gallery Images
-                        </label>
-                        <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
-                          <div className="w-14 h-14 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
-                            <FaImage size={20} />
-                          </div>
-                          <label className="cursor-pointer bg-white border border-neutral-200 px-4 py-2 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 shadow-sm transition-all">
-                            Choose Images
-                            <input
-                              type="file"
-                              className="hidden"
-                              accept="image/*"
-                              multiple
-                              onChange={(e) =>
-                                setForm((prev) => ({
-                                  ...prev,
-                                  gallery_images: Array.from(
-                                    e.target.files ?? []
-                                  ),
-                                }))
-                              }
-                            />
-                          </label>
-                          {form.gallery_images.length > 0 && (
-                            <p className="text-xs text-green-600 font-medium mt-3">
-                              {form.gallery_images.length} file(s) selected
-                            </p>
+            {activeTab === "why_choose" && (
+              <div className="max-w-4xl space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-bold uppercase tracking-tight">Why Choose Section Blocks</h3>
+                  <button type="button" onClick={addBlock} className="flex items-center gap-2 px-5 py-2 bg-[#C59D5F] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all shadow-md cursor-pointer">
+                    <Plus size={14} /> Add Block
+                  </button>
+                </div>
+                <div className="space-y-4">
+                  {currentService.why_choose_blocks.map((block, bi) => (
+                    <div key={bi} className="border border-neutral-100 rounded-3xl overflow-hidden shadow-sm">
+                      <button type="button" onClick={() => setExpandedBlock(expandedBlock === bi ? -1 : bi)} className="w-full flex items-center justify-between px-8 py-5 bg-white hover:bg-neutral-50 transition-all font-bold text-sm cursor-pointer">
+                        <span>Block {bi + 1}: {block.title || "Untitled"}</span>
+                        <div className="flex items-center gap-4">
+                          {currentService.why_choose_blocks.length > 1 && (
+                            <X onClick={e => { e.stopPropagation(); removeBlock(bi); }} className="text-neutral-300 hover:text-red-500 cursor-pointer" size={16} />
                           )}
                           <p className="text-xs text-neutral-400 mt-2 text-center">
                             Select multiple images for the gallery carousel.
                           </p>
                         </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Why Choose Us Tab */}
-                  {activeTab === "why_choose" && (
-                    <div className="space-y-6 animate-in zoom-in-95 duration-300">
-                      <h2 className="text-xl font-bold text-neutral-900 border-b border-neutral-100 pb-4">
-                        Why Choose Us
-                      </h2>
-
-                      <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-neutral-900">
-                          Section Title
-                        </label>
-                        <input
-                          type="text"
-                          value={form.why_choose_title}
-                          onChange={(e) =>
-                            setForm((prev) => ({
-                              ...prev,
-                              why_choose_title: e.target.value,
-                            }))
-                          }
-                          placeholder="e.g. Why Choose Us?"
-                          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-neutral-900">
-                          Section Description
-                        </label>
-                        <textarea
-                          rows={4}
-                          value={form.why_choose_description}
-                          onChange={(e) =>
-                            setForm((prev) => ({
-                              ...prev,
-                              why_choose_description: e.target.value,
-                            }))
-                          }
-                          placeholder="List your unique advantages for this service..."
-                          className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all resize-none placeholder:text-neutral-400"
-                        />
-                      </div>
-
-                      <div className="space-y-3">
-                        <label className="block text-sm font-semibold text-neutral-900">
-                          Key Points
-                        </label>
-                        <div className="space-y-2">
-                          {form.why_choose_points.map((point, idx) => (
-                            <div key={idx} className="flex gap-2">
-                              <input
-                                type="text"
-                                value={point}
-                                onChange={(e) =>
-                                  updatePoint(idx, e.target.value)
-                                }
-                                placeholder={`Point ${idx + 1}`}
-                                className="flex-1 px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all placeholder:text-neutral-400"
-                              />
-                              {form.why_choose_points.length > 1 && (
-                                <button
-                                  type="button"
-                                  onClick={() => removePoint(idx)}
-                                  className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-all"
-                                >
-                                  <XCircle size={16} />
-                                </button>
-                              )}
-                            </div>
-                          ))}
+                      </button>
+                      {expandedBlock === bi && (
+                        <div className="p-8 bg-neutral-50/30 border-t border-neutral-50 space-y-6">
+                           <div className="grid md:grid-cols-2 gap-8">
+                             <div className="space-y-2">
+                               <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Title</label>
+                               <input type="text" value={block.title} onChange={e => updateBlock(bi, { title: e.target.value })} className="w-full px-5 py-3 bg-white border border-neutral-200 rounded-2xl outline-none focus:border-black transition-all font-bold" />
+                             </div>
+                             <div className="space-y-2">
+                               <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Image</label>
+                               <div className="flex items-center gap-4">
+                                  {(block.image_file || block.existing_image_url) && (
+                                     <div className="w-12 h-12 rounded-xl overflow-hidden border border-neutral-200 shrink-0 shadow-sm">
+                                        <img src={block.image_file ? URL.createObjectURL(block.image_file) : block.existing_image_url || ""} className="w-full h-full object-cover" alt="prev" />
+                                     </div>
+                                  )}
+                                  <input type="file" className="text-[10px] file:bg-black file:text-white file:border-0 file:rounded-lg file:px-3 file:py-1.5 file:font-bold file:cursor-pointer cursor-pointer" onChange={e => updateBlock(bi, { image_file: e.target.files?.[0] || null })} />
+                               </div>
+                             </div>
+                           </div>
+                           <div className="space-y-3">
+                             <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Bullet Points</label>
+                             {block.points.map((p, pi) => (
+                               <div key={pi} className="flex gap-2">
+                                 <input type="text" value={p} onChange={e => updatePoint(bi, pi, e.target.value)} className="flex-1 px-4 py-2 bg-white border border-neutral-200 rounded-xl outline-none text-xs" />
+                                 <button type="button" onClick={() => removePoint(bi, pi)} className="p-2 text-neutral-300 hover:text-red-500 transition-colors cursor-pointer"><X size={14} /></button>
+                               </div>
+                             ))}
+                             <button type="button" onClick={() => addPoint(bi)} className="text-[10px] font-bold text-[#C59D5F] flex items-center gap-1 cursor-pointer"><Plus size={14} /> Add Point</button>
+                           </div>
                         </div>
                         <button
                           type="button"
@@ -821,38 +622,63 @@ export default function AdminServicesPage() {
                     </div>
                   )}
                 </div>
+              </div>
+            )}
 
-                {/* Sticky Footer */}
-                <div className="px-6 md:px-8 py-4 border-t border-neutral-100 bg-white flex items-center justify-between shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="px-5 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-medium rounded-xl transition-all text-sm"
+            {activeTab === "settings" && (
+              <div className="max-w-xl space-y-8 animate-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center justify-between p-8 bg-neutral-50/50 rounded-3xl border border-neutral-100">
+                  <div className="space-y-1">
+                    <p className="font-bold">Publishing Status</p>
+                    <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Make this service visible on site</p>
+                  </div>
+                  <button 
+                    type="button" 
+                    onClick={() => setCurrentService(p => ({ ...p, is_active: !p.is_active }))}
+                    className={`w-14 h-8 rounded-full p-1 transition-all cursor-pointer ${currentService.is_active ? "bg-emerald-500" : "bg-neutral-300"}`}
                   >
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="px-6 py-2.5 bg-blue-700 text-white font-medium rounded-xl hover:bg-blue-600 transition-all shadow-md flex items-center gap-2 text-sm disabled:opacity-70 disabled:cursor-not-allowed"
-                  >
-                    {submitting ? (
-                      <>
-                        <FaSpinner size={14} className="animate-spin" />
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <FaSave size={14} />
-                        {isEditing ? "Save Changes" : "Create Service"}
-                      </>
-                    )}
-                  </button>
                 </div>
-              </form>
+                <div className="flex items-center justify-between p-8 bg-neutral-50/50 rounded-3xl border border-neutral-100">
+                  <div className="space-y-1">
+                    <p className="font-bold">Display Order</p>
+                    <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Numeric value for manual sorting</p>
+                  </div>
+                  <input type="number" value={currentService.sort_order || 0} onChange={e => setCurrentService(p => ({ ...p, sort_order: parseInt(e.target.value) || 0 }))} className="w-20 px-3 py-2 bg-white border border-neutral-200 rounded-xl text-center font-bold" />
+                </div>
+              </div>
+            )}
+            
+            <div className="mt-16 pt-8 border-t border-neutral-50 flex items-center justify-between bg-white sticky bottom-0 z-10">
+              <div className="flex items-center gap-3">
+                 <div className={`w-3 h-3 rounded-full ${saving ? "bg-amber-400 animate-pulse" : "bg-emerald-500"}`} />
+                 <span className="text-[10px] font-bold text-neutral-400 uppercase tracking-[0.2em]">{saving ? "Syncing Workspace..." : "All systems normal"}</span>
+              </div>
+              <div className="flex gap-4">
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    setShowNewServiceModal(false);
+                    setSelectedServiceId(null);
+                  }}
+                  className="px-6 py-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 font-bold rounded-2xl text-[10px] uppercase tracking-widest transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="px-10 py-4 bg-[#C59D5F] text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl shadow-black/40 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center gap-3 disabled:opacity-50 cursor-pointer"
+                >
+                  {saving ? <Loader2 size={18} className="animate-spin text-black" /> : <Save size={18} className="text-black" />}
+                  {selectedServiceId === 'new' ? "Create Expertise" : "Save All Changes"}
+                </button>
+              </div>
             </div>
-          </div>
+          </form>
         </div>
+      </div>
       )}
     </div>
   );

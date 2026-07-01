@@ -27,15 +27,20 @@ export default async function ProjectDetailPage({
           />
           <div className="absolute inset-0 bg-black/20" />
         </div>
-        <div className="relative z-20 max-w-4xl">
-          <Link href="/projects" className="inline-flex items-center gap-3 text-white/80 hover:text-white font-black text-xs uppercase tracking-[0.3em] mb-12 transition-colors">
-            <ArrowLeft size={16} />
-            Back to Projects
-          </Link>
-          <h4 className="text-[#C59D5F] font-black tracking-[0.4em] uppercase text-xs md:text-sm mb-6">
-            {project.category?.name || "Professional Execution"}
-          </h4>
-          <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter uppercase leading-[0.9] mb-8">
+
+        {/* Content */}
+        <div className="absolute bottom-0 z-20 left-0 w-full px-6">
+          <h1 className="text-white text-5xl md:text-7xl leading-tight">
+            {project.category?.hero_title || "Turning Houses Into Dream Homes"}
+          </h1>
+          <div className="mt-6 h-[3px] w-full max-w-[500px] bg-white"></div>
+        </div>
+      </section>
+
+      {/* Project Header */}
+      <section className="max-w-7xl mx-auto pt-24 px-6 animate-in fade-in slide-in-from-bottom-5 duration-700">  
+        <div className="space-y-6">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-neutral-900 text-center tracking-tighter uppercase leading-[0.9]">
             {project.title}
           </h1>
           {project.subtitle && (

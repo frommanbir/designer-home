@@ -41,13 +41,15 @@ export default async function ProjectsPage({
             className="w-full h-full object-cover"
           />
         </div>
-        <div className="relative z-20 text-center px-6 max-w-5xl mx-auto animate-in fade-in zoom-in duration-1000">
-          <h1 className="text-white text-5xl md:text-8xl font-black tracking-tight uppercase leading-[0.9] drop-shadow-2xl">
-            {heroTitle.split(' ').slice(0, -2).join(' ')} <br/>
-            <span className="text-white underline decoration-[#C59D5F] decoration-8 underline-offset-[16px]">
-              {heroTitle.split(' ').slice(-2).join(' ')}
-            </span>
-          </h1>
+
+        {/* Content */}
+        <div className="absolute bottom-0 z-20 left-0 w-full px-6">
+            <h1 className="text-white text-5xl md:text-7xl leading-tight">
+              Turning Houses Into
+              <br />
+              Dream Homes
+            </h1>
+            <div className="mt-6 h-[3px] w-full max-w-[500px] bg-white"></div>
         </div>
       </section>
 
