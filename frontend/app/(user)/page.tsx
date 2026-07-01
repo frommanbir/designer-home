@@ -1,3 +1,4 @@
+import React from "react";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
 import { getServices } from "@/lib/services";
@@ -139,7 +140,8 @@ export default async function HomePage() {
                     Out of 5.0
                   </p>
                 </div>
-             </div>
+              </div>
+            </div>
           </div>
           <div className="mt-20 text-center lg:text-left lg:ml-[53%]">
              <Link href="/projects" className="px-12 py-3 bg-zinc-800 text-white text-xs font-bold rounded-lg hover:bg-[#C59D5F] transition-all uppercase tracking-[0.2em] shadow-md">
@@ -231,16 +233,18 @@ export default async function HomePage() {
               { title: "Floor Planning", icon: CheckCircle },
               { title: "Site Visit & Supervision", icon: Clock },
               { title: "3D Modeling", icon: Star }
-            ].map((step, idx) => (
-              <div key={idx} className="flex-1 flex flex-col items-center gap-8 relative z-10 group cursor-default">
+            ].map((step, idx, arr) => (
+              <React.Fragment key={idx}>
+                <div className="flex-1 flex flex-col items-center gap-8 relative z-10 group cursor-default">
                 <div className={`w-36 h-36 rounded-full border-2 flex items-center justify-center transition-all duration-700 shadow-sm
                   ${idx % 2 === 0 ? 'bg-white border-neutral-100 group-hover:border-[#C59D5F] text-neutral-600 group-hover:text-[#C59D5F]' : 'bg-neutral-800 border-neutral-800 text-white group-hover:bg-[#C59D5F] group-hover:border-[#C59D5F]'}
                   group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-2xl`}>
                   <step.icon size={56} strokeWidth={1} />
                 </div>
-                <div className="space-y-2 text-center transform transition-transform group-hover:translate-y-2">
-                   <p className="text-[#C59D5F] text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Step 0{idx + 1}</p>
-                   <p className="text-neutral-700 font-bold text-sm uppercase tracking-wider max-w-[150px] transition-colors group-hover:text-black">{step.title}</p>
+                 <div className="space-y-2 text-center transform transition-transform group-hover:translate-y-2">
+                    <p className="text-[#C59D5F] text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Step 0{idx + 1}</p>
+                    <p className="text-neutral-700 font-bold text-sm uppercase tracking-wider max-w-[150px] transition-colors group-hover:text-black">{step.title}</p>
+                 </div>
                 </div>
 
                 {idx < arr.length - 1 && (
@@ -292,6 +296,17 @@ export default async function HomePage() {
                     <p className="text-neutral-500 text-lg leading-relaxed max-w-md italic border-l-2 border-neutral-100 pl-4">
                       {project.short_description || project.subtitle || "Modern design solution tailored to specific client needs and space requirements."}
                     </p>
+                  </div>
+                </Link>
+              ))
+            ) : (
+              // Realistic Project Placeholders
+              [1, 2].map((i) => (
+                <div key={i} className="space-y-8">
+                  <div className="h-[300px] sm:h-[450px] lg:h-[550px] rounded-[50px] bg-neutral-50 animate-pulse border border-neutral-100" />
+                  <div className="space-y-4 px-4">
+                    <div className="h-10 w-3/4 bg-neutral-100 animate-pulse rounded-full" />
+                    <div className="h-6 w-full bg-neutral-50 animate-pulse rounded-full" />
                   </div>
                 </div>
               ))

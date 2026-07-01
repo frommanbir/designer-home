@@ -4,12 +4,30 @@ import React from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { getServiceCategories } from "@/lib/service-categories";
-import type { ServiceCategory } from "@/lib/service-categories";
+import { getServices } from "@/lib/services";
+import { getProjectCategories } from "@/lib/project-categories";
+import type { Service } from "@/types/service";
+import type { ProjectCategory } from "@/types/project-category";
 
 const Navbar = ({ transparent = true, settings }: { transparent?: boolean; settings?: any }) => {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [allServices, setAllServices] = React.useState<Service[]>([]);
+  const [projectCategories, setProjectCategories] = React.useState<ProjectCategory[]>([]);
+
+  React.useEffect(() => {
+    getServices()
+      .then((data) => {
+        setAllServices(data.filter((s) => s.is_active));
+      })
+      .catch((err) => console.error("Failed to load services in navbar:", err));
+
+    getProjectCategories()
+      .then((data) => {
+        setProjectCategories(data);
+      })
+      .catch((err) => console.error("Failed to load project categories in navbar:", err));
+  }, []);
 
   const getLinkClasses = (path: string, partial = false) => {
     const active = partial ? pathname.startsWith(path) : pathname === path;
