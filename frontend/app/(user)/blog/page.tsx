@@ -1,15 +1,18 @@
 import React from "react";
 import Link from "next/link";
-import { getBlogs } from "@/lib/blogs";
+import { getBlogs, getBlogPageData } from "@/lib/blogs";
 import { ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 const BlogListPage = async () => {
-  const blogs = await getBlogs();
+  const [blogs, pageData] = await Promise.all([
+    getBlogs().catch(() => []),
+    getBlogPageData().catch(() => ({})),
+  ]);
 
-  const heroImage = "/images/about-home.png"; 
-  const heroTitle = "The Journal";
+  const pageHeroImage = pageData?.hero?.image?.url || "/images/about-home.png"; 
+  const pageHeroTitle = pageData?.hero?.title || "Insights & Aesthetics";
 
   return (
     <div className="bg-white font-sans overflow-x-hidden min-h-screen">
@@ -19,19 +22,17 @@ const BlogListPage = async () => {
         {/* Background */}
         <div className="absolute inset-0">
           <img
-            src={heroImage}
-            alt={heroTitle}
+            src={pageHeroImage}
+            alt={pageHeroTitle}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/30" />
         </div>
 
         {/* Content */}
-        <div className="absolute bottom-0 z-20 left-0 w-full px-6">
-          <h1 className="text-white text-5xl md:text-7xl leading-tight font-bold">
-            Insights &
-            <br />
-            Aesthetics
+        <div className="absolute bottom-0 z-20 left-0 w-full px-6 pb-12">
+          <h1 className="text-white text-5xl md:text-7xl leading-tight font-bold uppercase tracking-tight">
+            {pageHeroTitle}
           </h1>
           <div className="mt-6 h-[3px] w-full max-w-[500px] bg-[#C59D5F]"></div>
         </div>

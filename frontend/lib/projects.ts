@@ -2,6 +2,18 @@ import { serverFetch } from "./server-api";
 import { fetchApi } from "./api";
 import { Project, ProjectFilters } from "@/types/project";
 
+/** Project page hero — SSR safe (public) */
+export async function getProjectPageData() {
+  const res = await serverFetch("/project-page");
+  return res.data ?? {};
+}
+
+/** Admin — client-side auth needed */
+export async function updateProjectPage(formData: FormData) {
+  const res = await fetchApi("/admin/project-page", { method: "POST", body: formData });
+  return res.data;
+}
+
 /** Public storefront — SSR safe */
 export async function getProjects(filters: ProjectFilters = {}): Promise<Project[]> {
   const query = new URLSearchParams();

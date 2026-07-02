@@ -2,6 +2,18 @@ import { serverFetch } from "./server-api";
 import { fetchApi } from "./api";
 import { Blog } from "@/types/blog";
 
+/** Blog page hero — SSR safe (public) */
+export async function getBlogPageData() {
+  const res = await serverFetch("/blog-page");
+  return res.data ?? {};
+}
+
+/** Admin — client-side auth needed */
+export async function updateBlogPage(formData: FormData) {
+  const res = await fetchApi("/admin/blog-page", { method: "POST", body: formData });
+  return res.data;
+}
+
 /** Public storefront — SSR safe */
 export async function getBlogs(): Promise<Blog[]> {
   const res = await serverFetch("/blogs");

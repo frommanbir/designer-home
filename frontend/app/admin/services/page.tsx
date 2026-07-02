@@ -94,7 +94,7 @@ export default function ServicesAdminPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
   // Page-level vertical tabs sidebar
-  const [pageTab, setPageTab] = useState<"hero" | "services">("hero");
+  const [pageTab, setPageTab] = useState<"hero" | "services">("services");
 
   const pageTabs = [
     { id: "hero" as const, label: "Hero Banner", icon: Layout },

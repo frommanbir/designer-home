@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getProjects } from "@/lib/projects";
+import { getProjects, getProjectPageData } from "@/lib/projects";
 import { getProjectCategories } from "@/lib/project-categories";
 import { ProjectCategory } from "@/types/project-category";
 import Footer from "@/components/Footer";
@@ -16,9 +16,10 @@ export default async function ProjectsPage({
 }) {
   const filters = await searchParams;
 
-  const [projects, categories] = await Promise.all([
+  const [projects, categories, pageData] = await Promise.all([
     getProjects(filters).catch(() => []),
     getProjectCategories().catch(() => [] as ProjectCategory[]),
+    getProjectPageData().catch(() => ({})),
   ]);
 
   const activeCategory = filters.category
@@ -28,6 +29,9 @@ export default async function ProjectsPage({
   const heroImage = activeCategory?.hero_image?.url || "/images/about-home.png";
   const heroTitle = activeCategory?.hero_title || "Turning Houses Into Dream Homes";
 
+  const pageHeroImage = pageData?.hero?.image?.url || heroImage;
+  const pageHeroTitle = pageData?.hero?.title || heroTitle;
+
   return (
     <div className="bg-white font-sans overflow-x-hidden min-h-screen">
 
@@ -36,19 +40,17 @@ export default async function ProjectsPage({
         {/* Background */}
         <div className="absolute inset-0">
           <img
-            src={heroImage}
-            alt={heroTitle}
+            src={pageHeroImage}
+            alt={pageHeroTitle}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/20" />
         </div>
 
         {/* Content */}
-        <div className="absolute bottom-0 z-20 left-0 w-full px-6">
-            <h1 className="text-white text-5xl md:text-7xl leading-tight">
-              Turning Houses Into
-              <br />
-              Dream Homes
+        <div className="absolute bottom-0 z-20 left-0 w-full px-6 pb-12">
+            <h1 className="text-white text-5xl md:text-7xl leading-tight uppercase font-bold tracking-tight">
+              {pageHeroTitle}
             </h1>
             <div className="mt-6 h-[3px] w-full max-w-[500px] bg-white"></div>
         </div>

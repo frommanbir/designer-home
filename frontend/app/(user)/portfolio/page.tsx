@@ -1,4 +1,4 @@
-import { getPortfolios } from "@/lib/portfolios";
+import { getPortfolios, getPortfolioPageData } from "@/lib/portfolios";
 import { getPortfolioCategories } from "@/lib/portfolio-categories";
 import PortfolioList from "@/components/PortfolioList";
 
@@ -13,10 +13,14 @@ export default async function PortfolioPage({
 }) {
   const filters = await searchParams;
 
-  const [portfolios, categories] = await Promise.all([
+  const [portfolios, categories, pageData] = await Promise.all([
     getPortfolios(filters).catch(() => []),
     getPortfolioCategories().catch(() => []),
+    getPortfolioPageData().catch(() => ({})),
   ]);
+
+  const heroImage = pageData?.hero?.image?.url || "/images/portfolio.png";
+  const heroTitle = pageData?.hero?.title || "PORTFOLIO";
 
   return (
     <div className="bg-white font-sans overflow-x-hidden min-h-screen text-neutral-900 border-none">
@@ -25,14 +29,14 @@ export default async function PortfolioPage({
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-transparent z-10" />
           <img
-            src="/images/portfolio.png"
+            src={heroImage}
             alt="Portfolio Hero"
             className="w-full h-full object-cover"
           />
         </div>
         <div className="relative z-20 flex -translate-y-16 flex-col items-center text-center px-6 space-y-4 animate-in fade-in slide-in-from-bottom-10 duration-[1500ms]">
-          <h1 className="text-white text-6xl md:text-8xl font-bold font-inter tracking-tight drop-shadow-lg">
-            PORTFOLIO
+          <h1 className="text-white text-6xl md:text-8xl font-bold font-inter tracking-tight drop-shadow-lg uppercase">
+            {heroTitle}
           </h1>
           <p className="text-white text-2xl md:text-4xl font-baumans tracking-wide opacity-90 drop-shadow-md">
             Our Work Speaks for Itself

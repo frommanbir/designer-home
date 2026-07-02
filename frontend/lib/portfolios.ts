@@ -2,6 +2,18 @@ import { serverFetch } from "./server-api";
 import { fetchApi } from "./api";
 import { Portfolio, PortfolioFilters } from "@/types/portfolio";
 
+/** Portfolio page hero — SSR safe (public) */
+export async function getPortfolioPageData() {
+  const res = await serverFetch("/portfolio-page");
+  return res.data ?? {};
+}
+
+/** Admin — client-side auth needed */
+export async function updatePortfolioPage(formData: FormData) {
+  const res = await fetchApi("/admin/portfolio-page", { method: "POST", body: formData });
+  return res.data;
+}
+
 /** Public storefront — SSR safe */
 export async function getPortfolios(filters: PortfolioFilters = {}): Promise<Portfolio[]> {
   const query = new URLSearchParams();

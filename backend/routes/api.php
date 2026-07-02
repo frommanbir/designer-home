@@ -3,6 +3,9 @@
 use App\Http\Controllers\Api\AboutFeatureController;
 use App\Http\Controllers\Api\AboutPageController;
 use App\Http\Controllers\Api\ServicesPageController;
+use App\Http\Controllers\Api\PortfolioPageController;
+use App\Http\Controllers\Api\ProjectPageController;
+use App\Http\Controllers\Api\BlogPageController;
 use App\Http\Controllers\Api\Admin\DashboardController;
 use App\Http\Controllers\Api\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Api\AuthController;
@@ -31,6 +34,9 @@ Route::get('/blogs/{slug}', [BlogController::class, 'show']);
 
 Route::get('/about-page', [AboutPageController::class, 'index']);
 Route::get('/services-page', [ServicesPageController::class, 'index']);
+Route::get('/portfolio-page', [PortfolioPageController::class, 'index']);
+Route::get('/project-page', [ProjectPageController::class, 'index']);
+Route::get('/blog-page', [BlogPageController::class, 'index']);
 
 Route::get('/service-categories', [ServiceCategoryController::class, 'index']);
 Route::get('/services', [ServiceController::class, 'index']);
@@ -88,6 +94,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // ── Admin: About Page ─────────────────────────────────
     Route::post('/admin/about-page',                              [AboutPageController::class, 'update']);
     Route::post('/admin/services-page',                           [ServicesPageController::class, 'update']);
+    Route::post('/admin/portfolio-page',                          [PortfolioPageController::class, 'update']);
+    Route::post('/admin/project-page',                            [ProjectPageController::class, 'update']);
+    Route::post('/admin/blog-page',                               [BlogPageController::class, 'update']);
     Route::get('/admin/about-features',                           [AboutFeatureController::class, 'index']);
     Route::post('/admin/about-features',                          [AboutFeatureController::class, 'store']);
     Route::put('/admin/about-features/{aboutFeature}',            [AboutFeatureController::class, 'update']);
