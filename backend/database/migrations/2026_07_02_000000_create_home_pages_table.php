@@ -16,22 +16,13 @@ return new class extends Migration
             $table->longText('intro_description')->nullable();
             $table->text('intro_extra_text')->nullable();
             $table->string('intro_image_path')->nullable();
-            $table->string('inquiry_button_text')->nullable();
-            $table->string('inquiry_button_link')->nullable();
-            $table->string('projects_button_text')->nullable();
-            $table->string('projects_button_link')->nullable();
 
             $table->string('stats_image_path')->nullable();
             $table->string('stats_title')->nullable();
             $table->longText('stats_description')->nullable();
             $table->unsignedInteger('expert_count')->nullable();
-            $table->string('expert_label')->nullable();
             $table->unsignedInteger('project_count')->nullable();
-            $table->string('project_label')->nullable();
             $table->decimal('rating_value', 8, 2)->nullable();
-            $table->string('rating_label')->nullable();
-            $table->string('learn_more_button_text')->nullable();
-            $table->string('learn_more_button_link')->nullable();
             $table->timestamps();
         });
     }

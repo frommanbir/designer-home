@@ -18,21 +18,12 @@ class HomePageResource extends JsonResource
             'intro_description' => $homePage?->intro_description,
             'intro_extra_text' => $homePage?->intro_extra_text,
             'intro_image_url' => $this->imageUrl($homePage?->intro_image_path),
-            'inquiry_button_text' => $homePage?->inquiry_button_text,
-            'inquiry_button_link' => $homePage?->inquiry_button_link,
-            'projects_button_text' => $homePage?->projects_button_text,
-            'projects_button_link' => $homePage?->projects_button_link,
             'stats_image_url' => $this->imageUrl($homePage?->stats_image_path),
             'stats_title' => $homePage?->stats_title,
             'stats_description' => $homePage?->stats_description,
             'expert_count' => $homePage?->expert_count,
-            'expert_label' => $homePage?->expert_label,
             'project_count' => $homePage?->project_count,
-            'project_label' => $homePage?->project_label,
             'rating_value' => $homePage?->rating_value !== null ? (float) $homePage->rating_value : null,
-            'rating_label' => $homePage?->rating_label,
-            'learn_more_button_text' => $homePage?->learn_more_button_text,
-            'learn_more_button_link' => $homePage?->learn_more_button_link,
         ];
     }
 
