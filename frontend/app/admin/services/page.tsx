@@ -14,14 +14,17 @@ import {
   Settings as SettingsIcon,
   Save,
   ChevronRight,
-  Wrench
+  Wrench,
+  Pencil
 } from "lucide-react";
 import { 
   getAdminServices, 
   deleteService, 
   createService, 
-  updateService 
+  updateService,
+  updateServicesPage
 } from "@/lib/services";
+import { fetchApi } from "@/lib/api";
 import { Service } from "@/types/service";
 import { toast } from "sonner";
 
@@ -78,18 +81,58 @@ export default function ServicesAdminPage() {
   const [saving, setSaving] = useState(false);
   const [showNewServiceModal, setShowNewServiceModal] = useState(false);
   
+  // ── Services Page Hero State ──────────────────────────────
+  const [heroTitle, setHeroTitle] = useState("");
+  const [heroImageFile, setHeroImageFile] = useState<File | null>(null);
+  const [heroImagePreview, setHeroImagePreview] = useState("");
+  const [heroSaving, setHeroSaving] = useState(false);
+
   // Selection & Tab Management
   const [selectedServiceId, setSelectedServiceId] = useState<number | 'new' | null>(null);
   const [activeTab, setActiveTab] = useState("content");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Page-level vertical tabs sidebar
+  const [pageTab, setPageTab] = useState<"hero" | "services">("hero");
+
+  const pageTabs = [
+    { id: "hero" as const, label: "Hero Banner", icon: Layout },
+    { id: "services" as const, label: "Services", icon: Wrench },
+  ];
+
   // Form State
   const [currentService, setCurrentService] = useState<FormState>(emptyForm());
-  const [heroImageFile, setHeroImageFile] = useState<File | null>(null);
+  const [heroImageFile2, setHeroImageFile2] = useState<File | null>(null);
   const [expandedBlock, setExpandedBlock] = useState<number>(0);
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { fetchData(); fetchHeroSettings(); }, []);
+
+  async function fetchHeroSettings() {
+    try {
+      const res = await fetchApi("/services-page");
+      if (res.success && res.data) {
+        setHeroTitle(res.data.hero?.title || "");
+        setHeroImagePreview(res.data.hero?.image?.url || "");
+      }
+    } catch {}
+  }
+
+  async function handleHeroSave(e: React.FormEvent) {
+    e.preventDefault();
+    setHeroSaving(true);
+    try {
+      const fd = new FormData();
+      fd.append("hero_title", heroTitle);
+      if (heroImageFile) fd.append("hero_image", heroImageFile);
+      await updateServicesPage(fd);
+      toast.success("Services page hero updated!");
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update hero.");
+    } finally {
+      setHeroSaving(false);
+    }
+  }
 
   async function fetchData() {
     try {
@@ -106,7 +149,7 @@ export default function ServicesAdminPage() {
   const openNewServiceModal = () => {
     setSelectedServiceId('new');
     setCurrentService(emptyForm());
-    setHeroImageFile(null);
+    setHeroImageFile2(null);
     setActiveTab("content");
     setShowNewServiceModal(true);
   };
@@ -122,7 +165,7 @@ export default function ServicesAdminPage() {
       ...service,
       why_choose_blocks: normalizeBlocks(service.why_choose),
     });
-    setHeroImageFile(null);
+    setHeroImageFile2(null);
     setActiveTab("content");
     setShowNewServiceModal(true);
   };
@@ -141,7 +184,7 @@ export default function ServicesAdminPage() {
       fd.append("sort_order", String(currentService.sort_order || 0));
       fd.append("is_active", currentService.is_active ? "1" : "0");
 
-      if (heroImageFile) fd.append("hero_image", heroImageFile);
+      if (heroImageFile2) fd.append("hero_image", heroImageFile2);
 
       currentService.why_choose_blocks.forEach((block, i) => {
         if (block.title) fd.append(`why_choose[${i}][title]`, block.title);
@@ -244,128 +287,246 @@ export default function ServicesAdminPage() {
       {/* ── Header ────────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Services Management</h1>
-          <p className="text-sm text-neutral-500 mt-1">Configure your professional offerings in a unified view.</p>
+          <h1 className="text-2xl font-bold">Services Page Setup</h1>
+          <p className="text-sm text-neutral-500 mt-1">Configure the hero banner and manage individual services.</p>
         </div>
-        <div>
-          <button
-            type="button"
-            onClick={openNewServiceModal}
-            className="flex items-center justify-center gap-2 px-5 py-2.5 bg-black text-white rounded-2xl font-bold text-sm hover:bg-neutral-800 transition-all shadow-md active:scale-95 cursor-pointer"
-          >
-            <Plus size={18} /> New Service
-          </button>
-        </div>
-      </div>
-
-      {/* Filters (Outside of the table wrapper) */}
-      <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
-          <input
-            type="text"
-            placeholder="Search services..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-2xl text-sm focus:ring-1 focus:ring-black outline-none transition-all"
-          />
-        </div>
-      </div>
-
-      <div className="bg-white rounded-3xl border border-neutral-100 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-neutral-50/50 border-b border-neutral-100">
-                <tr>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">S.No</th>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Image</th>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Service</th>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Status</th>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-neutral-50">
-                {paginatedServices.map((s, index) => {
-                  return (
-                    <tr key={s.id} className="hover:bg-neutral-50/40 transition-colors">
-                      <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
-                      <td className="py-4 px-6">
-                        {s.hero_image?.url || s.thumbnail_image?.url ? (
-                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-neutral-100 border border-neutral-100 shadow-sm">
-                            <img
-                              src={s.hero_image?.url || s.thumbnail_image?.url || ""}
-                              alt={s.title}
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-12 h-12 rounded-xl bg-neutral-50 border border-neutral-200/60 flex items-center justify-center text-neutral-300">
-                            <ImageIcon size={18} />
-                          </div>
-                        )}
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className="text-sm font-bold text-neutral-900">
-                          {s.title}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6">
-                        <span className={`inline-flex items-center text-xs font-semibold ${s.is_active ? 'text-emerald-600' : 'text-red-500'}`}>
-                          {s.is_active ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="py-4 px-6 text-right">
-                        <button
-                          type="button"
-                          onClick={() => handleSelectService(s)}
-                          className="px-3 py-1.5 rounded-lg font-bold text-xs uppercase tracking-wider transition-all cursor-pointer text-neutral-400 hover:text-black hover:bg-neutral-100"
-                        >
-                          Edit
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        {pageTab === "services" && (
+          <div>
+            <button
+              type="button"
+              onClick={openNewServiceModal}
+              className="flex items-center justify-center gap-2 px-5 py-2.5 bg-black text-white rounded-2xl font-bold text-sm hover:bg-neutral-800 transition-all shadow-md active:scale-95 cursor-pointer"
+            >
+              <Plus size={18} /> New Service
+            </button>
           </div>
+        )}
+      </div>
 
-          <div className="px-6 py-4 bg-neutral-50/30 border-t border-neutral-100 flex flex-col gap-3 sm:flex-row items-center justify-between">
-            <p className="text-sm text-neutral-600 font-medium">
-              Showing {filtered.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)} of {filtered.length} services
-            </p>
-            <div className="flex items-center gap-2">
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Vertical Tabs Sidebar */}
+        <div className="w-full lg:w-64 flex-shrink-0 space-y-2">
+          {pageTabs.map((tab) => {
+            const isActive = pageTab === tab.id;
+            return (
               <button
+                key={tab.id}
                 type="button"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-                className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                onClick={() => setPageTab(tab.id)}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                  isActive
+                    ? "bg-[#C59D5F] text-white shadow-md"
+                    : "text-neutral-600 hover:bg-neutral-100 bg-white border border-neutral-100"
+                }`}
               >
-                Previous
+                <tab.icon size={18} className={isActive ? "text-white" : "text-neutral-500"} />
+                {tab.label}
               </button>
-              <div className="flex items-center gap-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                  <button
-                    key={page}
-                    type="button"
-                    onClick={() => setCurrentPage(page)}
-                    className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${currentPage === page ? "bg-black text-white" : "border border-neutral-200 text-neutral-600 hover:bg-neutral-50"}`}
-                  >
-                    {page}
-                  </button>
-                ))}
+            );
+          })}
+        </div>
+
+        {/* Content Area */}
+        <div className="flex-1 space-y-6">
+          {pageTab === "hero" ? (
+            /* ── Services Page Hero Banner Editor ─────────────── */
+            <div className="bg-white rounded-3xl border border-neutral-100 shadow-sm overflow-hidden animate-in zoom-in-95 duration-300">
+              <div className="px-8 py-5 border-b border-neutral-100 bg-neutral-50/30">
+                <h2 className="font-bold text-neutral-900 flex items-center gap-2">
+                  <Layout size={16} className="text-[#C59D5F]" />
+                  Services Page Hero Banner
+                </h2>
+                <p className="text-xs text-neutral-400 mt-1">This image and title appear at the top of every individual service page.</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-                className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-              >
-                Next
-              </button>
+              <form onSubmit={handleHeroSave} className="p-8 space-y-6">
+                <div className="grid md:grid-cols-2 gap-8 items-start">
+                  {/* Image Upload */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Hero Image</label>
+                    <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-neutral-200 rounded-[2rem] bg-neutral-50 hover:bg-white hover:border-black transition-all">
+                      {(heroImageFile ? URL.createObjectURL(heroImageFile) : heroImagePreview) ? (
+                        <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md mb-4">
+                          <img
+                            src={heroImageFile ? URL.createObjectURL(heroImageFile) : heroImagePreview}
+                            alt="Services Hero"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-4 text-neutral-200 shadow-sm">
+                          <ImageIcon size={28} />
+                        </div>
+                      )}
+                      <label className="cursor-pointer bg-[#C59D5F] text-white px-6 py-2.5 rounded-xl font-bold text-xs shadow-md active:scale-95 transition-all">
+                        Choose Image
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={e => {
+                            const file = e.target.files?.[0] || null;
+                            setHeroImageFile(file);
+                            if (file) setHeroImagePreview(URL.createObjectURL(file));
+                          }}
+                        />
+                      </label>
+                      <p className="text-[10px] text-neutral-400 mt-3 text-center">Max 2MB · 1920×1080px recommended</p>
+                    </div>
+                  </div>
+
+                  {/* Title Input */}
+                  <div className="space-y-3">
+                    <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Hero Title</label>
+                    <input
+                      type="text"
+                      value={heroTitle}
+                      onChange={e => setHeroTitle(e.target.value)}
+                      className="w-full px-5 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl outline-none focus:border-black transition-all font-bold text-neutral-800"
+                      placeholder="e.g. Creating Spaces Without Compromise"
+                      maxLength={255}
+                    />
+                    <p className="text-[10px] text-neutral-400">Shown as the large heading over the hero image.</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    disabled={heroSaving}
+                    className="px-8 py-3 bg-[#C59D5F] text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                  >
+                    {heroSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                    {heroSaving ? "Saving..." : "Save Hero"}
+                  </button>
+                </div>
+              </form>
             </div>
-          </div>
+          ) : (
+            <div className="space-y-6 animate-in zoom-in-95 duration-300">
+              {/* Filters */}
+              <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-3xl border border-neutral-100 shadow-sm">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
+                  <input
+                    type="text"
+                    placeholder="Search services..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-2xl text-sm focus:ring-1 focus:ring-black outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Services List Table */}
+              <div className="bg-white rounded-3xl border border-neutral-100 shadow-sm overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left">
+                    <thead className="bg-neutral-50/50 border-b border-neutral-100">
+                      <tr>
+                        <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">S.No</th>
+                        <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Image</th>
+                        <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Service</th>
+                        <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Status</th>
+                        <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-neutral-50">
+                      {paginatedServices.map((s, index) => {
+                        return (
+                          <tr key={s.id} className="hover:bg-neutral-50/40 transition-colors">
+                            <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
+                            <td className="py-4 px-6">
+                              {s.hero_image?.url || s.thumbnail_image?.url ? (
+                                <div className="w-12 h-12 rounded-xl overflow-hidden bg-neutral-100 border border-neutral-100 shadow-sm">
+                                  <img
+                                    src={s.hero_image?.url || s.thumbnail_image?.url || ""}
+                                    alt={s.title}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="w-12 h-12 rounded-xl bg-neutral-50 border border-neutral-200/60 flex items-center justify-center text-neutral-300">
+                                  <ImageIcon size={18} />
+                                </div>
+                              )}
+                            </td>
+                            <td className="py-4 px-6">
+                              <span className="text-sm font-bold text-neutral-900">
+                                {s.title}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6">
+                              <span className={`inline-flex items-center text-xs font-semibold ${s.is_active ? 'text-emerald-600' : 'text-red-500'}`}>
+                                {s.is_active ? 'Active' : 'Inactive'}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-right">
+                              <div className="flex justify-end gap-1">
+                                <button
+                                  type="button"
+                                  onClick={() => handleSelectService(s)}
+                                  className="p-2 rounded-xl text-neutral-400 hover:text-black hover:bg-neutral-100 transition-all cursor-pointer"
+                                  title="Edit Service"
+                                >
+                                  <Pencil size={16} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDelete(s.id)}
+                                  className="p-2 rounded-xl text-neutral-400 hover:text-red-600 hover:bg-red-50 transition-all cursor-pointer"
+                                  title="Delete Service"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="px-6 py-4 bg-neutral-50/30 border-t border-neutral-100 flex flex-col gap-3 sm:flex-row items-center justify-between">
+                  <p className="text-sm text-neutral-600 font-medium">
+                    Showing {filtered.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)} of {filtered.length} services
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                      Previous
+                    </button>
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                        <button
+                          key={page}
+                          type="button"
+                          onClick={() => setCurrentPage(page)}
+                          className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${currentPage === page ? "bg-black text-white" : "border border-neutral-200 text-neutral-600 hover:bg-neutral-50"}`}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1.5 rounded-lg border border-neutral-200 text-sm font-medium text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+      </div>
 
         {/* ── EDITOR CONTENT ────────────────────────────────── */}
         {showNewServiceModal && (
@@ -441,16 +602,16 @@ export default function ServicesAdminPage() {
                 <div className="space-y-4">
                   <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Service Landing Image</label>
                   <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-neutral-200 rounded-[3rem] bg-neutral-50 hover:bg-white hover:border-black transition-all group">
-                    {(heroImageFile || currentService.hero_image?.url) ? (
+                    {(heroImageFile2 || currentService.hero_image?.url) ? (
                        <div className="relative w-full max-w-md aspect-video rounded-3xl overflow-hidden shadow-2xl mb-8">
-                          <img src={heroImageFile ? URL.createObjectURL(heroImageFile) : currentService.hero_image?.url || ""} className="w-full h-full object-cover" alt="hero" />
+                          <img src={heroImageFile2 ? URL.createObjectURL(heroImageFile2) : currentService.hero_image?.url || ""} className="w-full h-full object-cover" alt="hero" />
                        </div>
                     ) : (
                        <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mb-6 text-neutral-200 shadow-sm"><ImageIcon size={32} /></div>
                     )}
                     <label className="cursor-pointer bg-[#C59D5F] text-white px-8 py-3 rounded-2xl font-bold text-xs shadow-xl active:scale-95 transition-all">
                       Choose Main Image
-                      <input type="file" className="hidden" accept="image/*" onChange={e => setHeroImageFile(e.target.files?.[0] || null)} />
+                      <input type="file" className="hidden" accept="image/*" onChange={e => setHeroImageFile2(e.target.files?.[0] || null)} />
                     </label>
                   </div>
                 </div>

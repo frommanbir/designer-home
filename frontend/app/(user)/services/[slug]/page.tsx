@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { getServiceBySlug } from "@/lib/services";
+import { getServiceBySlug, getServicesPageData } from "@/lib/services";
 import { serverFetch } from "@/lib/server-api";
 import { Check } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -27,10 +27,11 @@ function normalizeWhyChoose(wc: any): ServiceWhyChoose[] {
 const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
 
-  // Parallel fetch: Current service and site settings
-  const [service, settings] = await Promise.all([
+  // Parallel fetch: Current service, site settings, and services page hero
+  const [service, settings, servicesPage] = await Promise.all([
     getServiceBySlug(slug).catch(() => null),
-    getSiteSettings()
+    getSiteSettings(),
+    getServicesPageData().catch(() => ({}))
   ]);
 
   if (!service) return notFound();
@@ -47,15 +48,15 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/30 z-10" />
           <img
-            src="/images/about-home.png"
-            alt="Designer Home Hero"
+            src={(servicesPage as any)?.hero?.image?.url || "/images/about-home.png"}
+            alt="Designer Home Services Hero"
             className="w-full h-full object-cover"
           />
         </div>
 
         <div className="absolute bottom-0 z-20 left-0 w-full px-6">
           <h1 className="text-white text-5xl md:text-7xl leading-tight">
-            Creating Spaces <br />Without Compromise
+            {(servicesPage as any)?.hero?.title || "Creating Spaces Without Compromise"}
           </h1>
           <div className="mt-6 h-[3px] w-full max-w-[500px] bg-white"></div>
         </div>

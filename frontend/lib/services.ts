@@ -2,6 +2,18 @@ import { serverFetch } from "./server-api";
 import { fetchApi } from "./api";
 import { Service, ServiceFilters } from "@/types/service";
 
+/** Services page hero — SSR safe (public) */
+export async function getServicesPageData() {
+  const res = await serverFetch("/services-page");
+  return res.data ?? {};
+}
+
+/** Admin — client-side auth needed */
+export async function updateServicesPage(formData: FormData) {
+  const res = await fetchApi("/admin/services-page", { method: "POST", body: formData });
+  return res.data;
+}
+
 /** Public storefront — SSR safe */
 export async function getServices(filters: ServiceFilters = {}): Promise<Service[]> {
   const query = new URLSearchParams();
