@@ -3,12 +3,14 @@
 use App\Http\Controllers\Api\AboutFeatureController;
 use App\Http\Controllers\Api\AboutPageController;
 use App\Http\Controllers\Api\Admin\DashboardController;
+use App\Http\Controllers\Api\Admin\HomePageController as AdminHomePageController;
 use App\Http\Controllers\Api\Admin\SiteSettingController as AdminSiteSettingController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ServiceCategoryController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\BlogController;
 use App\Http\Controllers\Api\ContactInquiryController;
+use App\Http\Controllers\Api\HomePageController;
 use App\Http\Controllers\Api\RatingController;
 use App\Http\Controllers\Api\PortfolioCategoryController;
 use App\Http\Controllers\Api\PortfolioController;
@@ -22,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 // PUBLIC ROUTES — No authentication required (storefront)
 // =========================================================
 Route::get('/site-settings', [SiteSettingController::class, 'index']);
+Route::get('/homepage', [HomePageController::class, 'index']);
 
 Route::get('/ratings', [RatingController::class, 'publicIndex']);
 
@@ -70,6 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ── Admin: Site Settings ──────────────────────────────
     Route::post('/admin/site-settings', [AdminSiteSettingController::class, 'update']);
+    Route::post('/admin/homepage', [AdminHomePageController::class, 'update']);
 
     // ── Admin: Ratings ────────────────────────────────────
     Route::get('/admin/ratings',             [RatingController::class, 'index']);
