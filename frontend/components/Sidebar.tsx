@@ -177,21 +177,21 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-[var(--background)] text-[var(--foreground)] border-r border-neutral-200/50 transition-all duration-300 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-zinc-900 text-zinc-300 border-r border-zinc-800 transition-all duration-300 ease-in-out ${
           sidebarOpen
             ? "translate-x-0 w-64"
             : "-translate-x-full lg:translate-x-0 lg:w-20"
         }`}
       >
-        <div className="h-16 flex items-center px-6 border-b border-neutral-200 dark:border-neutral-800">
+        <div className="h-16 flex items-center px-6 border-b border-zinc-800">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className={`p-2 rounded-lg hover:bg-neutral-100 transition-all duration-300 ${!sidebarOpen && "mx-auto"}`}
+            className={`p-2 rounded-lg hover:bg-zinc-800 text-zinc-400 hover:text-white transition-all duration-300 ${!sidebarOpen && "mx-auto"}`}
           >
             {sidebarOpen ? (
-              <ChevronLeft size={24} className="text-neutral-600" />
+              <ChevronLeft size={24} className="text-zinc-400" />
             ) : (
-              <ChevronRight size={24} className="text-neutral-600" />
+              <ChevronRight size={24} className="text-zinc-400" />
             )}
           </button>
         </div>
@@ -211,13 +211,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
                       href={firstChildHref}
                       className={`flex-1 flex items-center gap-3 px-3 py-2 rounded-l-lg transition-all ${
                         active
-                          ? "bg-blue-50 text-blue-700 font-semibold"
-                          : "text-neutral-600 hover:bg-neutral-100 hover:text-black"
+                          ? "bg-zinc-800 text-[#C59D5F] font-semibold"
+                          : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
                       }`}
                     >
                       <item.icon
                         size={20}
-                        className={active ? "text-blue-600 flex-shrink-0" : "text-neutral-500 flex-shrink-0"}
+                        className={active ? "text-[#C59D5F] flex-shrink-0" : "text-zinc-500 flex-shrink-0"}
                       />
                       {sidebarOpen && <span className="flex-1 text-left">{item.name}</span>}
                     </Link>
@@ -230,14 +230,14 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
                         }}
                         className={`p-2 rounded-r-lg transition-all ${
                           active
-                            ? "bg-blue-50 text-blue-700 hover:bg-blue-100/50"
-                            : "text-neutral-600 hover:bg-neutral-100 hover:text-black"
+                            ? "bg-zinc-800 text-[#C59D5F] hover:bg-zinc-700/50"
+                            : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
                         }`}
                       >
                         {isExpanded ? (
-                          <Minus size={16} className="text-neutral-500 flex-shrink-0" />
+                          <Minus size={16} className="text-zinc-500 flex-shrink-0" />
                         ) : (
-                          <Plus size={16} className="text-neutral-500 flex-shrink-0" />
+                          <Plus size={16} className="text-zinc-500 flex-shrink-0" />
                         )}
                       </button>
                     )}
@@ -252,7 +252,7 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
 
                   {/* Sub-items — only visible when sidebar is open and group is expanded */}
                   {sidebarOpen && isExpanded && (
-                    <div className="mt-1 ml-4 pl-3 border-l-2 border-neutral-200 space-y-1">
+                    <div className="mt-1 ml-4 pl-3 border-l-2 border-zinc-800 space-y-1">
                       {item.children.map((child) => {
                         const childActive = isChildActive(child.href);
                         return (
@@ -261,11 +261,11 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
                             href={child.href}
                             className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-sm ${
                               childActive
-                                ? "bg-blue-600 text-white shadow-sm"
-                                : "text-neutral-600 hover:bg-neutral-100 hover:text-black"
+                                ? "bg-[#C59D5F] text-white shadow-sm"
+                                : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
                             }`}
                           >
-                            <child.icon size={16} className={childActive ? "text-white" : "text-neutral-400"} />
+                            <child.icon size={16} className={childActive ? "text-white" : "text-zinc-500"} />
                             <span>{child.name}</span>
                           </Link>
                         );
@@ -283,13 +283,13 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
                 href={item.href}
                 className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all group relative ${
                   active
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-neutral-600 hover:bg-neutral-100 hover:text-black"
+                    ? "bg-[#C59D5F] text-white shadow-md"
+                    : "text-zinc-400 hover:bg-zinc-800 hover:text-white"
                 }`}
               >
                 <item.icon
                   size={20}
-                  className={active ? "text-white" : "text-neutral-500"}
+                  className={active ? "text-white" : "text-zinc-500"}
                 />
                 {sidebarOpen && <span>{item.name}</span>}
                 {!sidebarOpen && (
@@ -302,15 +302,15 @@ export default function Sidebar({ sidebarOpen, setSidebarOpen }: SidebarProps) {
           })}
         </nav>
 
-        <div className="p-4 border-t border-neutral-200">
+        <div className="p-4 border-t border-zinc-800">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-red-600 hover:bg-red-50 transition-colors group relative"
+            className="flex cursor-pointer items-center gap-3 px-3 py-2 w-full rounded-lg text-red-400 hover:bg-red-950/30 transition-colors group relative"
           >
             <LogOut size={20} />
             {sidebarOpen && <span>Logout</span>}
             {!sidebarOpen && (
-              <div className="absolute left-full ml-2 px-2 py-1 bg-red-600 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
+              <div className="absolute cursor-pointer left-full ml-2 px-2 py-1 bg-red-600 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity whitespace-nowrap z-50">
                 Logout
               </div>
             )}

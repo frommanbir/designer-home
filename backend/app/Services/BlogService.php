@@ -61,8 +61,8 @@ class BlogService
     private function orderedQuery()
     {
         return Blog::query()
-            ->orderBy('sort_order')
-            ->latest();
+            ->latest()
+            ->orderBy('sort_order');
     }
 
     private function prepareData(array $validated, array $files = [], ?Blog $blog = null): array

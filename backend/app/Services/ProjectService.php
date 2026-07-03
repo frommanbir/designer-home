@@ -22,8 +22,8 @@ class ProjectService
             ->when($filters['search'] ?? null, function ($query, string $search): void {
                 $query->where('title', 'like', "%{$search}%");
             })
-            ->orderBy('sort_order')
             ->latest()
+            ->orderBy('sort_order')
             ->get();
     }
 
@@ -31,8 +31,8 @@ class ProjectService
     {
         return Project::query()
             ->with('category')
-            ->orderBy('sort_order')
             ->latest()
+            ->orderBy('sort_order')
             ->get();
     }
 

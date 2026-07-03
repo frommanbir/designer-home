@@ -57,8 +57,8 @@ class ServiceService
             ->when($categorySlug, function (Builder $query) use ($categorySlug) {
                 $query->whereHas('category', fn (Builder $categoryQuery) => $categoryQuery->where('slug', $categorySlug));
             })
-            ->orderBy('sort_order')
-            ->orderBy('id');
+            ->latest()
+            ->orderBy('sort_order');
     }
 
     private function prepareData(array $validated, array $files = [], ?Service $service = null): array

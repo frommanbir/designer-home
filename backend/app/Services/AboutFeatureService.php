@@ -12,8 +12,8 @@ class AboutFeatureService
     public function listFeatures(): Collection
     {
         return AboutFeature::query()
+            ->latest()
             ->orderBy('sort_order')
-            ->orderBy('id')
             ->get();
     }
 
@@ -21,8 +21,8 @@ class AboutFeatureService
     {
         return AboutFeature::query()
             ->active()
+            ->latest()
             ->orderBy('sort_order')
-            ->orderBy('id')
             ->get();
     }
 

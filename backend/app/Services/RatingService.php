@@ -40,7 +40,7 @@ class RatingService
     private function orderedQuery()
     {
         return Rating::query()
-            ->orderBy('sort_order')
-            ->latest();
+            ->latest()
+            ->orderBy('sort_order');
     }
 }

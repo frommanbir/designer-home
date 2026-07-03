@@ -23,9 +23,10 @@ export default function PortfolioList({ portfolios }: PortfolioListProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-32">
+      <div className="flex flex-col gap-20">
         {portfolios.map((item: any, idx: number) => {
-          const hasDescription = !!item.short_description;
+          const hasDescription = !!item.short_description && item.short_description.trim() !== "";
+          const hasTitleAndDescription = !!item.title && hasDescription;
           const imageUrl = item.main_image_url || item.gallery_image_urls?.[0] || "/images/about-home.png";
 
           return (
@@ -44,29 +45,31 @@ export default function PortfolioList({ portfolios }: PortfolioListProps) {
                 <img
                   src={imageUrl}
                   alt={item.title}
-                  className="w-full h-[300px] sm:h-[450px] md:h-[600px] lg:h-[800px] object-cover transition-transform duration-[3s] group-hover:scale-105 cursor-zoom-in"
+                  className="w-full h-[240px] sm:h-[350px] md:h-[450px] lg:h-[550px] object-cover transition-transform duration-[3s] group-hover:scale-105 cursor-zoom-in"
                   onClick={() => openFullscreen(imageUrl)}
                 />
 
-                {/* Overlay Style Card (Shown on hover) */}
-                <div className="absolute inset-0 md:right-auto md:w-[600px] bg-neutral-900/90 flex flex-col justify-center px-8 sm:px-12 md:px-20 space-y-4 md:space-y-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out pointer-events-none">
-                  <h3 className="text-white text-2xl sm:text-3xl md:text-5xl font-semibold font-inter leading-tight">
-                    {item.title}
-                  </h3>
-                  {hasDescription && (
+                {/* Overlay Style Card (Shown on hover, aligned to the left) */}
+                {hasTitleAndDescription && (
+                  <div className="absolute inset-0 md:right-auto md:w-[600px] bg-neutral-900/90 flex flex-col justify-center px-8 sm:px-12 md:px-20 space-y-4 md:space-y-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out pointer-events-none">
+                    <h3 className="text-white text-2xl sm:text-3xl md:text-5xl font-semibold font-inter leading-tight">
+                      {item.title}
+                    </h3>
                     <p className="text-white/85 text-xs sm:text-sm md:text-base font-medium leading-relaxed">
                       {item.short_description}
                     </p>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
 
-              {/* Standard Style Title Below (Hidden on hover) */}
-              <div className="mt-6 md:mt-12 text-center max-w-3xl mx-auto space-y-4 opacity-100 group-hover:opacity-0 transition-opacity duration-500">
-                <h3 className="text-neutral-700 text-2xl sm:text-3xl md:text-5xl font-semibold font-inter">
-                  {item.title}
-                </h3>
-              </div>
+              {/* Standard Style Title Below (Only if no description is given, visible permanently) */}
+              {!hasDescription && item.title && (
+                <div className="mt-6 md:mt-12 text-center max-w-3xl mx-auto space-y-4">
+                  <h3 className="text-neutral-700 text-2xl sm:text-3xl md:text-5xl font-semibold font-inter">
+                    {item.title}
+                  </h3>
+                </div>
+              )}
             </div>
           );
         })}

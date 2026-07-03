@@ -45,8 +45,8 @@ export default async function PortfolioPage({
       </section>
 
       {/* Portfolio Items */}
-      <section className="py-24 space-y-32">
-        <div className="max-w-8xl mx-auto px-6">
+      <section className="py-16">
+        <div className="max-w-6xl mx-auto px-6">
           {portfolios.length === 0 ? (
             <div className="py-20 text-center">
               <h3 className="text-2xl font-light text-neutral-400">No projects found in this collection.</h3>

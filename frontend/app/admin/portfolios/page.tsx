@@ -542,7 +542,7 @@ function PortfoliosPageContent() {
                 />
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Sort Order</label>
                 <input 
                   type="number"
@@ -551,7 +551,7 @@ function PortfoliosPageContent() {
                   onChange={(e) => setCurrentPortfolio(prev => ({ ...prev, sort_order: Math.max(0, parseInt(e.target.value) || 0) }))}
                   className="w-full md:w-1/2 px-4 py-2.5 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:border-black transition-all"
                 />
-              </div>
+              </div> */}
 
               <div className="space-y-2">
                 <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Main Image</label>

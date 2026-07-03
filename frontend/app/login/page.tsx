@@ -94,12 +94,12 @@ export default function LoginPage() {
                 >
                   Password
                 </label>
-                <Link 
+                {/* <Link 
                   href="#" 
                   className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
                 >
                   Forgot Password?
-                </Link>
+                </Link> */}
               </div>
               <div className="relative group">
                 <Lock 
@@ -119,7 +119,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 px-1">
+          {/* <div className="flex items-center gap-2 px-1">
             <input 
               id="remember" 
               type="checkbox" 
@@ -128,7 +128,7 @@ export default function LoginPage() {
             <label htmlFor="remember" className="text-sm text-neutral-500 cursor-pointer select-none">
               Remember me for 30 days
             </label>
-          </div>
+          </div> */}
 
           <button
             type="submit"
@@ -146,7 +146,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="text-center pt-4">
+        {/* <div className="text-center pt-4">
           <p className="text-sm text-neutral-500">
             Don't have an account?{" "}
             <Link 
@@ -156,7 +156,7 @@ export default function LoginPage() {
               Contact Support
             </Link>
           </p>
-        </div>
+        </div> */}
       </div>
     </div>
   );
