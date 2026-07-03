@@ -64,7 +64,7 @@ export default async function ProjectsPage({
               {heroTitle}
             </h2>
             {activeCategory.subtitle && (
-              <h3 className="text-xl md:text-2xl text-[#333] font-medium italic">
+              <h3 className="text-xl  font-baumans md:text-2xl text-[#333] font-medium italic">
                 {activeCategory.subtitle}
               </h3>
             )}
@@ -92,14 +92,11 @@ export default async function ProjectsPage({
               >
                 <div className={`space-y-8 ${idx % 2 === 1 ? 'lg:order-last' : ''}`}>
                   <div className="space-y-4">
-                    <h4 className="text-[#C59D5F] font-black tracking-[0.3em] uppercase text-xs">
-                      {project.subtitle || "Premium Design"}
-                    </h4>
-                    <h3 className="text-4xl md:text-5xl font-black text-[#222] tracking-tighter uppercase leading-tight">
+                    <h3 className="text-4xl font-baumans md:text-5xl text-gray-900 tracking-tighter uppercase leading-tight">
                       {project.title}
                     </h3>
                   </div>
-                  <p className="text-lg text-[#666] leading-relaxed font-light">
+                  <p className="text-lg text-[#666] leading-relaxed font-light text-justify">
                     {project.description || "Every project receives our full dedication, craftsmanship, and attention to detail. We transform visions into reality with precision."}
                   </p>
                   <div>

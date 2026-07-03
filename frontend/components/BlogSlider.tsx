@@ -96,7 +96,7 @@ export default function BlogSlider({ blogs }: BlogSliderProps) {
       </div>
 
       <div className="text-center mt-32">
-        <Link href="/blog" className="inline-block px-16 py-5 bg-white text-black font-black rounded-full hover:bg-[#C59D5F] transition-all uppercase tracking-[0.5em] shadow-2xl transform hover:-translate-y-1 border border-black">
+        <Link href="/blog" className="inline-block px-16 py-5 bg-white text-black font-normal rounded-full hover:bg-[#C59D5F] transition-all uppercase tracking-[0.5em] shadow-2xl transform hover:-translate-y-1 border border-black">
           View All
         </Link>
       </div>

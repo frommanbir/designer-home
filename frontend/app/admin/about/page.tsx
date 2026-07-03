@@ -116,7 +116,6 @@ export default function AboutPageSetup() {
 
   const tabs = [
     { id: "hero", label: "Hero Banner", icon: FaStar },
-    { id: "welcome", label: "Welcome Section", icon: FaHandshake },
     { id: "main_about", label: "Main About", icon: FaInfo },
     { id: "why_choose", label: "Why Choose Us", icon: FaListUl },
   ];

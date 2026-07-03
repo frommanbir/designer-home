@@ -72,7 +72,7 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
               {service.title}
             </h1>
             {service.subtitle && (
-              <h2 className="text-neutral-500 text-xl md:text-2xl font-bold tracking-tight">
+              <h2 className="text-neutral-500 text-xl font-baumans md:text-2xl font-bold tracking-tight">
                 {service.subtitle}
               </h2>
             )}
@@ -81,7 +81,7 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
           {/* Description Paragraph (Centered) */}
           {(service.description || service.short_description) && (
             <div className="max-w-5xl mx-auto text-justify px-4">
-              <p className="text-neutral-600 text-sm md:text-lg leading-relaxed font-normal whitespace-pre-line text-justify md:text-justify">
+              <p className="text-neutral-600 font-baumans text-sm md:text-lg leading-relaxed font-normal whitespace-pre-line text-justify md:text-justify">
                 {service.description || service.short_description}
               </p>
             </div>
@@ -137,7 +137,7 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
                             <div className="mt-1.5 w-4 h-4 shrink-0 bg-neutral-900 rounded-full flex items-center justify-center text-white">
                               <Check size={8} strokeWidth={4} />
                             </div>
-                            <span className="text-neutral-700 text-sm md:text-base font-medium leading-tight">
+                            <span className="text-neutral-700 font-baumans text-sm md:text-base font-medium leading-tight">
                               {point}
                             </span>
                           </div>

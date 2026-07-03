@@ -36,21 +36,21 @@ export default async function AboutPage() {
         </div>
         <div className="relative z-20 flex flex-col items-center text-center px-6 animate-in fade-in slide-in-from-bottom-10 duration-[1500ms]">
           <h1 className="text-white text-5xl md:text-8xl font-black uppercase tracking-widest leading-tight">
-            {hero?.title || "ESTABLISHED IN 2016 A.D"}
+            {hero?.title || " "}
           </h1>
-          <div className="w-20 h-1 bg-[#C59D5F] mt-8" />
+          <div className="w-20 h-1 mt-8" />
         </div>
       </section>
 
       {/* Welcome */}
       <section className="max-w-7xl mx-auto py-20 px-6 text-center">
         <h2 className="text-4xl md:text-6xl text-[#333] mb-10 tracking-tight leading-tight">
-          <span className="font-extrabold text-[#222]">
-            {welcome?.title || "Welcome To Designer Home"}
+          <span className="text-[#222]">
+            Welcome To <span className="font-extrabold">Designer Home</span>
           </span>
         </h2>
-        <p className="text-lg md:text-xl text-[#555] leading-relaxed w-full whitespace-pre-line text-justify">
-          {welcome?.description || "Established in 2016, we distill your ideas and tastes into designs that perfectly suit your space. From conceptualization and 3D modeling to execution and site supervision, Designer Home provides a complete design solution."}
+        <p className="text-lg md:text-xl text-[#555] leading-relaxed w-7xl mx-auto whitespace-pre-line text-center">
+          Established in 2016, we distill your ideas and tastes into designs that perfectly suit your space. As pioneers in customized design, we offer a wide array of services—from initial conceptualization and 3d modeling to full execution and site supervision. With our uncompromising commitment to quality assurance, Designer Home is your one-stop solution from concept to completion.
         </p>
       </section>
 
@@ -84,8 +84,8 @@ export default async function AboutPage() {
         <div className="grid md:grid-cols-2 gap-x-12 gap-y-16">
           {features.map((item: any, idx: number) => (
             <div key={idx} className="bg-[#F5F5F5] p-12 rounded-lg space-y-6 transition-all duration-300 hover:shadow-md">
-              <h3 className="text-3xl font-bold text-[#222] tracking-tight">{item.title}</h3>
-              <p className="text-[#555] leading-relaxed text-lg font-light">{item.description}</p>
+              <h3 className="text-3xl font-bold font-baumans text-[#222] tracking-tight">{item.title}</h3>
+              <p className="text-[#555] leading-relaxed text-lg font-light text-justify">{item.description}</p>
             </div>
           ))}
         </div>

@@ -5,7 +5,20 @@ import { getProjects } from "@/lib/projects";
 import { getBlogs } from "@/lib/blogs";
 import { getRatings } from "@/lib/ratings";
 import { serverFetch } from "@/lib/server-api";
-import { ArrowRight, Star, Clock, CheckCircle, Headphones, Award, MoveRight, Users, PencilRuler, Ruler, Building2, KeyRound } from "lucide-react";
+import {
+  ArrowRight,
+  Star,
+  Clock,
+  CheckCircle,
+  Headphones,
+  Award,
+  MoveRight,
+  Users,
+  PencilRuler,
+  Ruler,
+  Building2,
+  KeyRound,
+} from "lucide-react";
 import React from "react";
 import TestimonialsSlider from "@/components/TestimonialsSlider";
 import BlogSlider from "@/components/BlogSlider";
@@ -14,7 +27,9 @@ async function getSiteSettings() {
   try {
     const res = await serverFetch("/site-settings");
     return res.data ?? {};
-  } catch { return {}; }
+  } catch {
+    return {};
+  }
 }
 export const revalidate = 0;
 
@@ -47,28 +62,41 @@ export default async function HomePage() {
       <section className="py-6 md:py-16 bg-white">
         <div className="container mx-auto px-6 lg:px-24">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start mt-6">
-            
             {/* Left Content */}
             <div className="space-y-8 lg:space-y-10 text-left flex flex-col items-start order-2 lg:order-1">
               <h2 className="text-neutral-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight">
-                Designing Spaces <br className="hidden lg:block" /> That inspire Living
+                Designing Spaces <br className="hidden lg:block" /> That inspire
+                Living
               </h2>
               <div className="space-y-6 flex flex-col items-start">
                 <p className="text-neutral-600 text-lg md:text-xl font-medium leading-relaxed max-w-xl font-inter mx-0">
-                  Transform your vision into reality with innovative interior & architectural design solutions. From concept creation & 3D visualization to project execution & supervision, Designer Home delivers exceptional
-                  spaces tailored to your lifestyle and needs.
+                  Transform your vision into reality with innovative interior &
+                  architectural design solutions. From concept creation & 3D
+                  visualization to project execution & supervision, Designer
+                  Home delivers exceptional spaces tailored to your lifestyle
+                  and needs.
                 </p>
                 <div className="pt-2">
                   <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-xl font-inter mx-0">
-                    Established in 2016 A.D.<br className="hidden lg:block" />Your trusted partner for customized residential, commercial, and hospitality <br className="hidden lg:block" /> design projects.
+                    Established in 2016 A.D.
+                    <br className="hidden lg:block" />
+                    Your trusted partner for customized residential, commercial,
+                    and hospitality <br className="hidden lg:block" /> design
+                    projects.
                   </p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-4 justify-start w-full pt-4">
-                <Link href="/about" className="px-10 py-4 bg-zinc-600 text-white font-semibold rounded-full hover:bg-neutral-700 transition-all transform hover:-translate-y-1 shadow-lg text-sm sm:text-base">
+                <Link
+                  href="/about"
+                  className="px-10 py-4 bg-zinc-600 text-white font-semibold rounded-full hover:bg-neutral-700 transition-all transform hover:-translate-y-1 shadow-lg text-sm sm:text-base"
+                >
                   Click for Inquiry
                 </Link>
-                <Link href="/portfolio" className="px-10 py-4 border border-zinc-300 text-zinc-800 font-semibold rounded-full hover:bg-zinc-50 transition-all shadow-sm text-sm sm:text-base">
+                <Link
+                  href="/portfolio"
+                  className="px-10 py-4 border border-zinc-300 text-zinc-800 font-semibold rounded-full hover:bg-zinc-50 transition-all shadow-sm text-sm sm:text-base"
+                >
                   Explore Our Projects
                 </Link>
               </div>
@@ -84,7 +112,6 @@ export default async function HomePage() {
                 />
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -93,7 +120,6 @@ export default async function HomePage() {
       <section className="py-6 md:py-16 bg-zinc-100">
         <div className="container mx-auto px-6 lg:px-24">
           <div className="flex flex-col lg:flex-row items-center gap-16">
-
             {/* Left Image */}
             <div className="flex-1 w-full">
               <img
@@ -105,10 +131,10 @@ export default async function HomePage() {
 
             {/* Right Content */}
             <div className="flex-1">
-              <p className="text-neutral-600 text-3xl md:text-xl font-medium leading-relaxed border-l-4 border-[#C59D5F] pl-8 py-4">
-                We bring dreams to life through thoughtful interior & architecture
-                design, creating beautiful, functional spaces that reflect your
-                vision and lifestyle.
+              <p className="text-neutral-600 text-xl font-baumans md:text-4xl font-medium leading-relaxed py-4">
+                We bring dreams to life through thoughtful interior &
+                architecture design, creating beautiful, functional spaces that
+                reflect your vision and lifestyle.
               </p>
 
               <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-12">
@@ -143,7 +169,6 @@ export default async function HomePage() {
                 </Link>
               </div>
             </div>
-
           </div>
         </div>
       </section>
@@ -151,14 +176,14 @@ export default async function HomePage() {
       {/* ── Section 4: Complete Design Solutions ───────────────────────── */}
       <section className="py-24 md:py-32 bg-white overflow-hidden">
         <div className="container mx-auto px-6 lg:px-24">
-          
           {/* Header: Title Left, Description Right */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-20 animate-in fade-in slide-in-from-bottom-6 duration-1000">
             <h2 className="text-neutral-900 text-3xl md:text-4xl lg:text-6xl font-black tracking-tight leading-tight max-w-4xl">
               Complete Design <br /> Solutions Under One Roof
             </h2>
-            <p className="text-neutral-500 text-sm md:text-base font-medium leading-relaxed max-w-sm lg:text-left">
+            <p className="text-neutral-500 text-sm md:text-base font-baumans font-medium leading-relaxed max-w-lg lg:text-left">
               We transform your vision into functional, inspiring spaces
+              <br />
               with creativity, quality, and attention to detail.
             </p>
           </div>
@@ -173,11 +198,15 @@ export default async function HomePage() {
               >
                 {/* Background Image */}
                 <img
-                  src={srv.hero_image?.url || srv.thumbnail_image?.url || `/images/service-placeholder.jpg`}
+                  src={
+                    srv.hero_image?.url ||
+                    srv.thumbnail_image?.url ||
+                    `/images/service-placeholder.jpg`
+                  }
                   alt={srv.title}
                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
                 />
-                
+
                 {/* Dark Overlay Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
 
@@ -197,9 +226,10 @@ export default async function HomePage() {
           </div>
 
           <div className="mt-16 flex justify-center">
-            <Link 
-              href="/services" 
-              className="inline-block px-14 py-4 border-2 border-neutral-200 text-neutral-800 font-black rounded-full hover:border-neutral-800 hover:bg-neutral-50 transition-all"> 
+            <Link
+              href="/services"
+              className="px-14 py-4 border-2 border-neutral-200 text-neutral-800 text-sm font-normal rounded-full hover:border-neutral-800 hover:bg-neutral-50 transition-all"
+            >
               View All
             </Link>
           </div>
@@ -227,10 +257,11 @@ export default async function HomePage() {
                 <div className="flex flex-col items-center gap-6 shrink-0">
                   <div
                     className={`w-36 h-36 rounded-full flex items-center justify-center transition-all duration-300
-                ${step.filled
-                        ? "bg-neutral-300 text-white"
-                        : "bg-white border border-neutral-200 text-neutral-700 hover:border-neutral-400"
-                      }`}
+                ${
+                  step.filled
+                    ? "bg-neutral-300 text-white"
+                    : "bg-white border border-neutral-200 text-neutral-700 hover:border-neutral-400"
+                }`}
                   >
                     <step.icon size={48} strokeWidth={1.25} />
                   </div>
@@ -258,7 +289,9 @@ export default async function HomePage() {
       <section className="py-6 md:py-16 bg-zinc-100">
         <div className="container mx-auto px-6 lg:px-24">
           <div className="flex flex-col md:flex-row justify-between items-center mb-20 gap-8">
-            <h2 className="text-neutral-800 text-4xl md:text-5xl font-extrabold font-inter uppercase tracking-tighter">Our Projects</h2>
+            <h2 className="text-neutral-800 text-4xl md:text-5xl font-extrabold font-inter uppercase tracking-tighter">
+              Our Projects
+            </h2>
             <div className="flex gap-4">
               <button className="w-12 h-12 rounded-full border border-neutral-100 flex items-center justify-center text-neutral-300 hover:border-black hover:text-black transition-all shadow-sm">
                 <MoveRight size={24} className="rotate-180" />
@@ -270,43 +303,60 @@ export default async function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-12 lg:gap-16">
-            {projects.length > 0 ? (
-              projects.slice().sort((a: any, b: any) => b.id - a.id).slice(0, 2).map((project: any) => (
-                <Link key={project.id} href={`/projects/${project.slug}`} className="space-y-8 group cursor-pointer">
-                  <div className="h-[300px] sm:h-[450px] lg:h-[550px] rounded-[20px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
-                    <img
-                      src={project.thumbnail_image_url || project.gallery_image_urls?.[0] || "/images/project-placeholder.jpg"}
-                      alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
-                    />
-                    <div className="absolute top-10 right-10 w-16 h-16 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-black border border-black/5 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-x-4 group-hover:translate-x-0 shadow-2xl">
-                      <ArrowRight size={28} className="-rotate-45" />
+            {projects.length > 0
+              ? projects
+                  .slice()
+                  .sort((a: any, b: any) => b.id - a.id)
+                  .slice(0, 2)
+                  .map((project: any) => (
+                    <Link
+                      key={project.id}
+                      href={`/projects/${project.slug}`}
+                      className="space-y-8 group cursor-pointer"
+                    >
+                      <div className="h-[300px] sm:h-[450px] lg:h-[550px] rounded-[20px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
+                        <img
+                          src={
+                            project.thumbnail_image_url ||
+                            project.gallery_image_urls?.[0] ||
+                            "/images/project-placeholder.jpg"
+                          }
+                          alt={project.title}
+                          className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
+                        />
+                        <div className="absolute top-10 right-10 w-16 h-16 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-black border border-black/5 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-x-4 group-hover:translate-x-0 shadow-2xl">
+                          <ArrowRight size={28} className="-rotate-45" />
+                        </div>
+                      </div>
+                      <div className="space-y-4 px-4">
+                        <h3 className="text-neutral-800 text-3xl font-black font-inter group-hover:text-[#C59D5F] transition-colors">
+                          {project.title}
+                        </h3>
+                        <p className="text-neutral-500 text-lg leading-relaxed max-w-md italic border-l-2 border-neutral-100 pl-4">
+                          {project.short_description ||
+                            project.subtitle ||
+                            "Modern design solution tailored to specific client needs and space requirements."}
+                        </p>
+                      </div>
+                    </Link>
+                  ))
+              : // Realistic Project Placeholders
+                [1, 2].map((i) => (
+                  <div key={i} className="space-y-8">
+                    <div className="h-[300px] sm:h-[450px] lg:h-[550px] rounded-[50px] bg-neutral-50 animate-pulse border border-neutral-100" />
+                    <div className="space-y-4 px-4">
+                      <div className="h-10 w-3/4 bg-neutral-100 animate-pulse rounded-full" />
+                      <div className="h-6 w-full bg-neutral-50 animate-pulse rounded-full" />
                     </div>
                   </div>
-                  <div className="space-y-4 px-4">
-                    <h3 className="text-neutral-800 text-3xl font-black font-inter group-hover:text-[#C59D5F] transition-colors">{project.title}</h3>
-                    <p className="text-neutral-500 text-lg leading-relaxed max-w-md italic border-l-2 border-neutral-100 pl-4">
-                      {project.short_description || project.subtitle || "Modern design solution tailored to specific client needs and space requirements."}
-                    </p>
-                  </div>
-                </Link>
-              ))
-            ) : (
-              // Realistic Project Placeholders
-              [1, 2].map((i) => (
-                <div key={i} className="space-y-8">
-                  <div className="h-[300px] sm:h-[450px] lg:h-[550px] rounded-[50px] bg-neutral-50 animate-pulse border border-neutral-100" />
-                  <div className="space-y-4 px-4">
-                    <div className="h-10 w-3/4 bg-neutral-100 animate-pulse rounded-full" />
-                    <div className="h-6 w-full bg-neutral-50 animate-pulse rounded-full" />
-                  </div>
-                </div>
-              ))
-            )}
+                ))}
           </div>
 
           <div className="text-center mt-24">
-            <Link href="/projects" className="inline-block px-14 py-4 border-2 border-neutral-200 text-neutral-800 font-black rounded-full hover:border-neutral-800 hover:bg-neutral-50 transition-all">
+            <Link
+              href="/projects"
+              className="inline-block px-14 py-4 border-2 border-neutral-200 text-neutral-800 rounded-full hover:border-neutral-800 hover:bg-neutral-50 transition-all"
+            >
               View Our Portfolio
             </Link>
           </div>
