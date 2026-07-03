@@ -26,6 +26,7 @@ class SiteSettingService
             'facebook_icon' => 'facebook_icon_path',
             'twitter_icon' => 'twitter_icon_path',
             'instagram_icon' => 'instagram_icon_path',
+            'contact_hero' => 'contact_hero_image_path',
         ];
 
         $data = Arr::except($validated, array_keys($fileFields));

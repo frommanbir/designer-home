@@ -35,6 +35,7 @@ class SiteSettingResource extends JsonResource
                 'email'   => $this->email_address,
                 'address' => $this->physical_address,
                 'map_embed' => $this->google_maps_embed,
+                'hero_image_url' => $this->imageUrl($this->contact_hero_image_path),
             ],
 
             // ── Social Links (flat — matches frontend Footer.tsx) ─────
@@ -71,6 +72,7 @@ class SiteSettingResource extends JsonResource
                 'email_address'   => $this->email_address,
                 'physical_address' => $this->physical_address,
                 'google_maps_embed' => $this->google_maps_embed,
+                'contact_hero' => ['path' => $this->contact_hero_image_path, 'url' => $this->imageUrl($this->contact_hero_image_path)],
             ],
         ];
     }

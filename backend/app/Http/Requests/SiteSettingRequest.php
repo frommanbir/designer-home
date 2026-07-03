@@ -29,6 +29,7 @@ class SiteSettingRequest extends FormRequest
             'email_address' => ['nullable', 'email', 'max:255'],
             'physical_address' => ['nullable', 'string', 'max:1000'],
             'google_maps_embed' => ['nullable', 'string', 'max:5000'],
+            'contact_hero' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp,svg', 'max:10240'],
 
             // Facebook
             'facebook_title' => ['nullable', 'string', 'max:100'],
@@ -51,7 +52,8 @@ class SiteSettingRequest extends FormRequest
     {
         return [
             'logo.image' => 'The logo must be a valid image file.',
-            'logo.max' => 'The logo may not be greater than 2 MB.',
+            'logo.max' => 'The logo may not be greater than 10 MB.',
+            'contact_hero.max' => 'The contact hero image may not be greater than 10 MB.',
             'favicon.max' => 'The favicon may not be greater than 512 KB.',
             'email_address.email' => 'Please provide a valid email address.',
             'facebook_url.url' => 'The Facebook link must be a valid URL.',

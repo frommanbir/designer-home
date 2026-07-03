@@ -15,12 +15,12 @@ class AboutPageRequest extends FormRequest
     {
         return [
             'hero_title' => ['nullable', 'string', 'max:255'],
-            'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'hero_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:10240'],
             'welcome_title' => ['nullable', 'string', 'max:255'],
             'welcome_description' => ['nullable', 'string'],
             'main_title' => ['nullable', 'string', 'max:255'],
             'main_description' => ['nullable', 'string'],
-            'main_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'main_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:10240'],
             'why_choose_title' => ['nullable', 'string', 'max:255'],
             'why_choose_description' => ['nullable', 'string'],
         ];

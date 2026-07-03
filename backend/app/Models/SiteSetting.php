@@ -21,6 +21,7 @@ class SiteSetting extends Model
         'email_address',
         'physical_address',
         'google_maps_embed',
+        'contact_hero_image_path',
 
         'facebook_title',
         'facebook_url',
