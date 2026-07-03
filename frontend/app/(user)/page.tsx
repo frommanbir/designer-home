@@ -31,15 +31,25 @@ async function getSiteSettings() {
     return {};
   }
 }
+
+async function getHomePageData() {
+  try {
+    const res = await serverFetch("/home-page");
+    return res.data ?? {};
+  } catch {
+    return {};
+  }
+}
 export const revalidate = 0;
 
 export default async function HomePage() {
-  const [services, projects, blogs, settings, ratings] = await Promise.all([
+  const [services, projects, blogs, settings, ratings, homePageData] = await Promise.all([
     getServices().catch(() => []),
     getProjects().catch(() => []),
     getBlogs().catch(() => []),
     getSiteSettings(),
     getRatings().catch(() => []),
+    getHomePageData(),
   ]);
 
   return (
@@ -51,7 +61,7 @@ export default async function HomePage() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/30 z-10" />
           <img
-            src="/images/about-home.png"
+            src={homePageData.hero_image?.url || "/images/about-home.png"}
             alt="Designer Home Hero"
             className="w-full h-full object-cover"
           />
@@ -64,40 +74,31 @@ export default async function HomePage() {
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start mt-6">
             {/* Left Content */}
             <div className="space-y-8 lg:space-y-10 text-left flex flex-col items-start order-2 lg:order-1">
-              <h2 className="text-neutral-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight">
-                Designing Spaces <br className="hidden lg:block" /> That inspire
-                Living
+              <h2 className="text-neutral-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight whitespace-pre-line">
+                {homePageData.section2_title || "Designing Spaces \n That inspire Living"}
               </h2>
               <div className="space-y-6 flex flex-col items-start">
-                <p className="text-neutral-600 text-lg md:text-xl font-medium leading-relaxed max-w-xl font-inter mx-0">
-                  Transform your vision into reality with innovative interior &
-                  architectural design solutions. From concept creation & 3D
-                  visualization to project execution & supervision, Designer
-                  Home delivers exceptional spaces tailored to your lifestyle
-                  and needs.
+                <p className="text-neutral-600 text-lg md:text-xl font-medium leading-relaxed max-w-xl font-inter mx-0 whitespace-pre-line">
+                  {homePageData.section2_description_1 || "Transform your vision into reality with innovative interior & architectural design solutions. From concept creation & 3D visualization to project execution & supervision, Designer Home delivers exceptional spaces tailored to your lifestyle and needs."}
                 </p>
                 <div className="pt-2">
-                  <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-xl font-inter mx-0">
-                    Established in 2016 A.D.
-                    <br className="hidden lg:block" />
-                    Your trusted partner for customized residential, commercial,
-                    and hospitality <br className="hidden lg:block" /> design
-                    projects.
+                  <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-xl font-inter mx-0 whitespace-pre-line">
+                    {homePageData.section2_description_2 || "Established in 2016 A.D. \n Your trusted partner for customized residential, commercial, and hospitality design projects."}
                   </p>
                 </div>
               </div>
               <div className="flex flex-wrap gap-4 justify-start w-full pt-4">
                 <Link
-                  href="/about"
+                  href={homePageData.section2_btn_inquiry_link || "/about"}
                   className="px-10 py-4 bg-zinc-600 text-white font-semibold rounded-full hover:bg-neutral-700 transition-all transform hover:-translate-y-1 shadow-lg text-sm sm:text-base"
                 >
-                  Click for Inquiry
+                  {homePageData.section2_btn_inquiry_text || "Click for Inquiry"}
                 </Link>
                 <Link
-                  href="/portfolio"
+                  href={homePageData.section2_btn_projects_link || "/portfolio"}
                   className="px-10 py-4 border border-zinc-300 text-zinc-800 font-semibold rounded-full hover:bg-zinc-50 transition-all shadow-sm text-sm sm:text-base"
                 >
-                  Explore Our Projects
+                  {homePageData.section2_btn_projects_text || "Explore Our Projects"}
                 </Link>
               </div>
             </div>
@@ -106,7 +107,7 @@ export default async function HomePage() {
             <div className="relative group w-full flex justify-start lg:justify-end order-1 lg:order-2">
               <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-black/5 w-full max-w-[600px]">
                 <img
-                  src="/images/designspace.png"
+                  src={homePageData.section2_image?.url || "/images/designspace.png"}
                   alt="Expert Design"
                   className="w-full h-[300px] sm:h-[400px] lg:h-[600px] object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
@@ -123,7 +124,7 @@ export default async function HomePage() {
             {/* Left Image */}
             <div className="flex-1 w-full">
               <img
-                src="/images/webring.png"
+                src={homePageData.section3_image?.url || "/images/webring.png"}
                 alt="Interior Design"
                 className="w-full h-[300px] sm:h-[450px] lg:h-[600px] object-cover rounded-lg"
               />
@@ -131,41 +132,39 @@ export default async function HomePage() {
 
             {/* Right Content */}
             <div className="flex-1">
-              <p className="text-neutral-600 text-xl font-baumans md:text-4xl font-medium leading-relaxed py-4">
-                We bring dreams to life through thoughtful interior &
-                architecture design, creating beautiful, functional spaces that
-                reflect your vision and lifestyle.
+              <p className="text-neutral-600 text-xl font-baumans md:text-4xl font-medium leading-relaxed py-4 whitespace-pre-line">
+                {homePageData.section3_title || "We bring dreams to life through thoughtful interior & architecture design, creating beautiful, functional spaces that reflect your vision and lifestyle."}
               </p>
 
               <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-12">
                 <div>
-                  <h3 className="text-4xl sm:text-5xl font-black">200+</h3>
+                  <h3 className="text-4xl sm:text-5xl font-black">{homePageData.section3_stat1_value || "200+"}</h3>
                   <p className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500">
-                    Our Expertise
+                    {homePageData.section3_stat1_label || "Our Expertise"}
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-4xl sm:text-5xl font-black">400+</h3>
+                  <h3 className="text-4xl sm:text-5xl font-black">{homePageData.section3_stat2_value || "400+"}</h3>
                   <p className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500">
-                    Projects
+                    {homePageData.section3_stat2_label || "Projects"}
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-4xl sm:text-5xl font-black">4.5</h3>
+                  <h3 className="text-4xl sm:text-5xl font-black">{homePageData.section3_stat3_value || "4.5"}</h3>
                   <p className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500">
-                    Out of 5.0
+                    {homePageData.section3_stat3_label || "Out of 5.0"}
                   </p>
                 </div>
               </div>
 
               <div className="mt-12">
                 <Link
-                  href="/about"
+                  href={homePageData.section3_btn_link || "/about"}
                   className="px-12 py-3 bg-zinc-500 text-white text-xs font-bold rounded-full hover:bg-zinc-700 transition-all uppercase tracking-[0.2em]"
                 >
-                  Learn More
+                  {homePageData.section3_btn_text || "Learn More"}
                 </Link>
               </div>
             </div>

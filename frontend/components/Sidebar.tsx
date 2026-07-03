@@ -36,6 +36,16 @@ interface NavItem {
 const sidebarItems: NavItem[] = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   {
+    name: "Homepage",
+    href: "/admin/home",
+    icon: Layout,
+    children: [
+      { name: "Hero Banner", href: "/admin/home?tab=hero", icon: Layout },
+      { name: "Designing Spaces", href: "/admin/home?tab=designing", icon: Info },
+      { name: "Value Proposition", href: "/admin/home?tab=value", icon: Star },
+    ],
+  },
+  {
     name: "Services",
     href: "/admin/services",
     icon: Wrench,

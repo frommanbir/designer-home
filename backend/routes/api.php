@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\PortfolioController;
 use App\Http\Controllers\Api\ProjectCategoryController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SiteSettingController;
+use App\Http\Controllers\Api\HomePageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,6 +38,7 @@ Route::get('/services-page', [ServicesPageController::class, 'index']);
 Route::get('/portfolio-page', [PortfolioPageController::class, 'index']);
 Route::get('/project-page', [ProjectPageController::class, 'index']);
 Route::get('/blog-page', [BlogPageController::class, 'index']);
+Route::get('/home-page', [HomePageController::class, 'index']);
 
 Route::get('/service-categories', [ServiceCategoryController::class, 'index']);
 Route::get('/services', [ServiceController::class, 'index']);
@@ -97,6 +99,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/portfolio-page',                          [PortfolioPageController::class, 'update']);
     Route::post('/admin/project-page',                            [ProjectPageController::class, 'update']);
     Route::post('/admin/blog-page',                               [BlogPageController::class, 'update']);
+    Route::post('/admin/home-page',                               [HomePageController::class, 'update']);
     Route::get('/admin/about-features',                           [AboutFeatureController::class, 'index']);
     Route::post('/admin/about-features',                          [AboutFeatureController::class, 'store']);
     Route::put('/admin/about-features/{aboutFeature}',            [AboutFeatureController::class, 'update']);
