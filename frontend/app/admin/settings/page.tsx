@@ -1,17 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { fetchApi } from "@/lib/api";
 import { 
-  FaSave, FaImage as ImageIcon,FaMapPin, FaPhone, FaFacebook, 
+  FaSave, FaImage as ImageIcon, FaMapPin, FaPhone, FaFacebook, 
   FaTwitter, FaInstagram, FaGlobe, FaInfo, FaBuilding
-} from "react-icons/fa" ;
+} from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
 import { LuMail } from "react-icons/lu";
 import { toast } from "sonner";
 
-export default function SiteSettingsPage() {
-  const [activeTab, setActiveTab] = useState("branding");
+function SiteSettingsContent() {
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("tab") || "branding";
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -190,13 +192,6 @@ export default function SiteSettingsPage() {
     }
   };
 
-  const tabs = [
-    { id: "branding", label: "Branding", icon: FaGlobe },
-    { id: "about", label: "About", icon: FaInfo },
-    { id: "contact", label: "Contact Details", icon: FaBuilding },
-    { id: "social", label: "Social Media", icon: FaFacebook },
-  ];
-
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
@@ -205,40 +200,24 @@ export default function SiteSettingsPage() {
     );
   }
 
+  const tabLabel: Record<string, string> = {
+    branding: "Branding & Identity",
+    about: "About Us",
+    contact: "Contact Information",
+    social: "Social Media",
+  };
+
   return (
-    <div className="space-y-8 animate-in fade-in duration-500">
+    <div className="space-y-6 animate-in fade-in duration-500">
       <div>
-        <h1 className="text-2xl font-bold text-neutral-900">Site Settings</h1>
+        <h1 className="text-2xl font-bold text-neutral-900">Settings — {tabLabel[activeTab] ?? "Branding & Identity"}</h1>
         <p className="text-neutral-500 text-sm mt-1">Manage your website's global information, branding, and contact details.</p>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Vertical Tabs Sidebar */}
-        <div className="w-full lg:w-64 flex-shrink-0 space-y-2">
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  isActive
-                    ? "bg-blue-600 text-white shadow-md"
-                    : "text-neutral-600 hover:bg-neutral-100"
-                }`}
-              >
-                <tab.icon size={18} className={isActive ? "text-white" : "text-neutral-500"} />
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Form Content Area */}
-        <div className="flex-1">
-          <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
-              <div className="p-6 md:p-8">
+      <div>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
+            <div className="p-6 md:p-8">
                 
                 {/* BRANDING TAB */}
                 {activeTab === "branding" && (
@@ -531,25 +510,36 @@ export default function SiteSettingsPage() {
 
                   </div>
                 )}
-              </div>
-              
-              <div className="p-6 md:px-8 border-t border-neutral-100 bg-neutral-50 flex items-center justify-end">
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="px-6 py-3 bg-blue-700 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-blue-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
-                >
-                  {saving ? (
-                    <><FaSpinner size={18} className="animate-spin" /> Saving Settings...</>
-                  ) : (
-                    <><FaSave size={18} /> Save All Changes</>
-                  )}
-                </button>
-              </div>
             </div>
-          </form>
-        </div>
+
+            <div className="p-6 md:px-8 border-t border-neutral-100 bg-neutral-50 flex items-center justify-end">
+              <button
+                type="submit"
+                disabled={saving}
+                className="px-6 py-3 bg-blue-700 text-white rounded-xl font-medium text-sm flex items-center gap-2 hover:bg-blue-500 transition-colors disabled:opacity-70 disabled:cursor-not-allowed shadow-md"
+              >
+                {saving ? (
+                  <><FaSpinner size={18} className="animate-spin" /> Saving Settings...</>
+                ) : (
+                  <><FaSave size={18} /> Save All Changes</>
+                )}
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
+  );
+}
+
+export default function SiteSettingsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-64 items-center justify-center">
+        <FaSpinner className="animate-spin text-neutral-400" size={32} />
+      </div>
+    }>
+      <SiteSettingsContent />
+    </Suspense>
   );
 }

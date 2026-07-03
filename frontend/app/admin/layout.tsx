@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { Search, UserCircle, Menu } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import { Toaster } from "sonner";
@@ -24,7 +24,9 @@ export default function AdminLayout({
 
   return (
     <div className="flex min-h-screen admin-theme font-sans">
-      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      <Suspense fallback={<div className="w-20 lg:w-64 bg-[var(--background)]" />}>
+        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+      </Suspense>
 
       {/* Main Content */}
       <div

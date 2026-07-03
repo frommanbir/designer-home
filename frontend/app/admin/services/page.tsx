@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { 
   Plus, 
   Search, 
@@ -75,7 +76,7 @@ function normalizeBlocks(wc: any): WhyChooseBlock[] {
   }));
 }
 
-export default function ServicesAdminPage() {
+function ServicesAdminContent() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -93,13 +94,9 @@ export default function ServicesAdminPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Page-level vertical tabs sidebar
-  const [pageTab, setPageTab] = useState<"hero" | "services">("services");
-
-  const pageTabs = [
-    { id: "hero" as const, label: "Hero Banner", icon: Layout },
-    { id: "services" as const, label: "Services", icon: Wrench },
-  ];
+  // Sidebar Vertical Tab states
+  const searchParams = useSearchParams();
+  const pageTab = (searchParams.get("tab") as "hero" | "services") || "services";
 
   // Form State
   const [currentService, setCurrentService] = useState<FormState>(emptyForm());
@@ -281,13 +278,18 @@ export default function ServicesAdminPage() {
     );
   }
 
+  const tabLabel: Record<string, string> = {
+    services: "Services List",
+    hero: "Hero Banner",
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in duration-500 text-neutral-900 font-sans">
       
       {/* ── Header ────────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Services Page Setup</h1>
+          <h1 className="text-2xl font-bold">Services Setup — {tabLabel[pageTab]}</h1>
           <p className="text-sm text-neutral-500 mt-1">Configure the hero banner and manage individual services.</p>
         </div>
         {pageTab === "services" && (
@@ -303,31 +305,9 @@ export default function ServicesAdminPage() {
         )}
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Vertical Tabs Sidebar */}
-        <div className="w-full lg:w-64 flex-shrink-0 space-y-2">
-          {pageTabs.map((tab) => {
-            const isActive = pageTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setPageTab(tab.id)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all ${
-                  isActive
-                    ? "bg-[#C59D5F] text-white shadow-md"
-                    : "text-neutral-600 hover:bg-neutral-100 bg-white border border-neutral-100"
-                }`}
-              >
-                <tab.icon size={18} className={isActive ? "text-white" : "text-neutral-500"} />
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
-
+      <div>
         {/* Content Area */}
-        <div className="flex-1 space-y-6">
+        <div className="space-y-6">
           {pageTab === "hero" ? (
             /* ── Services Page Hero Banner Editor ─────────────── */
             <div className="bg-white rounded-3xl border border-neutral-100 shadow-sm overflow-hidden animate-in zoom-in-95 duration-300">
@@ -731,5 +711,17 @@ export default function ServicesAdminPage() {
       </div>
       )}
     </div>
+  );
+}
+
+export default function ServicesAdminPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="animate-spin text-neutral-400" size={32} />
+      </div>
+    }>
+      <ServicesAdminContent />
+    </Suspense>
   );
 }
