@@ -18,7 +18,7 @@ export default function SiteSettingsPage() {
   const [settings, setSettings] = useState({
     branding: { website_title: "", website_slogan: "", logo: "", favicon: "" },
     about: { about_us: "" },
-    contact_details: { primary_phone: "", secondary_phone: "", email_address: "", physical_address: "", google_maps_embed: "" },
+    contact_details: { primary_phone: "", secondary_phone: "", email_address: "", physical_address: "", google_maps_embed: "", contact_hero: "" },
     social_media: { 
       facebook_title: "", facebook_url: "", facebook_icon: "",
       twitter_title: "", twitter_url: "", twitter_icon: "",
@@ -31,7 +31,8 @@ export default function SiteSettingsPage() {
     favicon: null,
     facebook_icon: null,
     twitter_icon: null,
-    instagram_icon: null
+    instagram_icon: null,
+    contact_hero: null
   });
 
   const [previews, setPreviews] = useState<Record<string, string>>({});
@@ -45,14 +46,6 @@ export default function SiteSettingsPage() {
       setLoading(true);
       const res = await fetchApi("/site-settings");
       if (res.success && res.data) {
-        // Sanitize to replace nulls with empty strings
-        const sanitize = (obj: any) => {
-          if (!obj) return {};
-          return Object.fromEntries(
-            Object.entries(obj).map(([k, v]) => [k, v === null ? "" : v])
-          );
-        };
-
         setSettings({
           branding: { 
             website_title: res.data.branding?.website_title || "", 
@@ -61,7 +54,14 @@ export default function SiteSettingsPage() {
             favicon: res.data.branding?.favicon?.path || "" 
           },
           about: { about_us: res.data.about?.about_us || "" },
-          contact_details: { ...settings.contact_details, ...sanitize(res.data.contact_details) },
+          contact_details: {
+            primary_phone: res.data.contact_details?.primary_phone || "",
+            secondary_phone: res.data.contact_details?.secondary_phone || "",
+            email_address: res.data.contact_details?.email_address || "",
+            physical_address: res.data.contact_details?.physical_address || "",
+            google_maps_embed: res.data.contact_details?.google_maps_embed || "",
+            contact_hero: res.data.contact_details?.contact_hero?.path || "",
+          },
           social_media: { 
             facebook_title: res.data.social_media?.facebook?.title || "",
             facebook_url: res.data.social_media?.facebook?.url || "",
@@ -82,6 +82,7 @@ export default function SiteSettingsPage() {
           facebook_icon: res.data.social_media?.facebook?.icon?.url || "",
           twitter_icon: res.data.social_media?.x?.icon?.url || "",
           instagram_icon: res.data.social_media?.instagram?.icon?.url || "",
+          contact_hero: res.data.contact_details?.contact_hero?.url || "",
         });
       }
     } catch (error: any) {
@@ -116,7 +117,7 @@ export default function SiteSettingsPage() {
     const categories = ['branding', 'about', 'contact_details', 'social_media'] as const;
     categories.forEach(category => {
       Object.entries(settings[category]).forEach(([key, value]) => {
-        if (!['logo', 'favicon', 'facebook_icon', 'twitter_icon', 'instagram_icon'].includes(key)) {
+        if (!['logo', 'favicon', 'facebook_icon', 'twitter_icon', 'instagram_icon', 'contact_hero'].includes(key)) {
           formData.append(key, (value || "") as string);
         }
       });
@@ -138,14 +139,6 @@ export default function SiteSettingsPage() {
       if (res.success && res.data) {
         toast.success("Site settings updated successfully.");
         
-        // Update state with saved data to get correct URLs
-        const sanitize = (obj: any) => {
-          if (!obj) return {};
-          return Object.fromEntries(
-            Object.entries(obj).map(([k, v]) => [k, v === null ? "" : v])
-          );
-        };
-
         setSettings({
           branding: { 
             website_title: res.data.branding?.website_title || "", 
@@ -154,7 +147,14 @@ export default function SiteSettingsPage() {
             favicon: res.data.branding?.favicon?.path || "" 
           },
           about: { about_us: res.data.about?.about_us || "" },
-          contact_details: { ...settings.contact_details, ...sanitize(res.data.contact_details) },
+          contact_details: {
+            primary_phone: res.data.contact_details?.primary_phone || "",
+            secondary_phone: res.data.contact_details?.secondary_phone || "",
+            email_address: res.data.contact_details?.email_address || "",
+            physical_address: res.data.contact_details?.physical_address || "",
+            google_maps_embed: res.data.contact_details?.google_maps_embed || "",
+            contact_hero: res.data.contact_details?.contact_hero?.path || "",
+          },
           social_media: { 
             facebook_title: res.data.social_media?.facebook?.title || "",
             facebook_url: res.data.social_media?.facebook?.url || "",
@@ -174,9 +174,10 @@ export default function SiteSettingsPage() {
           facebook_icon: res.data.social_media?.facebook?.icon?.url || "",
           twitter_icon: res.data.social_media?.x?.icon?.url || "",
           instagram_icon: res.data.social_media?.instagram?.icon?.url || "",
+          contact_hero: res.data.contact_details?.contact_hero?.url || "",
         });
 
-        setFiles({ logo: null, favicon: null, facebook_icon: null, twitter_icon: null, instagram_icon: null });
+        setFiles({ logo: null, favicon: null, facebook_icon: null, twitter_icon: null, instagram_icon: null, contact_hero: null });
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (!res.success) {
@@ -401,6 +402,24 @@ export default function SiteSettingsPage() {
                           placeholder="123 Commerce St, Kathmandu, Nepal"
                           maxLength={1000}
                         />
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      <label className="block text-sm font-semibold text-neutral-900">Contact Hero Image</label>
+                      <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
+                        {previews.contact_hero ? (
+                          <img src={previews.contact_hero} alt="Contact Hero" className="h-40 w-full object-cover rounded-xl mb-4" />
+                        ) : (
+                          <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
+                            <ImageIcon size={24} />
+                          </div>
+                        )}
+                        <label className="cursor-pointer bg-white border border-neutral-200 px-4 py-2 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 shadow-sm transition-all">
+                          Choose Image
+                          <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'contact_hero')} />
+                        </label>
+                        <p className="text-xs text-neutral-400 mt-3 text-center">Max size: 10MB. Formats: jpeg, jpg, png, webp, svg.</p>
                       </div>
                     </div>
 
