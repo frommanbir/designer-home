@@ -19,10 +19,10 @@ function HomePageContent() {
     section2_title: "",
     section2_description_1: "",
     section2_description_2: "",
-    section2_btn_inquiry_text: "",
-    section2_btn_inquiry_link: "",
-    section2_btn_projects_text: "",
-    section2_btn_projects_link: "",
+    // section2_btn_inquiry_text: "",
+    // section2_btn_inquiry_link: "",
+    // section2_btn_projects_text: "",
+    // section2_btn_projects_link: "",
     
     section3_title: "",
     section3_stat1_value: "",
@@ -31,8 +31,8 @@ function HomePageContent() {
     section3_stat2_label: "",
     section3_stat3_value: "",
     section3_stat3_label: "",
-    section3_btn_text: "",
-    section3_btn_link: "",
+    // section3_btn_text: "",
+    // section3_btn_link: "",
   });
 
   const [files, setFiles] = useState<Record<string, File | null>>({
@@ -60,10 +60,10 @@ function HomePageContent() {
           section2_title: res.data.section2_title || "",
           section2_description_1: res.data.section2_description_1 || "",
           section2_description_2: res.data.section2_description_2 || "",
-          section2_btn_inquiry_text: res.data.section2_btn_inquiry_text || "",
-          section2_btn_inquiry_link: res.data.section2_btn_inquiry_link || "",
-          section2_btn_projects_text: res.data.section2_btn_projects_text || "",
-          section2_btn_projects_link: res.data.section2_btn_projects_link || "",
+          // section2_btn_inquiry_text: res.data.section2_btn_inquiry_text || "",
+          // section2_btn_inquiry_link: res.data.section2_btn_inquiry_link || "",
+          // section2_btn_projects_text: res.data.section2_btn_projects_text || "",
+          // section2_btn_projects_link: res.data.section2_btn_projects_link || "",
           
           section3_title: res.data.section3_title || "",
           section3_stat1_value: res.data.section3_stat1_value || "",
@@ -72,8 +72,8 @@ function HomePageContent() {
           section3_stat2_label: res.data.section3_stat2_label || "",
           section3_stat3_value: res.data.section3_stat3_value || "",
           section3_stat3_label: res.data.section3_stat3_label || "",
-          section3_btn_text: res.data.section3_btn_text || "",
-          section3_btn_link: res.data.section3_btn_link || "",
+          // section3_btn_text: res.data.section3_btn_text || "",
+          // section3_btn_link: res.data.section3_btn_link || "",
         });
 
         setPreviews({
@@ -136,10 +136,10 @@ function HomePageContent() {
           section2_title: res.data.section2_title || "",
           section2_description_1: res.data.section2_description_1 || "",
           section2_description_2: res.data.section2_description_2 || "",
-          section2_btn_inquiry_text: res.data.section2_btn_inquiry_text || "",
-          section2_btn_inquiry_link: res.data.section2_btn_inquiry_link || "",
-          section2_btn_projects_text: res.data.section2_btn_projects_text || "",
-          section2_btn_projects_link: res.data.section2_btn_projects_link || "",
+          // section2_btn_inquiry_text: res.data.section2_btn_inquiry_text || "",
+          // section2_btn_inquiry_link: res.data.section2_btn_inquiry_link || "",
+          // section2_btn_projects_text: res.data.section2_btn_projects_text || "",
+          // section2_btn_projects_link: res.data.section2_btn_projects_link || "",
           
           section3_title: res.data.section3_title || "",
           section3_stat1_value: res.data.section3_stat1_value || "",
@@ -148,8 +148,8 @@ function HomePageContent() {
           section3_stat2_label: res.data.section3_stat2_label || "",
           section3_stat3_value: res.data.section3_stat3_value || "",
           section3_stat3_label: res.data.section3_stat3_label || "",
-          section3_btn_text: res.data.section3_btn_text || "",
-          section3_btn_link: res.data.section3_btn_link || "",
+          // section3_btn_text: res.data.section3_btn_text || "",
+          // section3_btn_link: res.data.section3_btn_link || "",
         });
 
         setPreviews({
@@ -261,7 +261,7 @@ function HomePageContent() {
                         />
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/*<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <label className="block text-sm font-semibold text-neutral-900">Button 1 Text (Inquiry)</label>
                           <input
@@ -301,7 +301,7 @@ function HomePageContent() {
                             className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black outline-none"
                           />
                         </div>
-                      </div>
+                      </div>*/}
                     </div>
 
                     {/* Right Panel: Image Upload */}
@@ -416,7 +416,7 @@ function HomePageContent() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/*<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <label className="block text-sm font-semibold text-neutral-900">Button Text</label>
                           <input
@@ -435,7 +435,7 @@ function HomePageContent() {
                             className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl text-sm focus:ring-2 focus:ring-black outline-none"
                           />
                         </div>
-                      </div>
+                      </div>*/}
                     </div>
 
                     {/* Right Panel: Image Upload */}

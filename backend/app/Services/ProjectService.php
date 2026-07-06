@@ -22,8 +22,8 @@ class ProjectService
             ->when($filters['search'] ?? null, function ($query, string $search): void {
                 $query->where('title', 'like', "%{$search}%");
             })
-            ->latest()
-            ->orderBy('sort_order')
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('id', 'asc')
             ->get();
     }
 
@@ -31,8 +31,8 @@ class ProjectService
     {
         return Project::query()
             ->with('category')
-            ->latest()
-            ->orderBy('sort_order')
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('id', 'asc')
             ->get();
     }
 
@@ -74,16 +74,43 @@ class ProjectService
     {
         $data = Arr::except($validated, [
             'gallery_images',
+            'remove_gallery_images',
         ]);
 
-        if (isset($files['gallery_images'])) {
-            $this->deleteImages($project?->gallery_images ?? []);
+        $existingPaths = $project ? ($project->gallery_images ?? []) : [];
+        $removeUrls = $validated['remove_gallery_images'] ?? [];
 
-            $data['gallery_images'] = collect($files['gallery_images'])
+        $remainingPaths = [];
+        $pathsToDelete = [];
+        foreach ($existingPaths as $path) {
+            $matched = false;
+            $absoluteUrl = asset(Storage::disk('public')->url($path));
+            foreach ($removeUrls as $url) {
+                if ($url === $absoluteUrl || str_ends_with($url, $path)) {
+                    $matched = true;
+                    break;
+                }
+            }
+            if ($matched) {
+                $pathsToDelete[] = $path;
+            } else {
+                $remainingPaths[] = $path;
+            }
+        }
+
+        if (!empty($pathsToDelete)) {
+            $this->deleteImages($pathsToDelete);
+        }
+
+        $newPaths = [];
+        if (isset($files['gallery_images'])) {
+            $newPaths = collect($files['gallery_images'])
                 ->map(fn ($image): string => $image->store('projects/gallery', 'public'))
                 ->values()
                 ->all();
         }
+
+        $data['gallery_images'] = array_merge($remainingPaths, $newPaths);
 
         return $data;
     }

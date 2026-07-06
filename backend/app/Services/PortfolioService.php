@@ -22,8 +22,8 @@ class PortfolioService
             ->when($filters['search'] ?? null, function ($query, string $search): void {
                 $query->where('title', 'like', "%{$search}%");
             })
-            ->latest()
-            ->orderBy('sort_order')
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('id', 'asc')
             ->get();
     }
 
@@ -31,8 +31,8 @@ class PortfolioService
     {
         return Portfolio::query()
             ->with('category')
-            ->latest()
-            ->orderBy('sort_order')
+            ->orderBy('sort_order', 'asc')
+            ->orderBy('id', 'asc')
             ->get();
     }
 

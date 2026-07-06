@@ -18,7 +18,8 @@ import {
   Briefcase,
   Tag,
   Layout,
-  Save
+  Save,
+  GripVertical
 } from "lucide-react";
 import { 
   getAdminPortfolios, 
@@ -58,6 +59,14 @@ function PortfoliosPageContent() {
     main_image: null,
     gallery_images: []
   });
+
+  // Track deletion of the existing main image separately from a replacement upload
+  const [removeMainImage, setRemoveMainImage] = useState(false);
+
+  // Drag-to-reorder state
+  const [reorderingId, setReorderingId] = useState<number | null>(null);
+  const [draggedId, setDraggedId] = useState<number | null>(null);
+  const [dragOverId, setDragOverId] = useState<number | null>(null);
 
   // Portfolio Page Hero Banner states
   const [heroTitle, setHeroTitle] = useState("");
@@ -132,6 +141,14 @@ function PortfoliosPageContent() {
     }
   };
 
+  // Sort order is fully automated: the first portfolio starts at 0, and every
+  // new portfolio is appended one past the current highest sort_order so
+  // values never repeat. Manual reordering happens via drag-and-drop below.
+  const getNextSortOrder = () => {
+    if (portfolios.length === 0) return 0;
+    return Math.max(...portfolios.map(p => p.sort_order ?? 0)) + 1;
+  };
+
   const handleOpenModal = (portfolio?: Portfolio) => {
     if (portfolio) {
       setIsEditing(true);
@@ -143,12 +160,13 @@ function PortfoliosPageContent() {
         slug: "",
         short_description: "",
         description: "",
-        sort_order: 0,
+        sort_order: getNextSortOrder(),
         is_active: true,
         is_featured: false,
         portfolio_category_id: null as any
       });
     }
+    setRemoveMainImage(false);
     setFormFiles({ main_image: null, gallery_images: [] });
     setIsModalOpen(true);
   };
@@ -179,6 +197,8 @@ function PortfoliosPageContent() {
 
       if (formFiles.main_image) {
         formData.append("main_image", formFiles.main_image);
+      } else if (removeMainImage) {
+        formData.append("remove_main_image", "1");
       }
 
       formFiles.gallery_images.forEach((file) => {
@@ -202,12 +222,86 @@ function PortfoliosPageContent() {
     }
   };
 
-  const filteredPortfolios = portfolios.filter(p => {
+  // Always display portfolios in their real sort_order so the list itself
+  // reflects the automated ordering (ties broken by id as a stable fallback).
+  const orderedPortfolios = [...portfolios].sort((a, b) => {
+    const diff = (a.sort_order ?? 0) - (b.sort_order ?? 0);
+    return diff !== 0 ? diff : a.id - b.id;
+  });
+
+  const filteredPortfolios = orderedPortfolios.filter(p => {
     const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          p.slug.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "all" || p.category?.id.toString() === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  // Dragging is only safe when no search/category filter is active, since
+  // drag reorder is computed against the full unfiltered list below.
+  const filtersActive = searchQuery.trim() !== "" || selectedCategory !== "all";
+
+  // Builds a minimal FormData payload for a sort_order-only update, carrying
+  // over the portfolio's existing core fields so a partial PUT doesn't clobber them.
+  const buildSortOrderFormData = (portfolio: Portfolio, newSortOrder: number) => {
+    const fd = new FormData();
+    if (portfolio.title) fd.append("title", portfolio.title);
+    if (portfolio.slug) fd.append("slug", portfolio.slug);
+    if (portfolio.short_description) fd.append("short_description", portfolio.short_description);
+    if (portfolio.description) fd.append("description", portfolio.description);
+    if (portfolio.category?.id) fd.append("portfolio_category_id", String(portfolio.category.id));
+    fd.append("sort_order", String(newSortOrder));
+    fd.append("is_active", portfolio.is_active ? "1" : "0");
+    fd.append("is_featured", portfolio.is_featured ? "1" : "0");
+    return fd;
+  };
+
+  // Dragging is computed against the full sorted list (orderedPortfolios),
+  // not the search/category-filtered view, so an active filter can't
+  // scramble the real global order. After the drop, every affected item is
+  // renumbered 0..n-1 sequentially, so values stay unique and gap-free.
+  const handleDropReorder = async (targetId: number) => {
+    if (draggedId === null || draggedId === targetId) {
+      setDraggedId(null);
+      setDragOverId(null);
+      return;
+    }
+    const draggedIdx = orderedPortfolios.findIndex(p => p.id === draggedId);
+    const targetIdx = orderedPortfolios.findIndex(p => p.id === targetId);
+    if (draggedIdx === -1 || targetIdx === -1) {
+      setDraggedId(null);
+      setDragOverId(null);
+      return;
+    }
+
+    const reordered = [...orderedPortfolios];
+    const [moved] = reordered.splice(draggedIdx, 1);
+    reordered.splice(targetIdx, 0, moved);
+
+    const updates = reordered
+      .map((p, i) => ({ portfolio: p, newOrder: i }))
+      .filter(u => (u.portfolio.sort_order ?? 0) !== u.newOrder);
+
+    if (updates.length === 0) {
+      setDraggedId(null);
+      setDragOverId(null);
+      return;
+    }
+
+    setReorderingId(draggedId);
+    try {
+      await Promise.all(
+        updates.map(u => updatePortfolio(u.portfolio.id, buildSortOrderFormData(u.portfolio, u.newOrder)))
+      );
+      await fetchData();
+    } catch (error: any) {
+      console.error("Reorder failed:", error);
+      toast.error(error.message || "Failed to reorder portfolios");
+    } finally {
+      setReorderingId(null);
+      setDraggedId(null);
+      setDragOverId(null);
+    }
+  };
 
   const totalPages = Math.ceil(filteredPortfolios.length / ITEMS_PER_PAGE);
   const paginatedPortfolios = filteredPortfolios.slice(
@@ -338,6 +432,11 @@ function PortfoliosPageContent() {
               </div>
 
               {/* Table */}
+              {filtersActive && (
+                <p className="text-[11px] font-bold text-neutral-400 px-2">
+                  Clear the search box to drag-reorder portfolios — dragging reflects the full list order.
+                </p>
+              )}
               <div className="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 gap-3">
@@ -357,17 +456,37 @@ function PortfoliosPageContent() {
             <table className="w-full text-left">
               <thead className="bg-neutral-50/50 border-b border-neutral-100">
                 <tr>
+                  <th className="py-4 px-4 w-8"></th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">S.No</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Project</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Category</th>
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Status</th>
-                  <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Order</th>
+                  {/* <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Order</th> */}
                   <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-50">
                 {paginatedPortfolios.map((item, index) => (
-                  <tr key={item.id} className="hover:bg-neutral-50/40 transition-colors">
+                  <tr
+                    key={item.id}
+                    draggable={!filtersActive}
+                    onDragStart={e => { e.dataTransfer.setData("text/plain", String(item.id)); e.dataTransfer.effectAllowed = "move"; setDraggedId(item.id); }}
+                    onDragOver={e => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (!filtersActive) setDragOverId(item.id); }}
+                    onDragLeave={() => setDragOverId(prev => (prev === item.id ? null : prev))}
+                    onDrop={e => { e.preventDefault(); if (!filtersActive) handleDropReorder(item.id); }}
+                    onDragEnd={() => { setDraggedId(null); setDragOverId(null); }}
+                    className={`hover:bg-neutral-50/40 transition-colors ${draggedId === item.id ? "opacity-40" : ""} ${dragOverId === item.id && draggedId !== item.id ? "border-t-2 border-black" : ""}`}
+                  >
+                    <td className="py-4 px-4 text-center">
+                      {reorderingId !== null ? (
+                        <Loader2 size={16} className="animate-spin text-neutral-300 mx-auto" />
+                      ) : (
+                        <GripVertical
+                          size={16}
+                          className={`mx-auto text-neutral-300 ${filtersActive ? "cursor-not-allowed opacity-40" : "cursor-grab active:cursor-grabbing hover:text-black"}`}
+                        />
+                      )}
+                    </td>
                     <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-4">
@@ -404,9 +523,9 @@ function PortfoliosPageContent() {
                         )}
                       </div>
                     </td>
-                    <td className="py-4 px-6 text-sm text-neutral-600 font-medium">
+                    {/* <td className="py-4 px-6 text-sm text-neutral-600 font-medium">
                       {item.sort_order}
-                    </td>
+                    </td> */}
                     <td className="py-4 px-6">
                       <div className="flex items-center justify-end gap-1">
                         <button 
@@ -556,21 +675,39 @@ function PortfoliosPageContent() {
               <div className="space-y-2">
                 <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Main Image</label>
                 <div className="flex items-center gap-4">
-                  {(formFiles.main_image || currentPortfolio?.main_image_url) && (
-                    <div className="w-16 h-16 rounded-lg overflow-hidden border border-neutral-200">
+                  {(formFiles.main_image || (currentPortfolio?.main_image_url && !removeMainImage)) && (
+                    <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-neutral-200 group">
                       <img 
                         src={formFiles.main_image ? URL.createObjectURL(formFiles.main_image) : currentPortfolio?.main_image_url || ""} 
                         className="w-full h-full object-cover"
                       />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormFiles(prev => ({ ...prev, main_image: null }));
+                          setRemoveMainImage(true);
+                        }}
+                        className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 text-white transition-all cursor-pointer"
+                        title="Remove image"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   )}
                   <input 
                     type="file"
                     accept="image/*"
-                    onChange={(e) => setFormFiles(prev => ({ ...prev, main_image: e.target.files?.[0] || null }))}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setFormFiles(prev => ({ ...prev, main_image: file }));
+                      if (file) setRemoveMainImage(false);
+                    }}
                     className="flex-1 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-neutral-100 file:text-neutral-700 hover:file:bg-neutral-200"
                   />
                 </div>
+                {removeMainImage && !formFiles.main_image && (
+                  <p className="text-[11px] font-bold text-red-500 uppercase tracking-widest">Image will be removed on save</p>
+                )}
               </div>
 
               {/* <div className="space-y-2">

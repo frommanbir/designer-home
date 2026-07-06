@@ -16,7 +16,8 @@ import {
   Save,
   ChevronRight,
   Wrench,
-  Pencil
+  Pencil,
+  GripVertical
 } from "lucide-react";
 import { 
   getAdminServices, 
@@ -38,6 +39,7 @@ interface WhyChooseBlock {
   points: string[];
   image_file?: File | null;
   existing_image_url?: string | null;
+  remove_image?: boolean;
 }
 
 interface FormState extends Partial<Service> {
@@ -50,6 +52,7 @@ const emptyBlock = (): WhyChooseBlock => ({
   points: [""],
   image_file: null,
   existing_image_url: null,
+  remove_image: false,
 });
 
 const emptyForm = (): FormState => ({
@@ -73,6 +76,7 @@ function normalizeBlocks(wc: any): WhyChooseBlock[] {
     points: b.points?.length ? b.points : [""],
     image_file: null,
     existing_image_url: b.image?.url || null,
+    remove_image: false,
   }));
 }
 
@@ -87,6 +91,12 @@ function ServicesAdminContent() {
   const [heroImageFile, setHeroImageFile] = useState<File | null>(null);
   const [heroImagePreview, setHeroImagePreview] = useState("");
   const [heroSaving, setHeroSaving] = useState(false);
+
+  // ── Per-service main image removal & drag-to-reorder ──────
+  const [removeHeroImage, setRemoveHeroImage] = useState(false);
+  const [reorderingId, setReorderingId] = useState<number | null>(null);
+  const [draggedId, setDraggedId] = useState<number | null>(null);
+  const [dragOverId, setDragOverId] = useState<number | null>(null);
 
   // Selection & Tab Management
   const [selectedServiceId, setSelectedServiceId] = useState<number | 'new' | null>(null);
@@ -143,10 +153,20 @@ function ServicesAdminContent() {
     }
   }
 
+  // Sort order is fully automated: the first service starts at 0, and every
+  // new service is appended one past the current highest sort_order so
+  // values never repeat. Manual reordering (below) swaps values between
+  // neighbors instead of letting anyone type a duplicate number.
+  const getNextSortOrder = () => {
+    if (services.length === 0) return 0;
+    return Math.max(...services.map(s => s.sort_order ?? 0)) + 1;
+  };
+
   const openNewServiceModal = () => {
     setSelectedServiceId('new');
-    setCurrentService(emptyForm());
+    setCurrentService({ ...emptyForm(), sort_order: getNextSortOrder() });
     setHeroImageFile2(null);
+    setRemoveHeroImage(false);
     setActiveTab("content");
     setShowNewServiceModal(true);
   };
@@ -163,6 +183,7 @@ function ServicesAdminContent() {
       why_choose_blocks: normalizeBlocks(service.why_choose),
     });
     setHeroImageFile2(null);
+    setRemoveHeroImage(false);
     setActiveTab("content");
     setShowNewServiceModal(true);
   };
@@ -181,13 +202,23 @@ function ServicesAdminContent() {
       fd.append("sort_order", String(currentService.sort_order || 0));
       fd.append("is_active", currentService.is_active ? "1" : "0");
 
-      if (heroImageFile2) fd.append("hero_image", heroImageFile2);
+      if (heroImageFile2) {
+        fd.append("hero_image", heroImageFile2);
+      } else if (removeHeroImage) {
+        // Tell the backend to delete the stored hero image instead of just
+        // leaving the field untouched.
+        fd.append("remove_hero_image", "1");
+      }
 
       currentService.why_choose_blocks.forEach((block, i) => {
         if (block.title) fd.append(`why_choose[${i}][title]`, block.title);
         if (block.description) fd.append(`why_choose[${i}][description]`, block.description);
         block.points.filter(p => !!p?.trim()).forEach(p => fd.append(`why_choose[${i}][points][]`, p));
-        if (block.image_file) fd.append(`why_choose[${i}][image]`, block.image_file);
+        if (block.image_file) {
+          fd.append(`why_choose[${i}][image]`, block.image_file);
+        } else if (block.remove_image) {
+          fd.append(`why_choose[${i}][remove_image]`, "1");
+        }
       });
 
       if (selectedServiceId === 'new') {
@@ -259,12 +290,80 @@ function ServicesAdminContent() {
     updateBlock(bIdx, { points: currentService.why_choose_blocks[bIdx].points.filter((_, i) => i !== pIdx) });
   };
 
-  const filtered = services.filter(s => s.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  // Always display services in their real sort_order so the list itself
+  // reflects the automated ordering (ties broken by id as a stable fallback).
+  const orderedServices = [...services].sort((a, b) => {
+    const diff = (a.sort_order ?? 0) - (b.sort_order ?? 0);
+    return diff !== 0 ? diff : a.id - b.id;
+  });
+  const filtered = orderedServices.filter(s => s.title.toLowerCase().includes(searchQuery.toLowerCase()));
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
   const paginatedServices = filtered.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
   );
+
+  // Dragging is computed against the full sorted list (orderedServices), not
+  // the search-filtered view, so an active search can't scramble the real
+  // global order. After the drop, every affected item is renumbered 0..n-1
+  // sequentially, so values stay unique and gap-free by construction.
+  const handleDropReorder = async (targetId: number) => {
+    if (draggedId === null || draggedId === targetId) {
+      setDraggedId(null);
+      setDragOverId(null);
+      return;
+    }
+    const draggedIdx = orderedServices.findIndex(s => s.id === draggedId);
+    const targetIdx = orderedServices.findIndex(s => s.id === targetId);
+    if (draggedIdx === -1 || targetIdx === -1) {
+      setDraggedId(null);
+      setDragOverId(null);
+      return;
+    }
+
+    const reordered = [...orderedServices];
+    const [moved] = reordered.splice(draggedIdx, 1);
+    reordered.splice(targetIdx, 0, moved);
+
+    const updates = reordered
+      .map((s, i) => ({ service: s, newOrder: i }))
+      .filter(u => (u.service.sort_order ?? 0) !== u.newOrder);
+
+    if (updates.length === 0) {
+      setDraggedId(null);
+      setDragOverId(null);
+      return;
+    }
+
+    setReorderingId(draggedId);
+    try {
+      await Promise.all(
+        updates.map(u => updateService(u.service.id, buildSortOrderFormData(u.service, u.newOrder)))
+      );
+      await fetchData();
+    } catch (error: any) {
+      console.error("Reorder failed:", error);
+      toast.error(error.message || "Failed to reorder services");
+    } finally {
+      setReorderingId(null);
+      setDraggedId(null);
+      setDragOverId(null);
+    }
+  };
+
+  // Builds a minimal FormData payload for a sort_order-only update, carrying
+  // over the service's existing core fields so a partial PUT doesn't clobber them.
+  const buildSortOrderFormData = (service: Service, newSortOrder: number) => {
+    const fd = new FormData();
+    if (service.title) fd.append("title", service.title);
+    if (service.slug) fd.append("slug", service.slug);
+    if (service.subtitle) fd.append("subtitle", service.subtitle);
+    if (service.short_description) fd.append("short_description", service.short_description);
+    if (service.description) fd.append("description", service.description);
+    fd.append("sort_order", String(newSortOrder));
+    fd.append("is_active", service.is_active ? "1" : "0");
+    return fd;
+  };
 
   useEffect(() => {
     setCurrentPage(1);
@@ -397,12 +496,19 @@ function ServicesAdminContent() {
                 </div>
               </div>
 
+              {searchQuery.trim() !== "" && (
+                <p className="text-[11px] font-bold text-neutral-400 px-2">
+                  Clear the search box to drag-reorder services — dragging reflects the full list order.
+                </p>
+              )}
+
               {/* Services List Table */}
               <div className="bg-white rounded-3xl border border-neutral-100 shadow-sm overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left">
                     <thead className="bg-neutral-50/50 border-b border-neutral-100">
                       <tr>
+                        <th className="py-4 px-4 w-8"></th>
                         <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">S.No</th>
                         <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Image</th>
                         <th className="py-4 px-6 text-xs font-bold text-neutral-500 uppercase tracking-wider">Service</th>
@@ -412,8 +518,28 @@ function ServicesAdminContent() {
                     </thead>
                     <tbody className="divide-y divide-neutral-50">
                       {paginatedServices.map((s, index) => {
+                        const dragDisabled = searchQuery.trim() !== "";
                         return (
-                          <tr key={s.id} className="hover:bg-neutral-50/40 transition-colors">
+                          <tr
+                            key={s.id}
+                            draggable={!dragDisabled}
+                            onDragStart={e => { e.dataTransfer.setData("text/plain", String(s.id)); e.dataTransfer.effectAllowed = "move"; setDraggedId(s.id); }}
+                            onDragOver={e => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; if (!dragDisabled) setDragOverId(s.id); }}
+                            onDragLeave={() => setDragOverId(prev => (prev === s.id ? null : prev))}
+                            onDrop={e => { e.preventDefault(); if (!dragDisabled) handleDropReorder(s.id); }}
+                            onDragEnd={() => { setDraggedId(null); setDragOverId(null); }}
+                            className={`hover:bg-neutral-50/40 transition-colors ${draggedId === s.id ? "opacity-40" : ""} ${dragOverId === s.id && draggedId !== s.id ? "border-t-2 border-black" : ""}`}
+                          >
+                            <td className="py-4 px-4 text-center">
+                              {reorderingId !== null ? (
+                                <Loader2 size={16} className="animate-spin text-neutral-300 mx-auto" />
+                              ) : (
+                                <GripVertical
+                                  size={16}
+                                  className={`mx-auto text-neutral-300 ${dragDisabled ? "cursor-not-allowed opacity-40" : "cursor-grab active:cursor-grabbing hover:text-black"}`}
+                                />
+                              )}
+                            </td>
                             <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                             <td className="py-4 px-6">
                               {s.hero_image?.url || s.thumbnail_image?.url ? (
@@ -523,7 +649,7 @@ function ServicesAdminContent() {
                     type="button"
                     onClick={() => setActiveTab(t.id)}
                     className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold transition-all cursor-pointer ${
-                      isActive ? "bg-[#C59D5F] text-white shadow-md" : "text-neutral-400 hover:text-black hover:bg-white"
+                      isActive ? "bg-black text-white shadow-md" : "text-neutral-400 hover:text-black hover:bg-white"
                     }`}
                   >
                     <t.icon size={14} /> {t.label}
@@ -582,17 +708,35 @@ function ServicesAdminContent() {
                 <div className="space-y-4">
                   <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Service Landing Image</label>
                   <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-neutral-200 rounded-[3rem] bg-neutral-50 hover:bg-white hover:border-black transition-all group">
-                    {(heroImageFile2 || currentService.hero_image?.url) ? (
+                    {(heroImageFile2 || (currentService.hero_image?.url && !removeHeroImage)) ? (
                        <div className="relative w-full max-w-md aspect-video rounded-3xl overflow-hidden shadow-2xl mb-8">
                           <img src={heroImageFile2 ? URL.createObjectURL(heroImageFile2) : currentService.hero_image?.url || ""} className="w-full h-full object-cover" alt="hero" />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setHeroImageFile2(null);
+                              setRemoveHeroImage(true);
+                            }}
+                            className="absolute top-3 right-3 p-2 bg-black/60 hover:bg-red-600 text-white rounded-full shadow-lg transition-all cursor-pointer"
+                            title="Remove image"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                        </div>
                     ) : (
                        <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center mb-6 text-neutral-200 shadow-sm"><ImageIcon size={32} /></div>
                     )}
-                    <label className="cursor-pointer bg-[#C59D5F] text-white px-8 py-3 rounded-2xl font-bold text-xs shadow-xl active:scale-95 transition-all">
+                    <label className="cursor-pointer bg-black text-white px-8 py-3 rounded-2xl font-bold text-xs shadow-xl active:scale-95 transition-all">
                       Choose Main Image
-                      <input type="file" className="hidden" accept="image/*" onChange={e => setHeroImageFile2(e.target.files?.[0] || null)} />
+                      <input type="file" className="hidden" accept="image/*" onChange={e => {
+                        const file = e.target.files?.[0] || null;
+                        setHeroImageFile2(file);
+                        if (file) setRemoveHeroImage(false);
+                      }} />
                     </label>
+                    {removeHeroImage && !heroImageFile2 && (
+                      <p className="text-[10px] font-bold text-red-500 mt-3 uppercase tracking-widest">Image will be removed on save</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -602,7 +746,7 @@ function ServicesAdminContent() {
               <div className="max-w-4xl space-y-8 animate-in slide-in-from-bottom-4 duration-500">
                 <div className="flex items-center justify-between">
                   <h3 className="font-bold uppercase tracking-tight">Why Choose Section Blocks</h3>
-                  <button type="button" onClick={addBlock} className="flex items-center gap-2 px-5 py-2 bg-[#C59D5F] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all shadow-md cursor-pointer">
+                  <button type="button" onClick={addBlock} className="flex items-center gap-2 px-5 py-2 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-black transition-all shadow-md cursor-pointer">
                     <Plus size={14} /> Add Block
                   </button>
                 </div>
@@ -629,12 +773,26 @@ function ServicesAdminContent() {
                                <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Image</label>
                                <div className="flex items-center gap-4">
                                   {(block.image_file || block.existing_image_url) && (
-                                     <div className="w-12 h-12 rounded-xl overflow-hidden border border-neutral-200 shrink-0 shadow-sm">
+                                     <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-neutral-200 shrink-0 shadow-sm group">
                                         <img src={block.image_file ? URL.createObjectURL(block.image_file) : block.existing_image_url || ""} className="w-full h-full object-cover" alt="prev" />
+                                        <button
+                                          type="button"
+                                          onClick={() => updateBlock(bi, { image_file: null, existing_image_url: null, remove_image: true })}
+                                          className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 text-white transition-all cursor-pointer"
+                                          title="Remove image"
+                                        >
+                                          <Trash2 size={14} />
+                                        </button>
                                      </div>
                                   )}
-                                  <input type="file" className="text-[10px] file:bg-black file:text-white file:border-0 file:rounded-lg file:px-3 file:py-1.5 file:font-bold file:cursor-pointer cursor-pointer" onChange={e => updateBlock(bi, { image_file: e.target.files?.[0] || null })} />
+                                  <input type="file" className="text-[10px] file:bg-black file:text-white file:border-0 file:rounded-lg file:px-3 file:py-1.5 file:font-bold file:cursor-pointer cursor-pointer" onChange={e => {
+                                    const file = e.target.files?.[0] || null;
+                                    updateBlock(bi, { image_file: file, remove_image: file ? false : block.remove_image });
+                                  }} />
                                </div>
+                               {block.remove_image && !block.image_file && (
+                                 <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">Image will be removed on save</p>
+                               )}
                              </div>
                            </div>
                            <div className="space-y-3">
@@ -673,9 +831,13 @@ function ServicesAdminContent() {
                 <div className="flex items-center justify-between p-8 bg-neutral-50/50 rounded-3xl border border-neutral-100">
                   <div className="space-y-1">
                     <p className="font-bold">Display Order</p>
-                    <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">Numeric value for manual sorting</p>
+                    <p className="text-[10px] font-bold text-neutral-400 uppercase tracking-widest">
+                      Auto-assigned
+                    </p>
                   </div>
-                  <input type="number" value={currentService.sort_order || 0} onChange={e => setCurrentService(p => ({ ...p, sort_order: parseInt(e.target.value) || 0 }))} className="w-20 px-3 py-2 bg-white border border-neutral-200 rounded-xl text-center font-bold" />
+                  <div className="w-14 h-10 flex items-center justify-center bg-white border border-neutral-200 rounded-xl text-center font-bold text-neutral-500">
+                    {currentService.sort_order ?? 0}
+                  </div>
                 </div>
               </div>
             )}
@@ -699,9 +861,9 @@ function ServicesAdminContent() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="px-10 py-4 bg-[#C59D5F] text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl shadow-black/40 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center gap-3 disabled:opacity-50 cursor-pointer"
+                  className="px-10 py-4 bg-black text-white rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-2xl shadow-black/40 hover:-translate-y-1 active:translate-y-0 transition-all flex items-center gap-3 disabled:opacity-50 cursor-pointer"
                 >
-                  {saving ? <Loader2 size={18} className="animate-spin text-black" /> : <Save size={18} className="text-black" />}
+                  {saving ? <Loader2 size={18} className="animate-spin text-black" /> : <Save size={18} className="text-white" />}
                   {selectedServiceId === 'new' ? "Create Expertise" : "Save All Changes"}
                 </button>
               </div>

@@ -45,6 +45,8 @@ class ProjectRequest extends FormRequest
             'hero_image' => [$optionalOnUpdate, 'nullable', 'file', 'mimes:jpg,jpeg,png,webp,svg', 'max:20480'],
             'gallery_images' => [$optionalOnUpdate, 'nullable', 'array'],
             'gallery_images.*' => ['file', 'mimes:jpg,jpeg,png,webp,svg', 'max:20480'],
+            'remove_gallery_images' => ['nullable', 'array'],
+            'remove_gallery_images.*' => ['string'],
 
             'sort_order' => [$optionalOnUpdate, 'nullable', 'integer', 'min:0'],
             'is_active' => [$optionalOnUpdate, 'nullable', 'boolean'],
