@@ -4,10 +4,15 @@ namespace App\Services;
 
 use App\Models\PortfolioPage;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class PortfolioPageService
 {
+    public function __construct(
+        private readonly ImageUploadService $imageUploadService
+    ) {
+    }
+
     public function getPage(): PortfolioPage
     {
         return PortfolioPage::query()->first() ?? PortfolioPage::query()->create([]);
@@ -18,18 +23,29 @@ class PortfolioPageService
         $portfolioPage = $this->getPage();
 
         $data = Arr::except($validated, ['hero_image']);
+        $newPaths = [];
+        $oldPaths = [];
 
-        if (isset($files['hero_image'])) {
-            $newPath = $files['hero_image']->store('portfolio-page', 'public');
+        try {
+            if (isset($files['hero_image'])) {
+                $newPath = $this->imageUploadService->store($files['hero_image'], 'portfolio-page', 'hero');
+                $newPaths[] = $newPath;
 
-            if ($portfolioPage->hero_image_path) {
-                Storage::disk('public')->delete($portfolioPage->hero_image_path);
+                if ($portfolioPage->hero_image_path) {
+                    $oldPaths[] = $portfolioPage->hero_image_path;
+                }
+
+                $data['hero_image_path'] = $newPath;
             }
 
-            $data['hero_image_path'] = $newPath;
+            $portfolioPage->update($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
         }
 
-        $portfolioPage->update($data);
+        $this->imageUploadService->deleteMany($oldPaths);
         $portfolioPage->refresh();
 
         return $portfolioPage;

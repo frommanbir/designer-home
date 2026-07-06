@@ -4,10 +4,15 @@ namespace App\Services;
 
 use App\Models\AboutPage;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class AboutPageService
 {
+    public function __construct(
+        private readonly ImageUploadService $imageUploadService
+    ) {
+    }
+
     public function getPage(): AboutPage
     {
         return AboutPage::query()->first() ?? AboutPage::query()->create([]);
@@ -18,25 +23,41 @@ class AboutPageService
         $aboutPage = $this->getPage();
 
         $fileFields = [
-            'hero_image' => 'hero_image_path',
-            'main_image' => 'main_image_path',
+            'hero_image' => ['column' => 'hero_image_path', 'profile' => 'hero'],
+            'main_image' => ['column' => 'main_image_path', 'profile' => 'large'],
         ];
 
         $data = Arr::except($validated, array_keys($fileFields));
+        $newPaths = [];
+        $oldPaths = [];
 
-        foreach ($fileFields as $requestField => $databaseColumn) {
-            if (isset($files[$requestField])) {
-                $newPath = $files[$requestField]->store('about-page', 'public');
+        try {
+            foreach ($fileFields as $requestField => $settings) {
+                if (isset($files[$requestField])) {
+                    $databaseColumn = $settings['column'];
+                    $newPath = $this->imageUploadService->store(
+                        $files[$requestField],
+                        'about-page',
+                        $settings['profile'],
+                    );
+                    $newPaths[] = $newPath;
 
-                if ($aboutPage->$databaseColumn) {
-                    Storage::disk('public')->delete($aboutPage->$databaseColumn);
+                    if ($aboutPage->$databaseColumn) {
+                        $oldPaths[] = $aboutPage->$databaseColumn;
+                    }
+
+                    $data[$databaseColumn] = $newPath;
                 }
-
-                $data[$databaseColumn] = $newPath;
             }
+
+            $aboutPage->update($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
         }
 
-        $aboutPage->update($data);
+        $this->imageUploadService->deleteMany($oldPaths);
         $aboutPage->refresh();
 
         return $aboutPage;

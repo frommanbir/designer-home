@@ -5,10 +5,15 @@ namespace App\Services;
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class ProjectService
 {
+    public function __construct(
+        private readonly ImageUploadService $imageUploadService
+    ) {
+    }
+
     public function listPublicProjects(array $filters = []): Collection
     {
         return Project::query()
@@ -47,18 +52,37 @@ class ProjectService
 
     public function createProject(array $validated, array $files = []): Project
     {
-        $data = $this->prepareData($validated, $files);
+        $newPaths = [];
 
-        return Project::query()
-            ->create($data)
-            ->load('category');
+        try {
+            $data = $this->prepareData($validated, $files, newPaths: $newPaths);
+
+            return Project::query()
+                ->create($data)
+                ->load('category');
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
+        }
     }
 
     public function updateProject(Project $project, array $validated, array $files = []): Project
     {
-        $data = $this->prepareData($validated, $files, $project);
+        $newPaths = [];
+        $oldPaths = [];
 
-        $project->update($data);
+        try {
+            $data = $this->prepareData($validated, $files, $project, $newPaths, $oldPaths);
+
+            $project->update($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
+        }
+
+        $this->imageUploadService->deleteMany($oldPaths);
         $project->refresh();
 
         return $project->load('category');
@@ -70,19 +94,26 @@ class ProjectService
         $project->delete();
     }
 
-    private function prepareData(array $validated, array $files = [], ?Project $project = null): array
-    {
+    private function prepareData(
+        array $validated,
+        array $files = [],
+        ?Project $project = null,
+        array &$newPaths = [],
+        array &$oldPaths = [],
+    ): array {
         $data = Arr::except($validated, [
             'gallery_images',
         ]);
 
         if (isset($files['gallery_images'])) {
-            $this->deleteImages($project?->gallery_images ?? []);
+            $oldPaths = array_merge($oldPaths, $project?->gallery_images ?? []);
 
-            $data['gallery_images'] = collect($files['gallery_images'])
-                ->map(fn ($image): string => $image->store('projects/gallery', 'public'))
-                ->values()
-                ->all();
+            $data['gallery_images'] = $this->imageUploadService->storeMany(
+                $files['gallery_images'],
+                'projects/gallery',
+                'project',
+            );
+            $newPaths = array_merge($newPaths, $data['gallery_images']);
         }
 
         return $data;
@@ -90,15 +121,6 @@ class ProjectService
 
     private function deleteProjectImages(Project $project): void
     {
-        $this->deleteImages($project->gallery_images ?? []);
-    }
-
-    private function deleteImages(array $paths): void
-    {
-        collect($paths)
-            ->filter()
-            ->each(function (string $path): void {
-                Storage::disk('public')->delete($path);
-            });
+        $this->imageUploadService->deleteMany($project->gallery_images ?? []);
     }
 }

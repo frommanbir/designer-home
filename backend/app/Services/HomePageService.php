@@ -4,10 +4,15 @@ namespace App\Services;
 
 use App\Models\HomePage;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class HomePageService
 {
+    public function __construct(
+        private readonly ImageUploadService $imageUploadService
+    ) {
+    }
+
     public function getPage(): HomePage
     {
         return HomePage::query()->first() ?? HomePage::query()->create([
@@ -36,41 +41,42 @@ class HomePageService
         $page = $this->getPage();
 
         $data = Arr::except($validated, ['hero_image', 'section2_image', 'section3_image']);
+        $newPaths = [];
+        $oldPaths = [];
 
-        // Handle Hero Image
-        if (isset($files['hero_image'])) {
-            $newPath = $files['hero_image']->store('home-page', 'public');
+        $imageFields = [
+            'hero_image' => ['column' => 'hero_image_path', 'profile' => 'hero'],
+            'section2_image' => ['column' => 'section2_image_path', 'profile' => 'large'],
+            'section3_image' => ['column' => 'section3_image_path', 'profile' => 'large'],
+        ];
 
-            if ($page->hero_image_path) {
-                Storage::disk('public')->delete($page->hero_image_path);
+        try {
+            foreach ($imageFields as $requestField => $settings) {
+                if (isset($files[$requestField])) {
+                    $databaseColumn = $settings['column'];
+                    $newPath = $this->imageUploadService->store(
+                        $files[$requestField],
+                        'home-page',
+                        $settings['profile'],
+                    );
+                    $newPaths[] = $newPath;
+
+                    if ($page->$databaseColumn) {
+                        $oldPaths[] = $page->$databaseColumn;
+                    }
+
+                    $data[$databaseColumn] = $newPath;
+                }
             }
 
-            $data['hero_image_path'] = $newPath;
+            $page->update($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
         }
 
-        // Handle Section 2 Image
-        if (isset($files['section2_image'])) {
-            $newPath = $files['section2_image']->store('home-page', 'public');
-
-            if ($page->section2_image_path) {
-                Storage::disk('public')->delete($page->section2_image_path);
-            }
-
-            $data['section2_image_path'] = $newPath;
-        }
-
-        // Handle Section 3 Image
-        if (isset($files['section3_image'])) {
-            $newPath = $files['section3_image']->store('home-page', 'public');
-
-            if ($page->section3_image_path) {
-                Storage::disk('public')->delete($page->section3_image_path);
-            }
-
-            $data['section3_image_path'] = $newPath;
-        }
-
-        $page->update($data);
+        $this->imageUploadService->deleteMany($oldPaths);
         $page->refresh();
 
         return $page;

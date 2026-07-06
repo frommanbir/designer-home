@@ -5,10 +5,15 @@ namespace App\Services;
 use App\Models\AboutFeature;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class AboutFeatureService
 {
+    public function __construct(
+        private readonly ImageUploadService $imageUploadService
+    ) {
+    }
+
     public function listFeatures(): Collection
     {
         return AboutFeature::query()
@@ -28,16 +33,35 @@ class AboutFeatureService
 
     public function createFeature(array $validated, array $files = []): AboutFeature
     {
-        $data = $this->prepareData($validated, $files);
+        $newPaths = [];
 
-        return AboutFeature::query()->create($data);
+        try {
+            $data = $this->prepareData($validated, $files, newPaths: $newPaths);
+
+            return AboutFeature::query()->create($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
+        }
     }
 
     public function updateFeature(AboutFeature $aboutFeature, array $validated, array $files = []): AboutFeature
     {
-        $data = $this->prepareData($validated, $files, $aboutFeature);
+        $newPaths = [];
+        $oldPaths = [];
 
-        $aboutFeature->update($data);
+        try {
+            $data = $this->prepareData($validated, $files, $aboutFeature, $newPaths, $oldPaths);
+
+            $aboutFeature->update($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
+        }
+
+        $this->imageUploadService->deleteMany($oldPaths);
         $aboutFeature->refresh();
 
         return $aboutFeature;
@@ -45,22 +69,26 @@ class AboutFeatureService
 
     public function deleteFeature(AboutFeature $aboutFeature): void
     {
-        if ($aboutFeature->icon_path) {
-            Storage::disk('public')->delete($aboutFeature->icon_path);
-        }
+        $this->imageUploadService->delete($aboutFeature->icon_path);
 
         $aboutFeature->delete();
     }
 
-    private function prepareData(array $validated, array $files = [], ?AboutFeature $aboutFeature = null): array
-    {
+    private function prepareData(
+        array $validated,
+        array $files = [],
+        ?AboutFeature $aboutFeature = null,
+        array &$newPaths = [],
+        array &$oldPaths = [],
+    ): array {
         $data = Arr::except($validated, ['icon']);
 
         if (isset($files['icon'])) {
-            $newPath = $files['icon']->store('about-features', 'public');
+            $newPath = $this->imageUploadService->store($files['icon'], 'about-features', 'icon');
+            $newPaths[] = $newPath;
 
             if ($aboutFeature?->icon_path) {
-                Storage::disk('public')->delete($aboutFeature->icon_path);
+                $oldPaths[] = $aboutFeature->icon_path;
             }
 
             $data['icon_path'] = $newPath;

@@ -5,10 +5,15 @@ namespace App\Services;
 use App\Http\Requests\SiteSettingRequest;
 use App\Models\SiteSetting;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class SiteSettingService
 {
+    public function __construct(
+        private readonly ImageUploadService $imageUploadService
+    ) {
+    }
+
     public function getSettings(): SiteSetting
     {
         return SiteSetting::query()->first() ?? SiteSetting::query()->create([]);
@@ -21,29 +26,45 @@ class SiteSettingService
         $validated = $request->validated();
 
         $fileFields = [
-            'logo' => 'logo_path',
-            'favicon' => 'favicon_path',
-            'facebook_icon' => 'facebook_icon_path',
-            'twitter_icon' => 'twitter_icon_path',
-            'instagram_icon' => 'instagram_icon_path',
-            'contact_hero' => 'contact_hero_image_path',
+            'logo' => ['column' => 'logo_path', 'profile' => 'logo'],
+            'favicon' => ['column' => 'favicon_path', 'profile' => 'icon'],
+            'facebook_icon' => ['column' => 'facebook_icon_path', 'profile' => 'icon'],
+            'twitter_icon' => ['column' => 'twitter_icon_path', 'profile' => 'icon'],
+            'instagram_icon' => ['column' => 'instagram_icon_path', 'profile' => 'icon'],
+            'contact_hero' => ['column' => 'contact_hero_image_path', 'profile' => 'hero'],
         ];
 
         $data = Arr::except($validated, array_keys($fileFields));
+        $newPaths = [];
+        $oldPaths = [];
 
-        foreach ($fileFields as $requestField => $databaseColumn) {
-            if ($request->hasFile($requestField)) {
-                if ($settings->$databaseColumn) {
-                    Storage::disk('public')->delete($settings->$databaseColumn);
+        try {
+            foreach ($fileFields as $requestField => $settingsMap) {
+                if ($request->hasFile($requestField)) {
+                    $databaseColumn = $settingsMap['column'];
+                    $newPath = $this->imageUploadService->store(
+                        $request->file($requestField),
+                        'site-settings',
+                        $settingsMap['profile'],
+                    );
+                    $newPaths[] = $newPath;
+
+                    if ($settings->$databaseColumn) {
+                        $oldPaths[] = $settings->$databaseColumn;
+                    }
+
+                    $data[$databaseColumn] = $newPath;
                 }
-
-                $data[$databaseColumn] = $request
-                    ->file($requestField)
-                    ->store('site-settings', 'public');
             }
+
+            $settings->update($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
         }
 
-        $settings->update($data);
+        $this->imageUploadService->deleteMany($oldPaths);
 
         return $settings->fresh();
     }

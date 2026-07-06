@@ -8,9 +8,15 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Throwable;
 
 class ServiceService
 {
+    public function __construct(
+        private readonly ImageUploadService $imageUploadService
+    ) {
+    }
+
     public function listServices(?string $categorySlug = null, bool $activeOnly = false): Collection
     {
         return $this->serviceQuery($categorySlug, $activeOnly)->get();
@@ -25,18 +31,37 @@ class ServiceService
 
     public function createService(array $validated, array $files = []): Service
     {
-        $data = $this->prepareData($validated, $files);
+        $newPaths = [];
 
-        return Service::query()
-            ->create($data)
-            ->load('category');
+        try {
+            $data = $this->prepareData($validated, $files, newPaths: $newPaths);
+
+            return Service::query()
+                ->create($data)
+                ->load('category');
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
+        }
     }
 
     public function updateService(Service $service, array $validated, array $files = []): Service
     {
-        $data = $this->prepareData($validated, $files, $service);
+        $newPaths = [];
+        $oldPaths = [];
 
-        $service->update($data);
+        try {
+            $data = $this->prepareData($validated, $files, $service, $newPaths, $oldPaths);
+
+            $service->update($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
+        }
+
+        $this->imageUploadService->deleteMany($oldPaths);
         $service->refresh();
 
         return $service->load('category');
@@ -61,8 +86,13 @@ class ServiceService
             ->orderBy('sort_order');
     }
 
-    private function prepareData(array $validated, array $files = [], ?Service $service = null): array
-    {
+    private function prepareData(
+        array $validated,
+        array $files = [],
+        ?Service $service = null,
+        array &$newPaths = [],
+        array &$oldPaths = [],
+    ): array {
         $data = Arr::except($validated, [
             'thumbnail_image',
             'hero_image',
@@ -79,16 +109,18 @@ class ServiceService
 
         // Standard image fields
         $imageFields = [
-            'thumbnail_image' => 'thumbnail_image_path',
-            'hero_image' => 'hero_image_path',
+            'thumbnail_image' => ['column' => 'thumbnail_image_path', 'profile' => 'card'],
+            'hero_image' => ['column' => 'hero_image_path', 'profile' => 'hero'],
         ];
 
-        foreach ($imageFields as $requestField => $databaseColumn) {
+        foreach ($imageFields as $requestField => $settings) {
             if (isset($files[$requestField])) {
-                $newPath = $files[$requestField]->store('services', 'public');
+                $databaseColumn = $settings['column'];
+                $newPath = $this->imageUploadService->store($files[$requestField], 'services', $settings['profile']);
+                $newPaths[] = $newPath;
 
                 if ($service?->$databaseColumn) {
-                    Storage::disk('public')->delete($service->$databaseColumn);
+                    $oldPaths[] = $service->$databaseColumn;
                 }
 
                 $data[$databaseColumn] = $newPath;
@@ -110,7 +142,12 @@ class ServiceService
 
                 // Check if a new file was uploaded for this block
                 if (isset($files['why_choose'][$index]['image'])) {
-                    $imagePath = $files['why_choose'][$index]['image']->store('services/why-choose', 'public');
+                    $imagePath = $this->imageUploadService->store(
+                        $files['why_choose'][$index]['image'],
+                        'services/why-choose',
+                        'card',
+                    );
+                    $newPaths[] = $imagePath;
                     $blockData['image'] = [
                         'url' => Storage::url($imagePath),
                         'path' => $imagePath,
@@ -125,15 +162,29 @@ class ServiceService
             }
 
             $data['why_choose'] = $whyChooseData;
+
+            $keptWhyChoosePaths = collect($whyChooseData)
+                ->pluck('image.path')
+                ->filter()
+                ->all();
+
+            foreach ($existingWhyChoose as $block) {
+                $oldPath = $block['image']['path'] ?? null;
+
+                if ($oldPath && ! in_array($oldPath, $keptWhyChoosePaths, true)) {
+                    $oldPaths[] = $oldPath;
+                }
+            }
         }
 
         if (isset($files['gallery_images'])) {
-            $newGalleryImages = collect($files['gallery_images'])
-                ->map(fn ($image): string => $image->store('services/gallery', 'public'))
-                ->values()
-                ->all();
-
-            $this->deleteGalleryImages($service);
+            $newGalleryImages = $this->imageUploadService->storeMany(
+                $files['gallery_images'],
+                'services/gallery',
+                'gallery',
+            );
+            $newPaths = array_merge($newPaths, $newGalleryImages);
+            $oldPaths = array_merge($oldPaths, $service?->gallery_images ?? []);
 
             $data['gallery_images'] = $newGalleryImages;
         }
@@ -155,15 +206,13 @@ class ServiceService
             $service->hero_image_path,
             $service->why_choose_image_path,
         ] as $path) {
-            if ($path) {
-                Storage::disk('public')->delete($path);
-            }
+            $this->imageUploadService->delete($path);
         }
 
         // Delete images in multi-block why_choose
         foreach ($service->why_choose ?? [] as $block) {
             if (!empty($block['image']['path'])) {
-                Storage::disk('public')->delete($block['image']['path']);
+                $this->imageUploadService->delete($block['image']['path']);
             }
         }
 
@@ -172,8 +221,6 @@ class ServiceService
 
     private function deleteGalleryImages(?Service $service): void
     {
-        foreach ($service?->gallery_images ?? [] as $path) {
-            Storage::disk('public')->delete($path);
-        }
+        $this->imageUploadService->deleteMany($service?->gallery_images ?? []);
     }
 }

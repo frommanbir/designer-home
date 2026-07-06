@@ -5,10 +5,15 @@ namespace App\Services;
 use App\Models\Portfolio;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class PortfolioService
 {
+    public function __construct(
+        private readonly ImageUploadService $imageUploadService
+    ) {
+    }
+
     public function listPublicPortfolios(array $filters = []): Collection
     {
         return Portfolio::query()
@@ -47,18 +52,37 @@ class PortfolioService
 
     public function createPortfolio(array $validated, array $files = []): Portfolio
     {
-        $data = $this->prepareData($validated, $files);
+        $newPaths = [];
 
-        return Portfolio::query()
-            ->create($data)
-            ->load('category');
+        try {
+            $data = $this->prepareData($validated, $files, newPaths: $newPaths);
+
+            return Portfolio::query()
+                ->create($data)
+                ->load('category');
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
+        }
     }
 
     public function updatePortfolio(Portfolio $portfolio, array $validated, array $files = []): Portfolio
     {
-        $data = $this->prepareData($validated, $files, $portfolio);
+        $newPaths = [];
+        $oldPaths = [];
 
-        $portfolio->update($data);
+        try {
+            $data = $this->prepareData($validated, $files, $portfolio, $newPaths, $oldPaths);
+
+            $portfolio->update($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
+        }
+
+        $this->imageUploadService->deleteMany($oldPaths);
         $portfolio->refresh();
 
         return $portfolio->load('category');
@@ -70,30 +94,38 @@ class PortfolioService
         $portfolio->delete();
     }
 
-    private function prepareData(array $validated, array $files = [], ?Portfolio $portfolio = null): array
-    {
+    private function prepareData(
+        array $validated,
+        array $files = [],
+        ?Portfolio $portfolio = null,
+        array &$newPaths = [],
+        array &$oldPaths = [],
+    ): array {
         $data = Arr::except($validated, [
             'main_image',
             'gallery_images',
         ]);
 
         if (isset($files['main_image'])) {
-            $newPath = $files['main_image']->store('portfolios', 'public');
+            $newPath = $this->imageUploadService->store($files['main_image'], 'portfolios', 'portfolio');
+            $newPaths[] = $newPath;
 
             if ($portfolio?->main_image_path) {
-                Storage::disk('public')->delete($portfolio->main_image_path);
+                $oldPaths[] = $portfolio->main_image_path;
             }
 
             $data['main_image_path'] = $newPath;
         }
 
         if (isset($files['gallery_images'])) {
-            $this->deleteImages($portfolio?->gallery_images ?? []);
+            $oldPaths = array_merge($oldPaths, $portfolio?->gallery_images ?? []);
 
-            $data['gallery_images'] = collect($files['gallery_images'])
-                ->map(fn ($image): string => $image->store('portfolios/gallery', 'public'))
-                ->values()
-                ->all();
+            $data['gallery_images'] = $this->imageUploadService->storeMany(
+                $files['gallery_images'],
+                'portfolios/gallery',
+                'gallery',
+            );
+            $newPaths = array_merge($newPaths, $data['gallery_images']);
         }
 
         return $data;
@@ -101,19 +133,10 @@ class PortfolioService
 
     private function deletePortfolioImages(Portfolio $portfolio): void
     {
-        $this->deleteImages([
+        $this->imageUploadService->deleteMany([
             $portfolio->main_image_path,
         ]);
 
-        $this->deleteImages($portfolio->gallery_images ?? []);
-    }
-
-    private function deleteImages(array $paths): void
-    {
-        collect($paths)
-            ->filter()
-            ->each(function (string $path): void {
-                Storage::disk('public')->delete($path);
-            });
+        $this->imageUploadService->deleteMany($portfolio->gallery_images ?? []);
     }
 }

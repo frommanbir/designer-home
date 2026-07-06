@@ -4,10 +4,15 @@ namespace App\Services;
 
 use App\Models\ServicesPage;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class ServicesPageService
 {
+    public function __construct(
+        private readonly ImageUploadService $imageUploadService
+    ) {
+    }
+
     public function getPage(): ServicesPage
     {
         return ServicesPage::query()->first() ?? ServicesPage::query()->create([]);
@@ -18,18 +23,29 @@ class ServicesPageService
         $servicesPage = $this->getPage();
 
         $data = Arr::except($validated, ['hero_image']);
+        $newPaths = [];
+        $oldPaths = [];
 
-        if (isset($files['hero_image'])) {
-            $newPath = $files['hero_image']->store('services-page', 'public');
+        try {
+            if (isset($files['hero_image'])) {
+                $newPath = $this->imageUploadService->store($files['hero_image'], 'services-page', 'hero');
+                $newPaths[] = $newPath;
 
-            if ($servicesPage->hero_image_path) {
-                Storage::disk('public')->delete($servicesPage->hero_image_path);
+                if ($servicesPage->hero_image_path) {
+                    $oldPaths[] = $servicesPage->hero_image_path;
+                }
+
+                $data['hero_image_path'] = $newPath;
             }
 
-            $data['hero_image_path'] = $newPath;
+            $servicesPage->update($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
         }
 
-        $servicesPage->update($data);
+        $this->imageUploadService->deleteMany($oldPaths);
         $servicesPage->refresh();
 
         return $servicesPage;

@@ -5,10 +5,15 @@ namespace App\Services;
 use App\Models\Blog;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class BlogService
 {
+    public function __construct(
+        private readonly ImageUploadService $imageUploadService
+    ) {
+    }
+
     public function listActiveBlogs(array $filters = []): Collection
     {
         return $this->orderedQuery()
@@ -34,16 +39,35 @@ class BlogService
 
     public function createBlog(array $validated, array $files = []): Blog
     {
-        $data = $this->prepareData($validated, $files);
+        $newPaths = [];
 
-        return Blog::query()->create($data);
+        try {
+            $data = $this->prepareData($validated, $files, newPaths: $newPaths);
+
+            return Blog::query()->create($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
+        }
     }
 
     public function updateBlog(Blog $blog, array $validated, array $files = []): Blog
     {
-        $data = $this->prepareData($validated, $files, $blog);
+        $newPaths = [];
+        $oldPaths = [];
 
-        $blog->update($data);
+        try {
+            $data = $this->prepareData($validated, $files, $blog, $newPaths, $oldPaths);
+
+            $blog->update($data);
+        } catch (Throwable $exception) {
+            $this->imageUploadService->deleteMany($newPaths);
+
+            throw $exception;
+        }
+
+        $this->imageUploadService->deleteMany($oldPaths);
         $blog->refresh();
 
         return $blog;
@@ -51,9 +75,7 @@ class BlogService
 
     public function deleteBlog(Blog $blog): void
     {
-        if ($blog->image_path) {
-            Storage::disk('public')->delete($blog->image_path);
-        }
+        $this->imageUploadService->delete($blog->image_path);
 
         $blog->delete();
     }
@@ -65,15 +87,21 @@ class BlogService
             ->orderBy('sort_order');
     }
 
-    private function prepareData(array $validated, array $files = [], ?Blog $blog = null): array
-    {
+    private function prepareData(
+        array $validated,
+        array $files = [],
+        ?Blog $blog = null,
+        array &$newPaths = [],
+        array &$oldPaths = [],
+    ): array {
         $data = Arr::except($validated, ['image']);
 
         if (isset($files['image'])) {
-            $newPath = $files['image']->store('blogs', 'public');
+            $newPath = $this->imageUploadService->store($files['image'], 'blogs', 'blog');
+            $newPaths[] = $newPath;
 
             if ($blog?->image_path) {
-                Storage::disk('public')->delete($blog->image_path);
+                $oldPaths[] = $blog->image_path;
             }
 
             $data['image_path'] = $newPath;
