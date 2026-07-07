@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Lock, Loader2, ArrowRight, AlertCircle } from "lucide-react";
+import { Mail, Lock, Loader2, ArrowRight, AlertCircle, EyeOff, Eye } from "lucide-react";
 import { fetchApi } from "@/lib/api";
 
 export default function LoginPage() {
@@ -12,7 +11,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
-
+  const [showPassword, setShowPassword] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -39,7 +38,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-950 p-6">
+    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-black/50 p-6">
       <div className="w-full max-w-md space-y-8 animate-in fade-in zoom-in duration-500">
         <div className="text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-500/20 mb-6">
@@ -48,7 +47,7 @@ export default function LoginPage() {
           <h1 className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">
             Welcome Back
           </h1>
-          <p className="text-neutral-500 dark:text-neutral-400 mt-2">
+          <p className="text-white mt-2">
             Enter your credentials to access your account
           </p>
         </div>
@@ -65,7 +64,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <label 
                 htmlFor="email" 
-                className="text-sm font-medium text-neutral-700 dark:text-neutral-300 ml-1"
+                className="text-sm font-medium text-white ml-1"
               >
                 Email Address
               </label>
@@ -90,16 +89,10 @@ export default function LoginPage() {
               <div className="flex items-center justify-between ml-1">
                 <label 
                   htmlFor="password" 
-                  className="text-sm font-medium text-neutral-700 dark:text-neutral-300"
+                  className="text-sm font-medium text-white "
                 >
                   Password
                 </label>
-                {/* <Link 
-                  href="#" 
-                  className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
-                >
-                  Forgot Password?
-                </Link> */}
               </div>
               <div className="relative group">
                 <Lock 
@@ -108,13 +101,21 @@ export default function LoginPage() {
                 />
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
                   className="w-full pl-12 pr-4 py-3 bg-neutral-100 dark:bg-neutral-900 border-2 border-transparent rounded-xl focus:border-indigo-500 focus:bg-white dark:focus:bg-neutral-950 outline-none transition-all text-neutral-900 dark:text-white"
                 />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-indigo-500 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
             </div>
           </div>

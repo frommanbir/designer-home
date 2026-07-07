@@ -62,7 +62,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->firstOrFail();
 
         // Revoke old tokens (single session) — remove if multi-device needed
-        $user->tokens()->delete();
+        // $user->tokens()->delete();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
