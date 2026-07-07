@@ -120,22 +120,31 @@ export default async function ProjectsPage({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  {project.gallery_image_urls
-                    ?.slice(0, 2)
-                    .map((url: string, i: number) => (
-                      <div
-                        key={i}
-                        className="relative rounded-[2.5rem] overflow-hidden shadow-2xl transition-transform duration-700 hover:scale-[1.02] aspect-[4/5]"
-                      >
-                        <Image
-                          src={url}
-                          alt={project.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ))}
+                <div
+                  className={`grid gap-4 ${
+                    project.gallery_image_urls?.length === 1
+                      ? "grid-cols-1 place-items-center"
+                      : "grid-cols-2"
+                  }`}
+                >
+                  {project.gallery_image_urls?.slice(0, 2).map((url: string, i: number) => (
+                    <div
+                      key={i}
+                      className={`relative overflow-hidden shadow-2xl transition-transform duration-700 hover:scale-[1.02]
+                        ${
+                          project.gallery_image_urls.length === 1
+                            ? "w-full max-w-[650px] aspect-[16/10] rounded-[2.5rem]"
+                            : "aspect-[4/5] rounded-[2.5rem]"
+                        }`}
+                    >
+                      <Image
+                        src={url}
+                        alt={project.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
 
                   {(!project.gallery_image_urls ||
                     project.gallery_image_urls.length === 0) && (
