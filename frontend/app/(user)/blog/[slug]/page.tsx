@@ -25,7 +25,7 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
         <header className="space-y-10 text-center mb-16">
           
           <div className="space-y-4">
-             <h1 className="text-5xl md:text-7xl font-black text-neutral-900 tracking-tighter uppercase leading-[0.9]">
+             <h1 className="text-gray-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-wider whitespace-pre-line">
                {blog.title}
              </h1>
           </div>

@@ -36,7 +36,7 @@ export default function BlogSlider({ blogs }: BlogSliderProps) {
   return (
     <div className="container mx-auto px-6 lg:px-24">
       <div className="flex flex-col md:flex-row justify-between items-center mb-12 md:mb-20 gap-8">
-        <h2 className="text-gray-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight whitespace-pre-line">
+        <h2 className="text-[#404040] text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight whitespace-pre-line">
           Latest Blog Updates
         </h2>
         <div className="hidden md:flex gap-4">

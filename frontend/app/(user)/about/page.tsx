@@ -45,7 +45,7 @@ export default async function AboutPage() {
       {/* Welcome */}
       <section className="max-w-7xl mx-auto py-20 px-6 text-center">
         <h2 className="text-4xl md:text-6xl text-gray-800 mb-10 tracking-tight leading-tight">
-          <span className="text-gray-900">
+          <span className="text-[#404040]">
             Welcome To <span className="font-extrabold">Designer Home</span>
           </span>
         </h2>
@@ -66,7 +66,7 @@ export default async function AboutPage() {
             />
           </div>
           <div className="lg:col-span-2 space-y-8">
-            <h2 className="text-gray-800 text-5xl md:text-5xl lg:text-5xl font-bold font-inter leading-tight whitespace-pre-line">
+            <h2 className="text-[#404040] text-5xl md:text-5xl lg:text-5xl font-bold font-inter leading-tight whitespace-pre-line">
               {main_about?.title || "Best Interior Design\nCompany in Nepal"}
             </h2>
             <div className="space-y-6 text-[#444] text-md leading-relaxed whitespace-pre-line text-justify">
