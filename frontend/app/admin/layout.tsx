@@ -5,6 +5,7 @@ import { Search, UserCircle, Menu } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import { Toaster } from "sonner";
 import { fetchApi } from "@/lib/api";
+import Image from "next/image";
 
 export default function AdminLayout({
   children,
@@ -76,9 +77,11 @@ export default function AdminLayout({
         <header className="h-16 border-b border-neutral-200/50 bg-[var(--background)]/80 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-4 lg:px-8">
           <div className="flex items-center gap-3">
             {logoUrl ? (
-              <img
+              <Image
                 src={logoUrl}
                 alt={websiteTitle}
+                width={32}
+                height={32}
                 className="w-8 h-8 rounded-lg object-contain shadow-sm"
               />
             ) : (

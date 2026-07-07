@@ -6,6 +6,7 @@ import { fetchApi } from "@/lib/api";
 import { FaSave, FaImage as ImageIcon, FaInfo, FaCheckCircle, FaStar, FaHandshake, FaListUl } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa";
 import { toast } from "sonner";
+import Image from "next/image";
 import AboutFeaturesManager from "@/components/admin/AboutFeaturesManager";
 
 function AboutPageContent() {
@@ -151,8 +152,7 @@ function AboutPageContent() {
                       <label className="block text-sm font-semibold text-neutral-900">Hero Image</label>
                       <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
                         {previews.hero_image ? (
-                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={previews.hero_image} alt="Hero" className="h-32 object-cover rounded-xl mb-4 shadow-sm" />
+                          <Image src={previews.hero_image} alt="Hero" width={300} height={128} unoptimized className="h-32 object-cover rounded-xl mb-4 shadow-sm" />
                         ) : (
                           <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
                             <ImageIcon size={24} />
@@ -217,8 +217,7 @@ function AboutPageContent() {
                       <label className="block text-sm font-semibold text-neutral-900">Main Content Image</label>
                       <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
                         {previews.main_image ? (
-                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={previews.main_image} alt="Main About" className="h-32 object-cover rounded-xl mb-4 shadow-sm" />
+                          <Image src={previews.main_image} alt="Main About" width={300} height={128} unoptimized className="h-32 object-cover rounded-xl mb-4 shadow-sm" />
                         ) : (
                           <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
                             <ImageIcon size={24} />

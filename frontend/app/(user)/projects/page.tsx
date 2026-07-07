@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getProjects, getProjectPageData } from "@/lib/projects";
 import { getProjectCategories } from "@/lib/project-categories";
 import { ProjectCategory } from "@/types/project-category";
@@ -42,10 +43,12 @@ export default async function ProjectsPage({
       <section className="relative h-[70vh] min-h-[700px] w-full overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <img
+          <Image
             src={pageHeroImage}
             alt={pageHeroTitle}
-            className="w-full h-full object-cover"
+            fill
+            priority
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-black/20" />
         </div>
@@ -125,10 +128,11 @@ export default async function ProjectsPage({
                         key={i}
                         className="relative rounded-[2.5rem] overflow-hidden shadow-2xl transition-transform duration-700 hover:scale-[1.02] aspect-[4/5]"
                       >
-                        <img
+                        <Image
                           src={url}
                           alt={project.title}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
                         />
                       </div>
                     ))}

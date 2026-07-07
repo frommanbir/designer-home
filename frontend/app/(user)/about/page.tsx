@@ -1,6 +1,7 @@
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
+import Image from "next/image";
 import { getAboutPageData } from "@/lib/about-page";
 
 const DEFAULT_FEATURES = [
@@ -28,10 +29,13 @@ export default async function AboutPage() {
       <section className="relative h-[70vh] min-h-[700px] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/40 z-10" />
-          <img
+          <Image
             src={hero?.image?.url || "/images/about-home.png"}
             alt="About Designer Home"
-            className="w-full h-full object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
           />
         </div>
         <div className="relative z-20 flex flex-col items-center text-center px-6 animate-in fade-in slide-in-from-bottom-10 duration-[1500ms]">
@@ -57,12 +61,14 @@ export default async function AboutPage() {
       {/* Best Interior Design Company */}
       <section className="bg-[#F9F9F9] py-6 px-6">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-16 items-center">
-          <div className="lg:col-span-1 relative group">
+          <div className="lg:col-span-1 relative group h-[500px]">
             <div className="absolute -inset-4 rounded-[2rem] transform group-hover:scale-105 transition-transform duration-500" />
-            <img
+            <Image
               src={main_about?.image?.url || "/images/about-company.jpg"}
               alt="Our Work"
-              className="relative rounded-[1.5rem] w-full h-[500px] object-cover shadow-2xl z-0"
+              fill
+              sizes="(max-width: 1024px) 100vw, 33vw"
+              className="rounded-[1.5rem] object-cover shadow-2xl z-0"
             />
           </div>
           <div className="lg:col-span-2 space-y-8">

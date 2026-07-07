@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Image from "next/image";
 import { getServiceBySlug, getServicesPageData } from "@/lib/services";
 import { serverFetch } from "@/lib/server-api";
 import { Check } from "lucide-react";
@@ -53,13 +54,16 @@ const ServiceDetailPage = async ({
       <section className="relative h-[70vh] min-h-[700px] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/30 z-10" />
-          <img
+          <Image
             src={
               (servicesPage as any)?.hero?.image?.url ||
               "/images/about-home.png"
             }
             alt="Designer Home Services Hero"
-            className="w-full h-full object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
           />
         </div>
 
@@ -98,9 +102,12 @@ const ServiceDetailPage = async ({
 
           {/* Service Primary Image (Big & Centered) */}
           <div className="max-w-6xl mx-auto overflow-hidden rounded-2xl shadow-[0_30px_100px_-20px_rgba(0,0,0,0.15)] ring-1 ring-neutral-100">
-            <img
+            <Image
               src={primaryImage}
               alt={service.title}
+              width={1200}
+              height={675}
+              sizes="(max-width: 1200px) 100vw, 1200px"
               className="w-full h-auto object-cover max-h-[600px]"
             />
           </div>
@@ -123,10 +130,12 @@ const ServiceDetailPage = async ({
                     <div className="absolute -inset-4 bg-[#C59D5F]/5 rounded-[2.5rem] rotate-1 group-hover:rotate-0 transition-transform duration-700" />
                     {wc.image?.url ? (
                       <div className="relative overflow-hidden rounded-2xl shadow-xl aspect-[4/3] lg:aspect-square">
-                        <img
+                        <Image
                           src={wc.image.url}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                           alt="Why Choose"
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 50vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-700"
                         />
                       </div>
                     ) : (

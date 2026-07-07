@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { getBlogs, getBlogPageData } from "@/lib/blogs";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -21,10 +22,13 @@ const BlogListPage = async () => {
       <section className="relative h-[70vh] min-h-[700px] w-full overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <img
+          <Image
             src={pageHeroImage}
             alt={pageHeroTitle}
-            className="w-full h-full object-cover"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-black/30" />
         </div>
@@ -66,10 +70,12 @@ const BlogListPage = async () => {
                 className={`group block space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-${idx * 100}`}
               >
                 <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-neutral-100 shadow-xl transition-transform duration-700 group-hover:scale-[1.02]">
-                  <img 
+                  <Image 
                     src={blog.image_url || "/images/placeholder.jpg"} 
                     alt={blog.title}
-                    className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-[2s] group-hover:scale-110"
                   />
                   <div className="absolute top-8 left-8 px-4 py-2 bg-white/90 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest text-gray-900 shadow-sm transform -translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
                     {new Date(blog.published_date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}

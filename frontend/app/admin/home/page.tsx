@@ -7,6 +7,7 @@ import {
   FaSave, FaImage as ImageIcon, FaInfo, FaStar, FaSpinner 
 } from "react-icons/fa";
 import { toast } from "sonner";
+import Image from "next/image";
 
 function HomePageContent() {
   const searchParams = useSearchParams();
@@ -205,7 +206,9 @@ function HomePageContent() {
                     <label className="block text-sm font-semibold text-neutral-900">Background Image</label>
                     <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl bg-neutral-50 hover:bg-neutral-100/50 transition-colors">
                       {previews.hero_image ? (
-                        <img src={previews.hero_image} alt="Hero Background" className="max-h-96 object-cover rounded-xl mb-4 shadow-sm" />
+                        <div className="relative w-full h-[300px] border border-neutral-100 rounded-xl overflow-hidden mb-4">
+                          <Image src={previews.hero_image} alt="Hero Background" fill sizes="400px" unoptimized className="object-cover rounded-xl shadow-sm" />
+                        </div>
                       ) : (
                         <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
                           <ImageIcon size={24} />
@@ -309,7 +312,9 @@ function HomePageContent() {
                       <label className="block text-sm font-semibold text-neutral-900">Section Showcase Image</label>
                       <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl bg-neutral-50 hover:bg-neutral-100/50 transition-colors">
                         {previews.section2_image ? (
-                          <img src={previews.section2_image} alt="Showcase" className="max-h-72 object-cover rounded-xl mb-4 shadow-sm" />
+                          <div className="relative w-full h-[258px] border border-neutral-100 rounded-xl overflow-hidden mb-4">
+                            <Image src={previews.section2_image} alt="Showcase" fill sizes="400px" unoptimized className="object-cover rounded-xl shadow-sm" />
+                          </div>
                         ) : (
                           <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
                             <ImageIcon size={24} />
@@ -443,7 +448,9 @@ function HomePageContent() {
                       <label className="block text-sm font-semibold text-neutral-900">Proposition Showcase Image</label>
                       <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl bg-neutral-50 hover:bg-neutral-100/50 transition-colors">
                         {previews.section3_image ? (
-                          <img src={previews.section3_image} alt="Proposition" className="max-h-72 object-cover rounded-xl mb-4 shadow-sm" />
+                          <div className="relative w-full h-[258px] border border-neutral-100 rounded-xl overflow-hidden mb-4">
+                            <Image src={previews.section3_image} alt="Proposition" fill sizes="400px" unoptimized className="object-cover rounded-xl shadow-sm" />
+                          </div>
                         ) : (
                           <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
                             <ImageIcon size={24} />

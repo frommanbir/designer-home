@@ -20,6 +20,7 @@ import {
 import { ProjectCategory } from "@/types/project-category";
 import { toast } from "sonner";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function ProjectCategoriesPage() {
   const [categories, setCategories] = useState<ProjectCategory[]>([]);
@@ -286,8 +287,8 @@ export default function ProjectCategoriesPage() {
                     <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Hero Image</label>
                     <div className="flex items-center gap-4">
                       {heroImagePreview && (
-                        <div className="w-12 h-12 rounded-lg bg-neutral-100 overflow-hidden border border-neutral-200 flex-shrink-0">
-                          <img src={heroImagePreview} className="w-full h-full object-cover" />
+                        <div className="w-12 h-12 rounded-lg bg-neutral-100 overflow-hidden border border-neutral-200 flex-shrink-0 relative">
+                          <Image src={heroImagePreview} alt="Hero preview" fill sizes="48px" unoptimized className="object-cover" />
                         </div>
                       )}
                       <input 

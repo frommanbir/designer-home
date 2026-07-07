@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Blog {
   id: number;
@@ -59,10 +60,12 @@ export default function BlogSlider({ blogs }: BlogSliderProps) {
         {visibleBlogs.length > 0 ? visibleBlogs.map((blog: any) => (
           <Link key={blog.id} href={`/blog/${blog.slug}`} className="group flex flex-col space-y-10 animate-in fade-in slide-in-from-right-5 transition-all duration-500 cursor-pointer">
             <div className="h-[480px] rounded-[30px] overflow-hidden relative shadow-2xl ring-1 ring-black/5">
-              <img
+              <Image
                 src={blog.featured_image_url || "/images/trunky.png"}
                 alt={blog.title}
-                className="w-full h-full object-cover transition-transform duration-[2.5s] group-hover:scale-110"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover transition-transform duration-[2.5s] group-hover:scale-110"
               />
               <div className="absolute top-10 right-10 w-14 h-14 bg-white/95 backdrop-blur rounded-full flex items-center justify-center text-black border border-black/5 shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-700 scale-0 group-hover:scale-100 hover:bg-[#C59D5F] hover:text-white">
                 <ArrowRight size={26} className="-rotate-45" />

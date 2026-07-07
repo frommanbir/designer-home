@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, X, Maximize2 } from "lucide-react";
+import Image from "next/image";
 
 interface ProjectGalleryProps {
   images: string[];
@@ -90,10 +91,12 @@ export default function ProjectGallery({ images, title }: ProjectGalleryProps) {
                   className="relative aspect-[3/4] rounded-[2.5rem] overflow-hidden bg-neutral-200 cursor-pointer shadow-xl group/item"
                   onClick={() => openFullscreen(idx)}
                 >
-                  <img
+                  <Image
                     src={url}
                     alt={`${title} - Gallery ${idx + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover/item:scale-110"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-1000 group-hover/item:scale-110"
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover/item:bg-black/20 transition-all duration-500 flex items-center justify-center">
                     <div className="bg-white/20 backdrop-blur-md p-5 rounded-full opacity-0 group-hover/item:opacity-100 transition-all scale-75 group-hover/item:scale-100 border border-white/30">
@@ -153,11 +156,13 @@ export default function ProjectGallery({ images, title }: ProjectGalleryProps) {
           )}
 
           <div className="relative max-w-full max-h-full flex flex-col items-center gap-8">
-            <div className="relative group/light">
-                <img
+            <div className="relative group/light w-screen h-[80vh] max-w-5xl">
+                <Image
                   src={images[fullscreenIndex]}
                   alt={title}
-                  className="max-w-full max-h-[80vh] object-contain shadow-[0_0_100px_rgba(0,0,0,0.5)] rounded-2xl animate-in zoom-in-95 duration-500"
+                  fill
+                  sizes="100vw"
+                  className="object-contain shadow-[0_0_100px_rgba(0,0,0,0.5)] rounded-2xl animate-in zoom-in-95 duration-500"
                   onClick={(e) => e.stopPropagation()}
                 />
             </div>
