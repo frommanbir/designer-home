@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from "react";
 import { Search, UserCircle, Menu } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import { Toaster } from "sonner";
+import { fetchApi } from "@/lib/api";
 
 export default function AdminLayout({
   children,
@@ -11,6 +12,9 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [logoUrl, setLogoUrl] = useState<string>("");
+  const [websiteTitle, setWebsiteTitle] = useState<string>("Designer Home");
+  const [faviconUrl, setFaviconUrl] = useState<string>("/favicon.ico");
 
   // Close sidebar by default on mobile, open on desktop
   useEffect(() => {
@@ -21,6 +25,40 @@ export default function AdminLayout({
     window.addEventListener('resize', checkScreenSize);
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  useEffect(() => {
+    fetchApi("/site-settings")
+      .then((res) => {
+        if (res.success && res.data) {
+          const branding = res.data.branding;
+          if (branding?.favicon_url) {
+            setFaviconUrl(branding.favicon_url);
+          }
+          if (branding?.logo_url) {
+            setLogoUrl(branding.logo_url);
+          }
+          if (branding?.website_title) {
+            setWebsiteTitle(branding.website_title);
+          }
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch settings in admin layout:", err);
+      });
+  }, []);
+
+  // Update favicon in head
+  useEffect(() => {
+    if (!faviconUrl) return;
+    const link: HTMLLinkElement =
+      document.querySelector("link[rel*='icon']") || document.createElement("link");
+    link.type = "image/x-icon";
+    link.rel = "shortcut icon";
+    link.href = faviconUrl;
+    if (!document.querySelector("link[rel*='icon']")) {
+      document.head.appendChild(link);
+    }
+  }, [faviconUrl]);
 
   return (
     <div className="flex min-h-screen admin-theme font-sans">
@@ -37,11 +75,19 @@ export default function AdminLayout({
         {/* Header */}
         <header className="h-16 border-b border-neutral-200/50 bg-[var(--background)]/80 backdrop-blur-md sticky top-0 z-40 flex items-center justify-between px-4 lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center text-white font-bold shadow-sm">
-              D
-            </div>
+            {logoUrl ? (
+              <img
+                src={logoUrl}
+                alt={websiteTitle}
+                className="w-8 h-8 rounded-lg object-contain shadow-sm"
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-lg bg-black flex items-center justify-center text-white font-bold shadow-sm">
+                {websiteTitle.substring(0, 2)}
+              </div>
+            )}
             <span className="font-bold text-lg tracking-tight text-neutral-900 hidden sm:block">
-              Designer Home
+              {websiteTitle}
             </span>
           </div>
           

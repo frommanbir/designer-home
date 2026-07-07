@@ -35,7 +35,7 @@ export default function TestimonialsSlider({ ratings }: TestimonialsSliderProps)
   return (
     <div className="container mx-auto px-6 lg:px-24 relative z-10">
       <div className="flex flex-col md:flex-row justify-between items-center mb-24 gap-12">
-        <h2 className="text-white text-5xl md:text-7xl font-bold font-inter leading-tight tracking-tight">
+        <h2 className="text-white text-5xl md:text-6xl font-bold font-inter leading-tight tracking-tight">
           What Our Customer Says
         </h2>
         <div className="flex gap-4">

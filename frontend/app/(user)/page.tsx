@@ -74,7 +74,7 @@ export default async function HomePage() {
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start mt-6">
             {/* Left Content */}
             <div className="space-y-8 lg:space-y-10 text-left flex flex-col items-start order-2 lg:order-1">
-              <h2 className="text-neutral-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight whitespace-pre-line">
+              <h2 className="text-gray-700 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight whitespace-pre-line">
                 {homePageData.section2_title || "Designing Spaces \n That inspire Living"}
               </h2>
               <div className="space-y-6 flex flex-col items-start">
@@ -96,7 +96,7 @@ export default async function HomePage() {
                 </Link>
                 <Link
                   href={homePageData.section2_btn_projects_link || "/portfolio"}
-                  className="px-10 py-4 border border-zinc-300 text-zinc-800 font-semibold rounded-full hover:bg-zinc-50 transition-all shadow-sm text-sm sm:text-base"
+                  className="px-10 py-4 border border-zinc-300 text-zinc-800 font-semibold hover:bg-gray-500 rounded-full hover:bg-zinc-50 transition-all shadow-sm text-sm sm:text-base"
                 >
                   {homePageData.section2_btn_projects_text || "Explore Our Projects"}
                 </Link>
@@ -139,21 +139,21 @@ export default async function HomePage() {
               <div className="grid grid-cols-3 gap-4 sm:gap-8 mt-12">
                 <div>
                   <h3 className="text-4xl sm:text-5xl font-black">{homePageData.section3_stat1_value || "200+"}</h3>
-                  <p className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500">
+                  <p className="text-[10px] sm:text-xs uppercase tracking-widest text-gray-900">
                     {homePageData.section3_stat1_label || "Our Expertise"}
                   </p>
                 </div>
 
                 <div>
                   <h3 className="text-4xl sm:text-5xl font-black">{homePageData.section3_stat2_value || "400+"}</h3>
-                  <p className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500">
+                  <p className="text-[10px] sm:text-xs uppercase tracking-widest text-gray-900">
                     {homePageData.section3_stat2_label || "Projects"}
                   </p>
                 </div>
 
                 <div>
                   <h3 className="text-4xl sm:text-5xl font-black">{homePageData.section3_stat3_value || "4.5"}</h3>
-                  <p className="text-[10px] sm:text-xs uppercase tracking-widest text-neutral-500">
+                  <p className="text-[10px] sm:text-xs uppercase tracking-widest text-gray-900">
                     {homePageData.section3_stat3_label || "Out of 5.0"}
                   </p>
                 </div>
@@ -162,7 +162,7 @@ export default async function HomePage() {
               <div className="mt-12">
                 <Link
                   href={homePageData.section3_btn_link || "/about"}
-                  className="px-12 py-3 bg-zinc-500 text-white text-xs font-bold rounded-full hover:bg-zinc-700 transition-all uppercase tracking-[0.2em]"
+                  className="px-10 py-4 bg-zinc-600 text-white font-semibold rounded-full hover:bg-neutral-700 transition-all transform hover:-translate-y-1 shadow-lg text-sm sm:text-base"
                 >
                   {homePageData.section3_btn_text || "Learn More"}
                 </Link>
@@ -177,7 +177,7 @@ export default async function HomePage() {
         <div className="container mx-auto px-6 lg:px-24">
           {/* Header: Title Left, Description Right */}
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 mb-20 animate-in fade-in slide-in-from-bottom-6 duration-1000">
-            <h2 className="text-neutral-900 text-3xl md:text-4xl lg:text-6xl font-black tracking-tight leading-tight max-w-4xl">
+            <h2 className="text-gray-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight whitespace-pre-line">
               Complete Design <br /> Solutions Under One Roof
             </h2>
             <p className="text-neutral-500 text-sm md:text-base font-baumans font-medium leading-relaxed max-w-lg lg:text-left">
@@ -239,7 +239,7 @@ export default async function HomePage() {
       <section className="py-32 bg-white overflow-hidden relative">
         <div className="container mx-auto px-6 lg:px-24">
           <div className="flex justify-between items-center mb-20">
-            <h2 className="text-neutral-900 text-4xl md:text-5xl font-extrabold uppercase tracking-tight">
+            <h2 className="text-gray-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight whitespace-pre-line">
               Our Process
             </h2>
           </div>
@@ -288,14 +288,14 @@ export default async function HomePage() {
       <section className="py-6 md:py-16 bg-zinc-100">
         <div className="container mx-auto px-6 lg:px-24">
           <div className="flex flex-col md:flex-row justify-between items-center mb-20 gap-8">
-            <h2 className="text-neutral-800 text-4xl md:text-5xl font-extrabold font-inter uppercase tracking-tighter">
+            <h2 className="text-gray-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight whitespace-pre-line">
               Our Projects
             </h2>
             <div className="flex gap-4">
               <button className="w-12 h-12 rounded-full border border-neutral-100 flex items-center justify-center text-neutral-300 hover:border-black hover:text-black transition-all shadow-sm">
                 <MoveRight size={24} className="rotate-180" />
               </button>
-              <button className="w-12 h-12 rounded-full bg-[#C59D5F] flex items-center justify-center text-white shadow-lg hover:bg-neutral-800 transition-all">
+              <button className="w-12 h-12 rounded-full bg-gray-500 flex items-center justify-center text-white shadow-lg hover:bg-neutral-900 transition-all">
                 <MoveRight size={24} />
               </button>
             </div>
@@ -328,7 +328,7 @@ export default async function HomePage() {
                         </div>
                       </div>
                       <div className="space-y-4 px-4">
-                        <h3 className="text-neutral-800 text-3xl font-black font-inter group-hover:text-[#C59D5F] transition-colors">
+                        <h3 className="text-gray-600 text-3xl font-black font-inter group-hover:text-gray-900 transition-colors">
                           {project.title}
                         </h3>
                         <p className="text-neutral-500 text-lg leading-relaxed max-w-md italic border-l-2 border-neutral-100 pl-4">

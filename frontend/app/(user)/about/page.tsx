@@ -44,12 +44,12 @@ export default async function AboutPage() {
 
       {/* Welcome */}
       <section className="max-w-7xl mx-auto py-20 px-6 text-center">
-        <h2 className="text-4xl md:text-6xl text-[#333] mb-10 tracking-tight leading-tight">
-          <span className="text-[#222]">
+        <h2 className="text-4xl md:text-6xl text-gray-800 mb-10 tracking-tight leading-tight">
+          <span className="text-gray-900">
             Welcome To <span className="font-extrabold">Designer Home</span>
           </span>
         </h2>
-        <p className="text-lg md:text-xl text-[#555] leading-relaxed w-7xl mx-auto whitespace-pre-line text-center">
+        <p className="text-lg md:text-xl text-neutral-500 leading-relaxed w-7xl mx-auto whitespace-pre-line text-center">
           Established in 2016, we distill your ideas and tastes into designs that perfectly suit your space. As pioneers in customized design, we offer a wide array of services—from initial conceptualization and 3d modeling to full execution and site supervision. With our uncompromising commitment to quality assurance, Designer Home is your one-stop solution from concept to completion.
         </p>
       </section>
@@ -66,7 +66,7 @@ export default async function AboutPage() {
             />
           </div>
           <div className="lg:col-span-2 space-y-8">
-            <h2 className="text-4xl md:text-5xl font-black text-[#222] leading-[1.1] tracking-tight whitespace-pre-line">
+            <h2 className="text-gray-800 text-5xl md:text-5xl lg:text-5xl font-bold font-inter leading-tight whitespace-pre-line">
               {main_about?.title || "Best Interior Design\nCompany in Nepal"}
             </h2>
             <div className="space-y-6 text-[#444] text-md leading-relaxed whitespace-pre-line text-justify">
@@ -78,7 +78,7 @@ export default async function AboutPage() {
 
       {/* Why Choose Us */}
       <section className="max-w-7xl mx-auto py-10 px-6">
-        <h2 className="text-5xl font-black text-[#222] mb-6 tracking-tight uppercase">
+        <h2 className="text-5xl font-black text-gray-800 mb-6 tracking-tight uppercase">
           WHY CHOOSE US
         </h2>
         <div className="grid md:grid-cols-2 gap-x-12 gap-y-16">

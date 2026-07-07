@@ -551,7 +551,7 @@ function BlogsAdminContent() {
                   <span className="font-bold text-neutral-700 group-hover:text-black">Publicly Visible</span>
                 </label>
                 
-                <div className="flex items-center gap-3">
+                {/* <div className="flex items-center gap-3">
                   <span className="text-xs font-bold text-neutral-400 uppercase tracking-widest">Priority (Sort Order)</span>
                   <input 
                     type="number"
@@ -559,7 +559,7 @@ function BlogsAdminContent() {
                     onChange={(e) => setCurrentBlog(prev => ({ ...prev, sort_order: parseInt(e.target.value) }))}
                     className="w-20 px-3 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg text-sm"
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="flex gap-4 pt-6 pb-2">

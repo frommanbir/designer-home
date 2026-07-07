@@ -692,10 +692,10 @@ function ServicesAdminContent() {
                   <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Subtitle (Tagline)</label>
                   <input type="text" value={currentService.subtitle || ""} onChange={e => setCurrentService(prev => ({ ...prev, subtitle: e.target.value }))} className="w-full px-5 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl outline-none focus:border-black transition-all" placeholder="Enter service subtitle..." />
                 </div>
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Short Summary</label>
                   <textarea rows={2} value={currentService.short_description || ""} onChange={e => setCurrentService(prev => ({ ...prev, short_description: e.target.value }))} className="w-full px-5 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl outline-none focus:border-black transition-all resize-none" />
-                </div>
+                </div> */}
                 <div className="space-y-2">
                   <label className="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Full Narrative Description</label>
                   <textarea rows={5} value={currentService.description || ""} onChange={e => setCurrentService(prev => ({ ...prev, description: e.target.value }))} className="w-full px-5 py-3 bg-neutral-50 border border-neutral-200 rounded-2xl outline-none focus:border-black transition-all resize-none" />

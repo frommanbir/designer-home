@@ -26,7 +26,6 @@ export default function PortfolioList({ portfolios }: PortfolioListProps) {
       <div className="flex flex-col gap-20">
         {portfolios.map((item: any, idx: number) => {
           const hasDescription = !!item.short_description && item.short_description.trim() !== "";
-          const hasTitleAndDescription = !!item.title && hasDescription;
           const imageUrl = item.main_image_url || item.gallery_image_urls?.[0] || "/images/about-home.png";
 
           return (
@@ -50,11 +49,8 @@ export default function PortfolioList({ portfolios }: PortfolioListProps) {
                 />
 
                 {/* Overlay Style Card (Shown on hover, aligned to the left) */}
-                {hasTitleAndDescription && (
-                  <div className="absolute inset-0 md:right-auto md:w-[600px] bg-neutral-900/90 flex flex-col justify-center px-8 sm:px-12 md:px-20 space-y-4 md:space-y-8 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out pointer-events-none">
-                    <h3 className="text-white text-2xl sm:text-3xl md:text-5xl font-semibold font-inter leading-tight">
-                      {item.title}
-                    </h3>
+                {hasDescription && (
+                  <div className="absolute inset-0 md:right-auto md:w-[600px] bg-neutral-900/50 flex flex-col justify-center px-8 sm:px-12 md:px-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-in-out pointer-events-none">
                     <p className="text-white/85 text-xs sm:text-sm md:text-base font-medium leading-relaxed">
                       {item.short_description}
                     </p>
@@ -62,10 +58,10 @@ export default function PortfolioList({ portfolios }: PortfolioListProps) {
                 )}
               </div>
 
-              {/* Standard Style Title Below (Only if no description is given, visible permanently) */}
-              {!hasDescription && item.title && (
-                <div className="mt-6 md:mt-12 text-center max-w-3xl mx-auto space-y-4">
-                  <h3 className="text-neutral-700 text-2xl sm:text-3xl md:text-5xl font-semibold font-inter">
+              {/* Title Below (Visible permanently, small and hugging the image) */}
+              {item.title && (
+                <div className="mt-3 px-2">
+                  <h3 className="text-neutral-700 text-xs sm:text-sm font-semibold font-inter uppercase tracking-wider">
                     {item.title}
                   </h3>
                 </div>
@@ -78,7 +74,7 @@ export default function PortfolioList({ portfolios }: PortfolioListProps) {
       {/* Lightbox */}
       {fullscreenImage && (
         <div 
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-6 animate-in fade-in duration-500"
+          className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-md flex items-center justify-center p-6 animate-in fade-in duration-500"
           onClick={closeFullscreen}
         >
           <button

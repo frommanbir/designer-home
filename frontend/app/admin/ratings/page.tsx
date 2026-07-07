@@ -357,7 +357,7 @@ export default function RatingsAdminPage() {
                     <span className="text-sm font-semibold text-neutral-700 group-hover:text-black">Publicly Visible</span>
                   </label>
 
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <label className="text-xs font-bold text-neutral-500 uppercase tracking-widest">Display Order</label>
                     <input 
                       type="number"
@@ -366,7 +366,7 @@ export default function RatingsAdminPage() {
                       onChange={(e) => setCurrentRating(prev => ({ ...prev, sort_order: parseInt(e.target.value) || 0 }))}
                       className="w-20 px-3 py-1.5 bg-neutral-50 border border-neutral-200 rounded-lg outline-none focus:border-black transition-all text-sm text-center"
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

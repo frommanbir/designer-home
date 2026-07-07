@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Baumans } from "next/font/google";
 import "./globals.css";
+import { getSiteSettings } from "@/lib/site-settings";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -14,10 +15,23 @@ const baumans = Baumans({
   weight: ["400"],
 });
 
-export const metadata: Metadata = {
-  title: "Designer Home",
-  description: "Crafting beautiful spaces",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const faviconUrl = settings?.branding?.favicon_url || "/favicon.ico";
+  const siteTitle = settings?.branding?.website_title || "Designer Home";
+  const siteSlogan = settings?.branding?.website_slogan || "Crafting beautiful spaces";
+
+  return {
+    title: {
+      default: siteTitle,
+      template: `%s | ${siteTitle}`,
+    },
+    description: siteSlogan,
+    icons: {
+      icon: faviconUrl,
+    },
+  };
+}
 
 export default function RootLayout({
   children,

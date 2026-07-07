@@ -36,7 +36,7 @@ export default function BlogSlider({ blogs }: BlogSliderProps) {
   return (
     <div className="container mx-auto px-6 lg:px-24">
       <div className="flex flex-col md:flex-row justify-between items-center mb-12 md:mb-20 gap-8">
-        <h2 className="text-neutral-800 text-3xl md:text-4xl lg:text-5xl font-black font-inter py-2 uppercase tracking-tighter group cursor-default">
+        <h2 className="text-gray-800 text-5xl md:text-5xl lg:text-6xl font-bold font-inter leading-tight whitespace-pre-line">
           Latest Blog Updates
         </h2>
         <div className="hidden md:flex gap-4">
@@ -48,7 +48,7 @@ export default function BlogSlider({ blogs }: BlogSliderProps) {
           </button>
           <button 
             onClick={next}
-            className="w-12 h-12 rounded-full bg-[#111] flex items-center justify-center text-white shadow-lg hover:bg-[#C59D5F] transition-all"
+            className="w-12 h-12 rounded-full bg-gray-600 flex items-center justify-center text-white shadow-lg hover:bg-gray-900 transition-all"
           >
             <ChevronRight size={24} />
           </button>
@@ -69,11 +69,7 @@ export default function BlogSlider({ blogs }: BlogSliderProps) {
               </div>
             </div>
             <div className="space-y-6 px-4 group-hover:translate-x-2 transition-transform duration-500">
-              <div className="flex items-center gap-3">
-                <span className="text-[#C59D5F] text-[10px] font-black uppercase tracking-widest border border-[#C59D5F]/20 px-3 py-1 rounded-full">Article</span>
-                <span className="text-neutral-300 text-[10px] uppercase font-bold tracking-widest">5 min read</span>
-              </div>
-              <h3 className="text-neutral-900 text-3xl font-black font-inter group-hover:text-[#C59D5F] transition-colors line-clamp-1 leading-tight">
+              <h3 className="text-gray-600 text-3xl font-black font-inter group-hover:text-gray-900 transition-colors line-clamp-1 leading-tight">
                 {blog.title}
               </h3>
               <p className="text-neutral-500 text-lg leading-relaxed line-clamp-2 opacity-80 group-hover:opacity-100 transition-opacity text-justify">

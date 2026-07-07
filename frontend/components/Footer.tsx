@@ -13,23 +13,21 @@ const Footer = ({ settings }: { settings?: any }) => {
   return (
     <footer className="bg-black/90 text-white pt-10 border-t border-white/10">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16">
-        <div className="space-y-8 lg:col-span-3">
-          <div className="flex items-center gap-4">
+        <div className="space-y-8 lg:col-span-3 flex flex-col items-center text-center">
+          <div className="flex justify-center w-full">
             {logoUrl ? (
               <img
                 src={logoUrl}
-                // alt={siteName}
-                className="h-12 w-auto object-contain"
+                alt="Designer Home"
+                className="h-24 md:h-28 w-auto object-contain"
               />
             ) : (
-              <div className="w-12 h-12 bg-[#C59D5F] flex items-center justify-center rounded-sm">
-                <span className="text-white font-bold text-3xl italic">H</span>
+              <div className="w-24 h-24 bg-[#C59D5F] flex items-center justify-center rounded-sm">
+                <span className="text-white font-bold text-5xl italic">H</span>
               </div>
             )}
-            <span className="text-white font-bold text-xl tracking-wider uppercase font-inter">
-              {/* {siteName} */}
-            </span>
           </div>
+
           <p className="text-white/60 leading-relaxed text-sm max-w-xs font-inter">
             {settings?.branding?.website_slogan ||
               "Building beautiful and functional spaces that reflect your unique vision and lifestyle since 2016."}

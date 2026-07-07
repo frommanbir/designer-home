@@ -152,7 +152,7 @@ const Navbar = ({ transparent = true, settings }: { transparent?: boolean; setti
               </button>
             </div>
             
-            <div className="flex flex-col gap-5 text-sm font-bold tracking-widest overflow-y-auto pr-1">
+            <div className="flex flex-col gap-5 text-sm tracking-widest overflow-y-auto pr-1">
               <Link href="/" className="text-neutral-800 hover:text-[#C59D5F] transition-colors py-2 border-b border-neutral-50" onClick={() => setMobileMenuOpen(false)}>HOME</Link>
               <Link href="/about" className="text-neutral-800 hover:text-[#C59D5F] transition-colors py-2 border-b border-neutral-50" onClick={() => setMobileMenuOpen(false)}>ABOUT</Link>
               

@@ -39,7 +39,7 @@ export default async function ProjectDetailPage({
       {/* Project Header */}
       <section className="max-w-7xl mx-auto pt-24 px-6 animate-in fade-in slide-in-from-bottom-5 duration-700">  
         <div className="space-y-6">
-          <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-neutral-900 text-center tracking-tighter uppercase leading-[0.9]">
+          <h1 className="text-4xl sm:text-6xl md:text-8xl font-black text-gray-700 text-center tracking-tighter uppercase leading-[0.9]">
             {project.title}
           </h1>
           {project.subtitle && (

@@ -14,24 +14,30 @@ async function getSiteSettings() {
   try {
     const res = await serverFetch("/site-settings");
     return res.data ?? {};
-  } catch { return {}; }
+  } catch {
+    return {};
+  }
 }
 
 function normalizeWhyChoose(wc: any): ServiceWhyChoose[] {
   if (!wc) return [];
   if (Array.isArray(wc)) return wc.filter(Boolean);
-  if (wc.title || wc.description || (wc.points?.length)) return [wc];
+  if (wc.title || wc.description || wc.points?.length) return [wc];
   return [];
 }
 
-const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
+const ServiceDetailPage = async ({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) => {
   const { slug } = await params;
 
   // Parallel fetch: Current service, site settings, and services page hero
   const [service, settings, servicesPage] = await Promise.all([
     getServiceBySlug(slug).catch(() => null),
     getSiteSettings(),
-    getServicesPageData().catch(() => ({}))
+    getServicesPageData().catch(() => ({})),
   ]);
 
   if (!service) return notFound();
@@ -48,15 +54,19 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/30 z-10" />
           <img
-            src={(servicesPage as any)?.hero?.image?.url || "/images/about-home.png"}
+            src={
+              (servicesPage as any)?.hero?.image?.url ||
+              "/images/about-home.png"
+            }
             alt="Designer Home Services Hero"
             className="w-full h-full object-cover"
           />
         </div>
 
         <div className="absolute bottom-0 z-20 left-0 w-full px-6">
-          <h1 className="text-white text-5xl md:text-7xl leading-tight">
-            {(servicesPage as any)?.hero?.title || "Creating Spaces Without Compromise"}
+          <h1 className="text-white text-5xl md:text-7xl font-light tracking-tight leading-[0.95] max-w-5xl">
+            {(servicesPage as any)?.hero?.title ||
+              "Creating Spaces Without Compromise"}
           </h1>
           <div className="mt-6 h-[3px] w-full max-w-[500px] bg-white"></div>
         </div>
@@ -65,10 +75,9 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
       {/* ── 2. Main Content (Single Column, Centered) ── */}
       <main className="bg-white py-24 px-6 lg:px-12">
         <div className="max-w-6xl mx-auto space-y-16 lg:space-y-24">
-          
           {/* Header Section (Centered) */}
           <div className="text-center space-y-4">
-            <h1 className="text-neutral-900 text-4xl md:text-6xl font-black uppercase tracking-tight">
+            <h1 className="text-gray-700 text-4xl md:text-6xl font-black uppercase tracking-wider">
               {service.title}
             </h1>
             {service.subtitle && (
@@ -100,27 +109,41 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
           {whyChooseSections.map((wc, idx) => {
             const isEven = idx % 2 === 0;
             return (
-              <section key={idx} className="bg-neutral-50/50 rounded-[3rem] p-10 lg:p-20 group">
-                <div className={`grid lg:grid-cols-2 gap-12 lg:gap-24 items-center ${!isEven ? 'lg:direction-rtl' : ''}`}>
-                  
+              <section
+                key={idx}
+                className="bg-neutral-50/50 rounded-[3rem] p-10 lg:p-20 group"
+              >
+                <div
+                  className={`grid lg:grid-cols-2 gap-12 lg:gap-24 items-center ${!isEven ? "lg:direction-rtl" : ""}`}
+                >
                   {/* Section Image */}
-                  <div className={`relative ${!isEven ? 'lg:order-2' : 'lg:order-1'}`}>
+                  <div
+                    className={`relative ${!isEven ? "lg:order-2" : "lg:order-1"}`}
+                  >
                     <div className="absolute -inset-4 bg-[#C59D5F]/5 rounded-[2.5rem] rotate-1 group-hover:rotate-0 transition-transform duration-700" />
                     {wc.image?.url ? (
                       <div className="relative overflow-hidden rounded-2xl shadow-xl aspect-[4/3] lg:aspect-square">
-                        <img src={wc.image.url} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Why Choose" />
+                        <img
+                          src={wc.image.url}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                          alt="Why Choose"
+                        />
                       </div>
                     ) : (
                       <div className="relative h-[400px] bg-white rounded-2xl border border-neutral-100 flex items-center justify-center">
-                        <span className="text-[#C59D5F] text-6xl font-black opacity-10">✦</span>
+                        <span className="text-[#C59D5F] text-6xl font-black opacity-10">
+                          ✦
+                        </span>
                       </div>
                     )}
                   </div>
 
                   {/* Section Content & Checklist */}
-                  <div className={`space-y-10 ${!isEven ? 'lg:order-1' : 'lg:order-2'}`}>
+                  <div
+                    className={`space-y-10 ${!isEven ? "lg:order-1" : "lg:order-2"}`}
+                  >
                     <div className="space-y-4">
-                      <h3 className="text-neutral-800 text-3xl font-black tracking-tight leading-tight uppercase">
+                      <h3 className="text-gray-900 text-3xl font-black tracking-tight leading-tight uppercase">
                         {wc.title || `Why Choose Our ${service.title}?`}
                       </h3>
                       {wc.description && (
@@ -145,7 +168,6 @@ const ServiceDetailPage = async ({ params }: { params: Promise<{ slug: string }>
                       </div>
                     )}
                   </div>
-
                 </div>
               </section>
             );
