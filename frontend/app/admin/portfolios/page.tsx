@@ -34,6 +34,7 @@ import { Portfolio } from "@/types/portfolio";
 import { PortfolioCategory } from "@/types/portfolio-category";
 import { toast } from "sonner";
 import Link from "next/link";
+import Image from "next/image";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -360,10 +361,13 @@ function PortfoliosPageContent() {
                     <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-neutral-200 rounded-[2rem] bg-neutral-50 hover:bg-white hover:border-black transition-all">
                       {(heroImageFile ? URL.createObjectURL(heroImageFile) : heroImagePreview) ? (
                         <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md mb-4">
-                          <img
+                          <Image
                             src={heroImageFile ? URL.createObjectURL(heroImageFile) : heroImagePreview}
                             alt="Portfolio Hero"
-                            className="w-full h-full object-cover"
+                            fill
+                            sizes="400px"
+                            unoptimized
+                            className="object-cover"
                           />
                         </div>
                       ) : (
@@ -490,9 +494,9 @@ function PortfoliosPageContent() {
                     <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                     <td className="py-4 px-6">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-lg bg-neutral-100 overflow-hidden border border-neutral-200 flex-shrink-0">
+                        <div className="w-12 h-12 rounded-lg bg-neutral-100 overflow-hidden border border-neutral-200 flex-shrink-0 relative">
                           {item.main_image_url ? (
-                            <img src={item.main_image_url} alt={item.title} className="w-full h-full object-cover" />
+                            <Image src={item.main_image_url} alt={item.title} fill sizes="48px" className="object-cover" />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-neutral-400">
                               <ImageIcon size={20} />
@@ -677,9 +681,13 @@ function PortfoliosPageContent() {
                 <div className="flex items-center gap-4">
                   {(formFiles.main_image || (currentPortfolio?.main_image_url && !removeMainImage)) && (
                     <div className="relative w-16 h-16 rounded-lg overflow-hidden border border-neutral-200 group">
-                      <img 
+                      <Image 
                         src={formFiles.main_image ? URL.createObjectURL(formFiles.main_image) : currentPortfolio?.main_image_url || ""} 
-                        className="w-full h-full object-cover"
+                        alt="Portfolio cover preview"
+                        fill
+                        sizes="64px"
+                        unoptimized
+                        className="object-cover"
                       />
                       <button
                         type="button"
@@ -716,8 +724,8 @@ function PortfoliosPageContent() {
                   {currentPortfolio?.gallery_image_urls && currentPortfolio.gallery_image_urls.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {currentPortfolio.gallery_image_urls.map((url, idx) => (
-                        <div key={idx} className="w-12 h-12 rounded-lg overflow-hidden border border-neutral-200">
-                          <img src={url} className="w-full h-full object-cover" />
+                        <div key={idx} className="w-12 h-12 rounded-lg overflow-hidden border border-neutral-200 relative">
+                          <Image src={url} alt="Gallery item" fill sizes="48px" className="object-cover" />
                         </div>
                       ))}
                     </div>

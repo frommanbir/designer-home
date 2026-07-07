@@ -2,6 +2,7 @@ import React from "react";
 import { Phone, Mail, MapPin, Send } from "lucide-react";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 import Link from "next/link";
+import Image from "next/image";
 
 const Footer = ({ settings }: { settings?: any }) => {
   // const siteName = settings?.branding?.website_name || "DESIGNER HOME";
@@ -16,9 +17,11 @@ const Footer = ({ settings }: { settings?: any }) => {
         <div className="space-y-8 lg:col-span-3 flex flex-col items-center text-center">
           <div className="flex justify-center w-full">
             {logoUrl ? (
-              <img
+              <Image
                 src={logoUrl}
                 alt="Designer Home"
+                width={200}
+                height={112}
                 className="h-24 md:h-28 w-auto object-contain"
               />
             ) : (

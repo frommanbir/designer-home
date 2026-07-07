@@ -29,6 +29,7 @@ import {
 import { fetchApi } from "@/lib/api";
 import { Service } from "@/types/service";
 import { toast } from "sonner";
+import Image from "next/image";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -425,10 +426,13 @@ function ServicesAdminContent() {
                     <div className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-neutral-200 rounded-[2rem] bg-neutral-50 hover:bg-white hover:border-black transition-all">
                       {(heroImageFile ? URL.createObjectURL(heroImageFile) : heroImagePreview) ? (
                         <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-md mb-4">
-                          <img
+                          <Image
                             src={heroImageFile ? URL.createObjectURL(heroImageFile) : heroImagePreview}
                             alt="Services Hero"
-                            className="w-full h-full object-cover"
+                            fill
+                            sizes="400px"
+                            unoptimized
+                            className="object-cover"
                           />
                         </div>
                       ) : (
@@ -543,11 +547,13 @@ function ServicesAdminContent() {
                             <td className="py-4 px-6 text-sm font-semibold text-neutral-500">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                             <td className="py-4 px-6">
                               {s.hero_image?.url || s.thumbnail_image?.url ? (
-                                <div className="w-12 h-12 rounded-xl overflow-hidden bg-neutral-100 border border-neutral-100 shadow-sm">
-                                  <img
+                                <div className="w-12 h-12 rounded-xl overflow-hidden bg-neutral-100 border border-neutral-100 shadow-sm relative">
+                                  <Image
                                     src={s.hero_image?.url || s.thumbnail_image?.url || ""}
                                     alt={s.title}
-                                    className="w-full h-full object-cover"
+                                    fill
+                                    sizes="48px"
+                                    className="object-cover"
                                   />
                                 </div>
                               ) : (
@@ -710,7 +716,7 @@ function ServicesAdminContent() {
                   <div className="flex flex-col items-center justify-center p-12 border-2 border-dashed border-neutral-200 rounded-[3rem] bg-neutral-50 hover:bg-white hover:border-black transition-all group">
                     {(heroImageFile2 || (currentService.hero_image?.url && !removeHeroImage)) ? (
                        <div className="relative w-full max-w-md aspect-video rounded-3xl overflow-hidden shadow-2xl mb-8">
-                          <img src={heroImageFile2 ? URL.createObjectURL(heroImageFile2) : currentService.hero_image?.url || ""} className="w-full h-full object-cover" alt="hero" />
+                          <Image src={heroImageFile2 ? URL.createObjectURL(heroImageFile2) : currentService.hero_image?.url || ""} fill sizes="400px" unoptimized className="object-cover" alt="hero" />
                           <button
                             type="button"
                             onClick={() => {
@@ -774,7 +780,7 @@ function ServicesAdminContent() {
                                <div className="flex items-center gap-4">
                                   {(block.image_file || block.existing_image_url) && (
                                      <div className="relative w-12 h-12 rounded-xl overflow-hidden border border-neutral-200 shrink-0 shadow-sm group">
-                                        <img src={block.image_file ? URL.createObjectURL(block.image_file) : block.existing_image_url || ""} className="w-full h-full object-cover" alt="prev" />
+                                        <Image src={block.image_file ? URL.createObjectURL(block.image_file) : block.existing_image_url || ""} fill sizes="48px" unoptimized className="object-cover" alt="prev" />
                                         <button
                                           type="button"
                                           onClick={() => updateBlock(bi, { image_file: null, existing_image_url: null, remove_image: true })}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getBlogBySlug } from "@/lib/blogs";
 import { notFound } from "next/navigation";
 import { Calendar, ArrowLeft, Share2 } from "lucide-react";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -38,12 +39,14 @@ const BlogPostPage = async ({ params }: { params: Promise<{ slug: string }> }) =
           </div>
         </header>
 
-        {/* Hero Image */}
-        <div className="aspect-video w-full rounded-[1.5rem] md:rounded-[3rem] overflow-hidden mb-20 shadow-2xl">
-          <img 
+        <div className="aspect-video w-full rounded-[1.5rem] md:rounded-[3rem] overflow-hidden mb-20 shadow-2xl relative">
+          <Image 
             src={blog.image_url || "/images/placeholder.jpg"} 
             alt={blog.title} 
-            className="w-full h-full object-cover"
+            fill
+            sizes="(max-width: 1024px) 100vw, 896px"
+            className="object-cover"
+            priority
           />
         </div>
 

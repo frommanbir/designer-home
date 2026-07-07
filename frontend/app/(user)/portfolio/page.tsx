@@ -1,4 +1,5 @@
 import { getPortfolios, getPortfolioPageData } from "@/lib/portfolios";
+import Image from "next/image";
 import { getPortfolioCategories } from "@/lib/portfolio-categories";
 import PortfolioList from "@/components/PortfolioList";
 
@@ -28,10 +29,12 @@ export default async function PortfolioPage({
       <section className="relative h-[70vh] min-h-[700px] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-transparent z-10" />
-          <img
+          <Image
             src={heroImage}
             alt="Portfolio Hero"
-            className="w-full h-full object-cover"
+            fill
+            priority
+            className="object-cover"
           />
         </div>
         <div className="relative z-20 flex -translate-y-16 flex-col items-center text-center px-6 space-y-4 animate-in fade-in slide-in-from-bottom-10 duration-[1500ms]">

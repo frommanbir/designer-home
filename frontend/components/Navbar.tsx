@@ -3,6 +3,7 @@
 import React from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { getServices } from "@/lib/services";
 import { getProjectCategories } from "@/lib/project-categories";
@@ -54,7 +55,7 @@ const Navbar = ({ transparent = true, settings }: { transparent?: boolean; setti
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-6 md:py-8">
           <Link href="/" className="flex items-center gap-2 group">
             {logoUrl ? (
-              <img src={logoUrl} alt={siteName} className="h-16 w-auto object-contain" />
+              <Image src={logoUrl} alt={siteName} width={200} height={64} className="h-16 w-auto object-contain" priority />
             ) : (
               <div>
                 <span className="text-white font-bold text-2xl">{siteName.charAt(0)}</span>

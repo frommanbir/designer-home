@@ -1,5 +1,6 @@
 import { getProjectBySlug } from "@/lib/projects";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import ProjectGallery from "@/components/ProjectGallery";
 
 export default async function ProjectDetailPage({
@@ -19,12 +20,15 @@ export default async function ProjectDetailPage({
       <section className="relative h-[70vh] min-h-[700px] w-full overflow-hidden">
         {/* Background */}
         <div className="absolute inset-0">
-          <img
+          <Image
             src={project.category?.hero_image?.url || "/images/about-home.png"}
             alt={project.category?.hero_title || "Dream Homes"}
+            fill
+            sizes="100vw"
             className="w-full h-full object-cover"
+            priority
           />
-          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 bg-black/25" />
         </div>
 
         {/* Content */}

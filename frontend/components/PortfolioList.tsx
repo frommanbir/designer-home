@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface PortfolioListProps {
   portfolios: any[];
@@ -30,7 +31,7 @@ export default function PortfolioList({ portfolios }: PortfolioListProps) {
 
           return (
             <div key={item.id} className="relative group">
-              <div className="relative rounded-[20px] overflow-hidden shadow-2xl">
+              <div className="relative rounded-[20px] overflow-hidden shadow-2xl w-full h-[240px] sm:h-[350px] md:h-[450px] lg:h-[550px]">
                 {/* Plus Icon - Clickable to open fullscreen */}
                 <button 
                   onClick={() => openFullscreen(imageUrl)}
@@ -41,10 +42,12 @@ export default function PortfolioList({ portfolios }: PortfolioListProps) {
                 </button>
 
                 {/* Image */}
-                <img
+                <Image
                   src={imageUrl}
                   alt={item.title}
-                  className="w-full h-[240px] sm:h-[350px] md:h-[450px] lg:h-[550px] object-cover transition-transform duration-[3s] group-hover:scale-105 cursor-zoom-in"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1200px"
+                  className="object-cover transition-transform duration-[3s] group-hover:scale-105 cursor-zoom-in"
                   onClick={() => openFullscreen(imageUrl)}
                 />
 
@@ -84,11 +87,13 @@ export default function PortfolioList({ portfolios }: PortfolioListProps) {
             <X size={48} strokeWidth={1.5} />
           </button>
           
-          <div className="relative max-w-full max-h-full">
-            <img
+          <div className="relative w-screen h-[90vh] max-w-7xl">
+            <Image
               src={fullscreenImage}
               alt="Fullscreen view"
-              className="max-w-full max-h-[90vh] object-contain shadow-2xl rounded-2xl animate-in zoom-in-95 duration-500"
+              fill
+              sizes="100vw"
+              className="object-contain shadow-2xl rounded-2xl animate-in zoom-in-95 duration-500"
               onClick={(e) => e.stopPropagation()}
             />
           </div>

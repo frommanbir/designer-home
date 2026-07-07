@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Link from "next/link";
+import Image from "next/image";
 import { getServices } from "@/lib/services";
 import { getProjects } from "@/lib/projects";
 import { getBlogs } from "@/lib/blogs";
@@ -60,10 +61,12 @@ export default async function HomePage() {
       <section className="relative h-screen min-h-[700px] w-full flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-black/30 z-10" />
-          <img
+          <Image
             src={homePageData.hero_image?.url || "/images/about-home.png"}
             alt="Designer Home Hero"
-            className="w-full h-full object-cover"
+            fill
+            priority
+            className="object-cover"
           />
         </div>
       </section>
@@ -105,11 +108,12 @@ export default async function HomePage() {
 
             {/* Right Image */}
             <div className="relative group w-full flex justify-start lg:justify-end order-1 lg:order-2">
-              <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-black/5 w-full max-w-[600px]">
-                <img
+              <div className="relative rounded-xl overflow-hidden shadow-2xl ring-1 ring-black/5 w-full max-w-[600px] h-[300px] sm:h-[400px] lg:h-[600px]">
+                <Image
                   src={homePageData.section2_image?.url || "/images/designspace.png"}
                   alt="Expert Design"
-                  className="w-full h-[300px] sm:h-[400px] lg:h-[600px] object-cover transition-transform duration-1000 group-hover:scale-110"
+                  fill
+                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
               </div>
             </div>
@@ -122,11 +126,12 @@ export default async function HomePage() {
         <div className="container mx-auto px-6 lg:px-24">
           <div className="flex flex-col lg:flex-row items-center gap-16">
             {/* Left Image */}
-            <div className="flex-1 w-full">
-              <img
+            <div className="flex-1 w-full relative h-[300px] sm:h-[450px] lg:h-[600px] rounded-lg overflow-hidden">
+              <Image
                 src={homePageData.section3_image?.url || "/images/webring.png"}
                 alt="Interior Design"
-                className="w-full h-[300px] sm:h-[450px] lg:h-[600px] object-cover rounded-lg"
+                fill
+                className="object-cover rounded-lg"
               />
             </div>
 
@@ -196,14 +201,15 @@ export default async function HomePage() {
                 className="group relative aspect-[4/5] rounded-[20px] overflow-hidden shadow-2xl transition-all duration-700 bg-neutral-100 block"
               >
                 {/* Background Image */}
-                <img
+                <Image
                   src={
                     srv.hero_image?.url ||
                     srv.thumbnail_image?.url ||
                     `/images/service-placeholder.jpg`
                   }
                   alt={srv.title}
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
+                  fill
+                  className="object-cover transition-transform duration-[2s] group-hover:scale-110"
                 />
 
                 {/* Dark Overlay Gradient */}
@@ -314,14 +320,15 @@ export default async function HomePage() {
                       className="space-y-8 group cursor-pointer"
                     >
                       <div className="h-[300px] sm:h-[450px] lg:h-[550px] rounded-[20px] overflow-hidden shadow-2xl relative ring-1 ring-black/5">
-                        <img
+                        <Image
                           src={
                             project.thumbnail_image_url ||
                             project.gallery_image_urls?.[0] ||
                             "/images/project-placeholder.jpg"
                           }
                           alt={project.title}
-                          className="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110"
+                          fill
+                          className="object-cover transition-transform duration-[3s] group-hover:scale-110"
                         />
                         <div className="absolute top-10 right-10 w-16 h-16 bg-white/90 backdrop-blur rounded-full flex items-center justify-center text-black border border-black/5 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-x-4 group-hover:translate-x-0 shadow-2xl">
                           <ArrowRight size={28} className="-rotate-45" />
@@ -366,10 +373,11 @@ export default async function HomePage() {
       <section className="py-32 relative overflow-hidden min-h-[800px]">
         {/* Background with Blur & Overlay */}
         <div className="absolute inset-0 z-0">
-          <img
+          <Image
             src="/images/living-room.jpg"
             alt="Testimonials Background"
-            className="w-full h-full object-cover blur-md scale-110 brightness-[0.4]"
+            fill
+            className="object-cover blur-md scale-110 brightness-[0.4]"
           />
         </div>
 

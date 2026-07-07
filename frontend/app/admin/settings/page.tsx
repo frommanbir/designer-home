@@ -10,6 +10,7 @@ import {
 import { FaSpinner } from "react-icons/fa";
 import { LuMail } from "react-icons/lu";
 import { toast } from "sonner";
+import Image from "next/image";
 
 function SiteSettingsContent() {
   const searchParams = useSearchParams();
@@ -229,7 +230,9 @@ function SiteSettingsContent() {
                         <label className="block text-sm font-semibold text-neutral-900">Website Logo</label>
                         <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
                           {previews.logo ? (
-                            <img src={previews.logo} alt="Logo" className="h-20 object-contain mb-4" />
+                            <div className="relative h-20 w-40 object-contain mb-4">
+                              <Image src={previews.logo} alt="Logo" fill sizes="160px" unoptimized className="object-contain" />
+                            </div>
                           ) : (
                             <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
                               <ImageIcon size={24} />
@@ -247,7 +250,9 @@ function SiteSettingsContent() {
                         <label className="block text-sm font-semibold text-neutral-900">Favicon</label>
                         <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
                           {previews.favicon ? (
-                            <img src={previews.favicon} alt="Favicon" className="w-12 h-12 object-contain mb-4 rounded shadow-sm" />
+                            <div className="relative w-12 h-12 mb-4 rounded shadow-sm">
+                              <Image src={previews.favicon} alt="Favicon" fill sizes="48px" unoptimized className="object-contain" />
+                            </div>
                           ) : (
                             <div className="w-12 h-12 bg-neutral-100 rounded-md flex items-center justify-center mb-4 text-neutral-400">
                               <FaGlobe size={20} />
@@ -388,7 +393,9 @@ function SiteSettingsContent() {
                       <label className="block text-sm font-semibold text-neutral-900">Contact Hero Image</label>
                       <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-neutral-200 rounded-2xl hover:border-black transition-colors bg-neutral-50">
                         {previews.contact_hero ? (
-                          <img src={previews.contact_hero} alt="Contact Hero" className="h-40 w-full object-cover rounded-xl mb-4" />
+                          <div className="relative h-40 w-full rounded-xl mb-4 overflow-hidden">
+                            <Image src={previews.contact_hero} alt="Contact Hero" fill sizes="500px" unoptimized className="object-cover" />
+                          </div>
                         ) : (
                           <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mb-4 text-neutral-400">
                             <ImageIcon size={24} />
@@ -442,7 +449,11 @@ function SiteSettingsContent() {
                         <div className="md:col-span-2 space-y-1">
                           <label className="text-xs font-semibold text-neutral-700">Custom Icon (Optional)</label>
                           <div className="flex items-center gap-4">
-                            {previews.facebook_icon && <img src={previews.facebook_icon} className="w-8 h-8 rounded object-cover shadow-sm bg-white" alt="FB Icon" />}
+                            {previews.facebook_icon && (
+                              <div className="relative w-8 h-8 rounded shrink-0 shadow-sm bg-white overflow-hidden">
+                                <Image src={previews.facebook_icon} alt="FB Icon" fill sizes="32px" unoptimized className="object-cover" />
+                              </div>
+                            )}
                             <label className="text-xs font-medium cursor-pointer bg-white px-3 py-1.5 border border-neutral-200 rounded-md hover:bg-neutral-50">
                               Upload Icon
                               <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'facebook_icon')} />
@@ -470,7 +481,11 @@ function SiteSettingsContent() {
                         <div className="md:col-span-2 space-y-1">
                           <label className="text-xs font-semibold text-neutral-700">Custom Icon (Optional)</label>
                           <div className="flex items-center gap-4">
-                            {previews.twitter_icon && <img src={previews.twitter_icon} className="w-8 h-8 rounded object-cover shadow-sm bg-white" alt="Twitter Icon" />}
+                            {previews.twitter_icon && (
+                              <div className="relative w-8 h-8 rounded shrink-0 shadow-sm bg-white overflow-hidden">
+                                <Image src={previews.twitter_icon} alt="Twitter Icon" fill sizes="32px" unoptimized className="object-cover" />
+                              </div>
+                            )}
                             <label className="text-xs font-medium cursor-pointer bg-white px-3 py-1.5 border border-neutral-200 rounded-md hover:bg-neutral-50">
                               Upload Icon
                               <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'twitter_icon')} />
@@ -498,7 +513,11 @@ function SiteSettingsContent() {
                         <div className="md:col-span-2 space-y-1">
                           <label className="text-xs font-semibold text-neutral-700">Custom Icon (Optional)</label>
                           <div className="flex items-center gap-4">
-                            {previews.instagram_icon && <img src={previews.instagram_icon} className="w-8 h-8 rounded object-cover shadow-sm bg-white" alt="Insta Icon" />}
+                            {previews.instagram_icon && (
+                              <div className="relative w-8 h-8 rounded shrink-0 shadow-sm bg-white overflow-hidden">
+                                <Image src={previews.instagram_icon} alt="Insta Icon" fill sizes="32px" unoptimized className="object-cover" />
+                              </div>
+                            )}
                             <label className="text-xs font-medium cursor-pointer bg-white px-3 py-1.5 border border-neutral-200 rounded-md hover:bg-neutral-50">
                               Upload Icon
                               <input type="file" className="hidden" accept="image/*" onChange={(e) => handleFileChange(e, 'instagram_icon')} />

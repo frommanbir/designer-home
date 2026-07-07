@@ -11,10 +11,16 @@ const nextConfig: NextConfig = {
         pathname:'/storage/**',
       },
       {
-        protocol:'https',
-        hostname:'194.146.12.71',
-        port:'8020',
-        pathname:'/storage/**'
+        protocol: 'http',
+        hostname: '194.146.12.71',
+        port: '8020',
+        pathname: '/storage/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '194.146.12.71',
+        port: '8020',
+        pathname: '/storage/**',
       },
     ],
   },

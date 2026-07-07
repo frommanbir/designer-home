@@ -1,5 +1,6 @@
 import React from "react";
 import { MapPin, Phone, Mail } from "lucide-react";
+import Image from "next/image";
 import { getSiteSettings } from "@/lib/site-settings";
 import ContactForm from "@/components/ContactForm";
 
@@ -22,10 +23,13 @@ export default async function ContactPage() {
       {/* ── Hero Section ──────────────────────────────── */}
       <section className="relative h-[650px] w-full overflow-hidden">
         <div className="absolute inset-0">
-          <img
-            src="/images/trunky.png"
+          <Image
+            src={contactDetails.contact_hero?.url || settings?.contact_info?.contact_hero?.url || "/images/trunky.png"}
             alt="Contact Designer Home"
+            fill
+            sizes="100vw"
             className="w-full h-full object-cover"
+            priority
           />
           <div className="absolute inset-0 bg-black/20 z-10" />
         </div>
